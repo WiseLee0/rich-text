@@ -1,7 +1,7 @@
 import { Row, Col, Slider, InputNumber, InputNumberProps, Divider } from "antd"
 import { useEffect, useState } from "react";
 
-export const AdjustLayout = (props: { onChange: (val: number) => any, title?: string, value: number, max: number }) => {
+export const AdjustLayout = (props: { onChange: (val: number) => any, title?: string, value: number, max: number, show: boolean }) => {
     const [inputValue, setInputValue] = useState(props.value);
 
     const onChange: InputNumberProps['onChange'] = (newValue) => {
@@ -12,11 +12,12 @@ export const AdjustLayout = (props: { onChange: (val: number) => any, title?: st
     useEffect(() => {
         setInputValue(props.value)
     }, [props.value])
+    if (!props.show) return <></>
 
-    return <div style={{ width: 800 }}>
-        <Divider orientation="left">{props.title}</Divider>
+    return <div >
+        <Divider orientation="left" style={{ fontSize: 12 }}>{props.title}</Divider>
         <Row >
-            <Col span={12}>
+            <Col span={15}>
                 <Slider
                     min={0}
                     max={props.max}
@@ -24,7 +25,7 @@ export const AdjustLayout = (props: { onChange: (val: number) => any, title?: st
                     value={typeof inputValue === 'number' ? inputValue : 0}
                 />
             </Col>
-            < Col span={4} >
+            < Col span={9} >
                 <InputNumber
                     min={0}
                     max={props.max}

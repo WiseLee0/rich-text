@@ -1,12 +1,11 @@
 {
-  "name": "paper-curve-intersections",
+  "name": "rich-text",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "deploy": "push-dir --dir=dist --branch=gh-pages --cleanup",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -29,12 +28,9 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
-    "push-dir": "^0.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.2.2",
     "vite": "^5.2.7",
-    "vite-plugin-top-level-await": "^1.4.1",
-    "vite-plugin-wasm": "^3.3.0",
-    "vite-plugin-wasm-pack": "^0.1.12"
+    "vite-plugin-wasm": "^3.3.0"
   }
 }

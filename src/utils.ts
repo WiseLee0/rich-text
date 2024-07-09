@@ -1,10 +1,14 @@
 import CanvasKitInit from 'canvaskit-wasm';
+import CanvasKitWasm from "canvaskit-wasm/bin/canvaskit.wasm?url";
 export const CANVAS_W = 800
 export const CANVAS_H = 400
-export const loadSkia = async (canvasEle: HTMLCanvasElement, path: string) => {
+export const CANVAS_MARING = 20
+export const loadSkia = async (canvasEle: HTMLCanvasElement) => {
     canvasEle.width = CANVAS_W * devicePixelRatio
     canvasEle.height = CANVAS_H * devicePixelRatio
-    const Skia = await CanvasKitInit({ locateFile: () => path })
+    const Skia = await CanvasKitInit({
+        locateFile: () => CanvasKitWasm
+    })
     const surface = Skia.MakeWebGLCanvasSurface(canvasEle, Skia.ColorSpace.SRGB, {
         antialias: 1,
         preserveDrawingBuffer: 1,
