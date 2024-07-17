@@ -85,7 +85,7 @@ export default function App() {
       fontSize: 24,
     })
     editorRef.current = editor
-    layout(63)
+    layout(196)
   }
 
   const main = async () => {

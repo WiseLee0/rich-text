@@ -24,7 +24,7 @@ export const createEditor = (): Editor => {
         },
         derivedTextData: {},
         textData: {
-            characters: "twittle",
+            characters: "hello fiimvc  space  twittle",
         },
 
         // Core

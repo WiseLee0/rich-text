@@ -15,7 +15,7 @@ export const insertText: EditorInterface['insertText'] = (editor, text) => {
     if (editor.isCollapse()) {
         const idx = range.anchorOffset
         const characters = editor.textData.characters
-        const newText = characters.slice(0, idx) + text + characters.slice(idx)
+        const newText = characters.substring(0, idx) + text + characters.substring(idx)
         editor.textData.characters = newText
         editor.clearCache()
         editor.apply()

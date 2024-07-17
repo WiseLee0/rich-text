@@ -6,7 +6,7 @@ export const deleteText: EditorInterface['deleteText'] = (editor, distance = 1) 
     if (editor.isCollapse()) {
         const idx = range.anchorOffset
         const characters = editor.textData.characters
-        const newText = characters.slice(0, idx - distance) + characters.slice(idx)
+        const newText = characters.substring(0, idx - distance) + characters.substring(idx)
         editor.textData.characters = newText
         editor.clearCache()
         editor.apply()
