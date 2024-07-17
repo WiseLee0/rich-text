@@ -16,4 +16,7 @@ export default defineConfig({
     wasm(),
     react()
   ],
+  build: {
+    outDir: 'build'
+  }
 })
