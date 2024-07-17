@@ -38,28 +38,6 @@ export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y) => 
     editor.selection = range
 }
 
-export const selectForOffset: SelectionInterface['selectForOffset'] = (editor, offset) => {
-    const baselines = editor.getBaselines()
-    if (!baselines) return;
-    if (offset > baselines[baselines.length - 1].endCharacter) {
-        const yIdx = baselines.length - 1
-        const offsetRange = [yIdx, offset - baselines[baselines.length - 1].firstCharacter] as [number, number]
-        const range = {
-            anchor: offsetRange,
-            focus: offsetRange,
-        }
-        editor.selection = range
-        return;
-    }
-    const yIdx = baselines.findIndex(item => item.firstCharacter <= offset && item.endCharacter > offset)
-    const offsetRange = [yIdx, offset - baselines[yIdx].firstCharacter] as [number, number]
-    const range = {
-        anchor: offsetRange,
-        focus: offsetRange,
-    }
-    editor.selection = range
-}
-
 export const hasSelection: SelectionInterface['hasSelection'] = (editor) => {
     const { anchor, focus } = editor.selection
     return anchor[0] >= 0 && anchor[1] >= 0 && focus[0] >= 0 && focus[1] >= 0

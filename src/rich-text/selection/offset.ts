@@ -14,3 +14,14 @@ export const getAnchorAndFocusOffset: SelectionInterface['getAnchorAndFocusOffse
         anchorOffset
     }
 }
+
+export const translateSelection: SelectionInterface['translateSelection'] = (editor, distance) => {
+    if (!editor.isCollapse()) return
+    const select = editor.selection.anchor
+    const newRange = [select[0], select[1] + distance] as [number, number];
+    editor.setSelection({
+        anchor: newRange,
+        focus: newRange,
+    })
+    editor.fixSelection()
+}

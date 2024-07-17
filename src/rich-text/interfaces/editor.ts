@@ -20,6 +20,7 @@ export type Editor = {
     layout: OmitFirstArg<EditorInterface['layout']>
     apply: OmitFirstArg<EditorInterface['apply']>
     insertText: OmitFirstArg<EditorInterface['insertText']>
+    deleteText: OmitFirstArg<EditorInterface['deleteText']>
     getMetrices: OmitFirstArg<EditorInterface['getMetrices']>
     getText: OmitFirstArg<EditorInterface['getText']>
     getFont: OmitFirstArg<EditorInterface['getFont']>
@@ -36,11 +37,12 @@ export type Editor = {
     // selection
     setSelection: OmitFirstArg<SelectionInterface['setSelection']>
     selectForXY: OmitFirstArg<SelectionInterface['selectForXY']>
-    selectForOffset: OmitFirstArg<SelectionInterface['selectForOffset']>
     isCollapse: OmitFirstArg<SelectionInterface['isCollapse']>
     hasSelection: OmitFirstArg<SelectionInterface['hasSelection']>
     deselect: OmitFirstArg<SelectionInterface['deselect']>
     getAnchorAndFocusOffset: OmitFirstArg<SelectionInterface['getAnchorAndFocusOffset']>
+    fixSelection: OmitFirstArg<SelectionInterface['fixSelection']>
+    translateSelection: OmitFirstArg<SelectionInterface['translateSelection']>
 }
 
 export type EditorInterface = {
@@ -51,6 +53,7 @@ export type EditorInterface = {
     layout: (editor: Editor, width?: number, height?: number) => void
     apply: (editor: Editor) => void
     insertText: (editor: Editor, text: string) => void
+    deleteText: (editor: Editor, distance?: number) => void
     getText: (editor: Editor) => string
     getMetrices: (editor: Editor) => MetricesInterface[] | undefined
     getBaselines: (editor: Editor) => BaseLineInterface[] | undefined

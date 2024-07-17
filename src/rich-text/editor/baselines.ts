@@ -6,7 +6,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     if (!metrices) return;
     editor.__baselines = []
 
-    const lines = editor.splitLines(editor.width)
+    const lines = editor.splitLines(editor.width + 0.1)
     if (!lines) return;
 
     let firstCharacter = 0;

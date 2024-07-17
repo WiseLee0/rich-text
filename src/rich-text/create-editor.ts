@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, setWH, layout, setSelection, getMetrices, insertText, getFont, getText, getBaselines, getGlyphs, clearCache, splitLines, getCursorRect, selectForXY, isCollapse, hasSelection, deselect, getLineWidths, getAnchorAndFocusOffset, apply, selectForOffset, transformCharactersOffset, transformMetricesRange } from './'
+import { Editor, fontMgrFromData, setStyle, setWH, layout, setSelection, getMetrices, insertText, getFont, getText, getBaselines, getGlyphs, clearCache, splitLines, getCursorRect, selectForXY, isCollapse, hasSelection, deselect, getLineWidths, getAnchorAndFocusOffset, apply, transformCharactersOffset, transformMetricesRange, fixSelection, deleteText, translateSelection } from './'
 
 export const createEditor = (): Editor => {
 
@@ -24,7 +24,7 @@ export const createEditor = (): Editor => {
         },
         derivedTextData: {},
         textData: {
-            characters: "I'm fine  space  fiii twittle",
+            characters: "twittle",
         },
 
         // Core
@@ -47,16 +47,18 @@ export const createEditor = (): Editor => {
         getLineWidths: (...args) => getLineWidths(editor, ...args),
         transformCharactersOffset: (...args) => transformCharactersOffset(editor, ...args),
         transformMetricesRange: (...args) => transformMetricesRange(editor, ...args),
+        deleteText: (...args) => deleteText(editor, ...args),
 
 
         // Selection
         setSelection: (...args) => setSelection(editor, ...args),
         selectForXY: (...args) => selectForXY(editor, ...args),
-        selectForOffset: (...args) => selectForOffset(editor, ...args),
         isCollapse: (...args) => isCollapse(editor, ...args),
         hasSelection: (...args) => hasSelection(editor, ...args),
         deselect: (...args) => deselect(editor, ...args),
         getAnchorAndFocusOffset: (...args) => getAnchorAndFocusOffset(editor, ...args),
+        fixSelection: (...args) => fixSelection(editor, ...args),
+        translateSelection: (...args) => translateSelection(editor, ...args),
     }
 
     return editor

@@ -1,4 +1,4 @@
-import { EditorInterface } from "../interfaces/editor";
+import { EditorInterface } from "..";
 import * as fontkit from 'fontkit'
 import type { FontCollection, Font } from "fontkit";
 
@@ -28,5 +28,5 @@ export const getFont: EditorInterface['getFont'] = (editor, family) => {
             }
         }
     }
-    
+
 }

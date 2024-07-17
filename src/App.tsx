@@ -40,11 +40,6 @@ export default function App() {
     updateRender()
   }
 
-  const apply = () => {
-    editorRef.current?.clearCache()
-    editorRef.current?.apply()
-  }
-
   const handleEvents = () => {
     canvasRef.current?.addEventListener('mousedown', e => {
       const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
@@ -56,7 +51,25 @@ export default function App() {
 
     textareaRef.current?.addEventListener('input', (e: any) => {
       editorRef.current?.insertText(e.data)
-      apply()
+      updateRender()
+    })
+
+    textareaRef.current?.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') {
+        editorRef.current?.translateSelection(1)
+        updateRender()
+        e.preventDefault()
+      }
+      if (e.key === 'ArrowLeft') {
+        editorRef.current?.translateSelection(-1)
+        updateRender()
+        e.preventDefault()
+      }
+      if (e.key === 'Backspace') {
+        editorRef.current?.deleteText()
+        updateRender()
+        e.preventDefault()
+      }
     })
   }
 
@@ -72,7 +85,7 @@ export default function App() {
       fontSize: 24,
     })
     editorRef.current = editor
-    layout(155)
+    layout(63)
   }
 
   const main = async () => {

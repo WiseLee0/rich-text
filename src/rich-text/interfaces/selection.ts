@@ -10,12 +10,13 @@ export interface RangeOffset {
     focusOffset: number
 }
 export interface SelectionInterface {
+    fixSelection: (editor: Editor) => void
     setSelection: (editor: Editor, selection: Range) => void
     selectForXY: (editor: Editor, x: number, y: number) => void
-    selectForOffset: (editor: Editor, offset: number) => void
     isCollapse: (editor: Editor) => boolean
     hasSelection: (editor: Editor) => boolean
     deselect: (editor: Editor) => void
     getAnchorAndFocusOffset: (editor: Editor) => RangeOffset | undefined
+    translateSelection: (editor: Editor, distance: number) => void
 }
 
