@@ -1,4 +1,4 @@
-import { EditorInterface } from "..";
+import { EditorInterface, MetricesInterface } from "..";
 
 export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     if (editor.__baselines) return editor.__baselines
@@ -13,7 +13,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
 
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
-        endCharacter = firstCharacter + (line[line.length - 1].firstCharacter - line[0].firstCharacter + 1)
+        endCharacter = firstCharacter + getMetricesLength(line)
         const lineWidth = line.reduce((pre, cur) => pre + cur.xAdvance, 0)
         const lineHeight = line.reduce((pre, cur) => Math.max(pre, cur.height), 0)
         const lineAscent = line.reduce((pre, cur) => Math.max(pre, cur.ascent), 0)
@@ -38,4 +38,13 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         lineHeightSum += lineHeight
     }
     return editor.__baselines
+}
+
+const getMetricesLength = (metrices: MetricesInterface[]) => {
+    let len = 0
+    for (let i = 0; i < metrices.length; i++) {
+        const metrice = metrices[i];
+        len += metrice.codePoints.length
+    }
+    return len
 }
