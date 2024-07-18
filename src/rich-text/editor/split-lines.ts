@@ -28,6 +28,34 @@ const wordGroupLines = (lines: MetricesInterface[][], wordGroup: MetricesInterfa
         const word = wordGroup[i]
         const wordWidth = word.reduce((pre, cur) => pre + cur.xAdvance, 0)
         const isSpace = word.length === 1 && word[0].name === 'space'
+        // 换行符
+        if (word.length === 1 && word[0].name === '\n') {
+            // 如果上一行已经存在换行符，则需要新开一行
+            if (lines.length && lines[lines.length - 1]) {
+                const preLine = lines[lines.length - 1]
+                if (!currentLine.length && preLine[preLine.length - 1].name === '\n') {
+                    lines.push([word[0]]);
+                    currentLine = []
+                    currentWidth = 0
+                    continue
+                }
+            }
+            // 如果上一行不存在换行符，则拼接到上一行
+            if (currentLine.length) {
+                currentLine.push(word[0])
+                lines.push(currentLine);
+            } else if (lines.length) {
+                currentLine = lines.pop()!
+                currentLine.push(word[0])
+                lines.push(currentLine);
+            } else {
+                lines.push([word[0]]);
+            }
+            currentLine = []
+            currentWidth = 0
+            continue
+        }
+
         // 只有一个词组，并且比最大宽度大
         if (wordWidth > maxWidth && !isSpace) {
             if (currentLine.length) lines.push(currentLine);

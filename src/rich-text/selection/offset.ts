@@ -3,7 +3,7 @@ import { SelectionInterface } from "..";
 export const getAnchorAndFocusOffset: SelectionInterface['getAnchorAndFocusOffset'] = (editor) => {
     const baselines = editor.getBaselines()
     const metrices = editor.getMetrices()
-    if (!metrices || !baselines || !editor.hasSelection()) return;
+    if (!metrices?.length || !baselines?.length || !editor.hasSelection()) return;
     const { focus, anchor } = editor.selection
 
     const focusOffset = baselines[focus[0]].firstCharacter + focus[1]

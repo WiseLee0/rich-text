@@ -4,7 +4,7 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
     if (editor.__glyphs) return editor.__glyphs
     const metrices = editor.getMetrices()
     const baselines = editor.getBaselines()
-    if (!metrices || !baselines) return;
+    if (!metrices?.length || !baselines?.length) return;
     editor.__glyphs = []
 
     for (let i = 0; i < baselines.length; i++) {
@@ -15,6 +15,10 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
         let count = 0
         for (let j = 0; j < line.length; j++) {
             const metrice = line[j];
+            if (metrice.name === '\n') {
+                count += metrice.codePoints.length
+                continue;
+            }
             editor.__glyphs.push({
                 commandsBlob: metrice.path,
                 position: {

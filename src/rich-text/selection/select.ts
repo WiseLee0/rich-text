@@ -6,7 +6,7 @@ export const setSelection: SelectionInterface['setSelection'] = (editor, range) 
 
 export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y) => {
     const baselines = editor.getBaselines()
-    if (!baselines) {
+    if (!baselines?.length) {
         editor.selection = {
             anchor: [0, 0],
             focus: [0, 0],

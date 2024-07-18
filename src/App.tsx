@@ -70,6 +70,11 @@ export default function App() {
         updateRender()
         e.preventDefault()
       }
+      if (e.key === 'Enter') {
+        editorRef.current?.insertText('\n')
+        updateRender()
+        e.preventDefault()
+      }
     })
   }
 

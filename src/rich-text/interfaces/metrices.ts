@@ -7,4 +7,5 @@ export interface MetricesInterface {
     height: number;
     fontSize: number;
     name: string
+    firstCharacter: number
 }

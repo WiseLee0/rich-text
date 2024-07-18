@@ -17,7 +17,7 @@ export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.Mut
     const editor = editorRef.current
     if (!editor || !editor.derivedTextData) return;
     const { glyphs, baselines } = editor.derivedTextData
-    if (!glyphs || !baselines) return;
+    if (!glyphs?.length || !baselines?.length) return;
     const paint = new Skia.Paint()
     paint.setAntiAlias(true)
 

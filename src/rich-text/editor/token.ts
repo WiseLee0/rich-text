@@ -92,6 +92,12 @@ export function familyTokenize(textData: Record<string, any>) {
     const token: string[] = []
     for (let i = 0; i < characters?.length; i++) {
         const char = characters[i];
+        if (char === '\n') {
+            token.push(str)
+            str = ''
+            token.push(char)
+            continue
+        }
         if (characterStyleIDs && familyModifySet.has(characterStyleIDs[i])) {
             if (str.length) token.push(str)
             str = char

@@ -30,7 +30,6 @@ export type Editor = {
     splitLines: OmitFirstArg<EditorInterface['splitLines']>
     getCursorRect: OmitFirstArg<EditorInterface['getCursorRect']>
     getLineWidths: OmitFirstArg<EditorInterface['getLineWidths']>
-    transformCharactersOffset: OmitFirstArg<EditorInterface['transformCharactersOffset']>
     transformMetricesRange: OmitFirstArg<EditorInterface['transformMetricesRange']>
 
 
@@ -62,7 +61,6 @@ export type EditorInterface = {
     clearCache: (editor: Editor) => void
     splitLines: (editor: Editor, maxWidth: number) => MetricesInterface[][] | undefined
     getLineWidths: (editor: Editor, baselineY: number) => number[] | undefined
-    transformCharactersOffset: (editor: Editor, metrices: MetricesInterface[], offset: number) => number
     transformMetricesRange: (editor: Editor, firstCharacter: number, endCharacter: number) => [number, number]
 }
 

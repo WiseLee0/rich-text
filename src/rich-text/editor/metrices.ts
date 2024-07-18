@@ -18,23 +18,25 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
 
     editor.__matrices = []
     let offset = 0
+    let firstCharacter = 0
     for (let i = 0; i < familyTokens.length; i++) {
         const token = familyTokens[i];
+
         const style = styleMap.get(characterStyleIDs?.[offset] || -1)
         let family = style?.fontName?.family ?? editor.style.fontName?.family
         const font = editor.getFont(family)
         if (!font) continue
         const { glyphs, positions } = font.layout(token)
+        const isWrap = token === '\n'
         for (let j = 0; j < glyphs.length; j++) {
             const glyph = glyphs[j]
-
             const style = styleMap.get(characterStyleIDs?.[offset + j] || -1)
             const fontSize = style?.fontSize ?? editor.style.fontSize
             let unitsPerPx = fontSize / (font.unitsPerEm || 1000);
-            const xAdvance = positions[j].xAdvance * unitsPerPx
+            const xAdvance = isWrap ? 0 : positions[j].xAdvance * unitsPerPx
             const height = (glyph as any).advanceHeight * unitsPerPx
             const ascent = font.ascent * unitsPerPx
-            const path = glyph.path.scale(unitsPerPx, -unitsPerPx).toSVG()
+            const path = isWrap ? '' : glyph.path.scale(unitsPerPx, -unitsPerPx).toSVG()
 
             editor.__matrices.push({
                 isLigature: glyph.isLigature,
@@ -44,8 +46,10 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
                 ascent,
                 height,
                 fontSize,
-                name: glyph.name
+                name: isWrap ? '\n' : glyph.name,
+                firstCharacter
             })
+            firstCharacter += glyph.codePoints.length;
         }
         offset += token.length
     }

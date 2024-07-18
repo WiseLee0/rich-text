@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, setWH, layout, setSelection, getMetrices, insertText, getFont, getText, getBaselines, getGlyphs, clearCache, splitLines, getCursorRect, selectForXY, isCollapse, hasSelection, deselect, getLineWidths, getAnchorAndFocusOffset, apply, transformCharactersOffset, transformMetricesRange, fixSelection, deleteText, translateSelection } from './'
+import { Editor, fontMgrFromData, setStyle, setWH, layout, setSelection, getMetrices, insertText, getFont, getText, getBaselines, getGlyphs, clearCache, splitLines, getCursorRect, selectForXY, isCollapse, hasSelection, deselect, getLineWidths, getAnchorAndFocusOffset, apply, transformMetricesRange, fixSelection, deleteText, translateSelection } from './'
 
 export const createEditor = (): Editor => {
 
@@ -24,7 +24,7 @@ export const createEditor = (): Editor => {
         },
         derivedTextData: {},
         textData: {
-            characters: "hello fiimvc  space  twittle",
+            characters: "twttle space fiily hello world\n\nwrap line\ngood",
         },
 
         // Core
@@ -45,7 +45,6 @@ export const createEditor = (): Editor => {
         splitLines: (...args) => splitLines(editor, ...args),
         getCursorRect: (...args) => getCursorRect(editor, ...args),
         getLineWidths: (...args) => getLineWidths(editor, ...args),
-        transformCharactersOffset: (...args) => transformCharactersOffset(editor, ...args),
         transformMetricesRange: (...args) => transformMetricesRange(editor, ...args),
         deleteText: (...args) => deleteText(editor, ...args),
 
