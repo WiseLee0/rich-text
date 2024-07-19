@@ -17,6 +17,6 @@ export interface SelectionInterface {
     hasSelection: (editor: Editor) => boolean
     deselect: (editor: Editor) => void
     getAnchorAndFocusOffset: (editor: Editor) => RangeOffset | undefined
-    translateSelection: (editor: Editor, distance: number) => void
+    setSelectionOffset: (editor: Editor, offset: number) => void
 }
 

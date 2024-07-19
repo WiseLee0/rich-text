@@ -1,10 +1,10 @@
-import { Editor, EditorInterface, lineTokenize, MetricesInterface } from "..";
+import { Editor, lineTokenize, MetricesInterface } from "..";
 
 // Rule1: 空白词组遇到段行会放置在当前行末尾，即使它已经超出元素外
 // Rule2: 尽可能不切断词组，让其完整在一行展示，除非当前词组的宽度大于文本元素的宽度
 // Rule3: 连续的、不包含空格的 ASCII 可打印字符是一个词组，比如「I'm」、「constant.」、「word」、「etc...」
 // Rule4: 剩余未明确定义的字符，单个字符就算作是一个词组
-export const splitLines: EditorInterface['splitLines'] = (editor: Editor, maxWidth: number) => {
+export const splitBaseLines = (editor: Editor, maxWidth: number) => {
     const lines: MetricesInterface[][] = [];
     const words = splitWordGroup(editor);
     if (!words) return;

@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, setWH, layout, setSelection, getMetrices, insertText, getFont, getText, getBaselines, getGlyphs, clearCache, splitLines, getCursorRect, selectForXY, isCollapse, hasSelection, deselect, getLineWidths, getAnchorAndFocusOffset, apply, transformMetricesRange, fixSelection, deleteText, translateSelection } from './'
+import { Editor, fontMgrFromData, setStyle, setWH, layout, setSelection, getMetrices, insertText, getFont, getText, getBaselines, getGlyphs, clearCache, getCursorRect, selectForXY, isCollapse, hasSelection, deselect, getBaseLineWidths, getAnchorAndFocusOffset, apply, transformMetricesRange, fixSelection, deleteText, setSelectionOffset } from './'
 
 export const createEditor = (): Editor => {
 
@@ -24,7 +24,7 @@ export const createEditor = (): Editor => {
         },
         derivedTextData: {},
         textData: {
-            characters: "twttle space fiily hello world\n\nwrap line\ngood",
+            characters: "twttle fii space    longtime\n\nnewline\n\n",
         },
 
         // Core
@@ -42,9 +42,8 @@ export const createEditor = (): Editor => {
         getBaselines: (...args) => getBaselines(editor, ...args),
         getGlyphs: (...args) => getGlyphs(editor, ...args),
         clearCache: (...args) => clearCache(editor, ...args),
-        splitLines: (...args) => splitLines(editor, ...args),
         getCursorRect: (...args) => getCursorRect(editor, ...args),
-        getLineWidths: (...args) => getLineWidths(editor, ...args),
+        getBaseLineWidths: (...args) => getBaseLineWidths(editor, ...args),
         transformMetricesRange: (...args) => transformMetricesRange(editor, ...args),
         deleteText: (...args) => deleteText(editor, ...args),
 
@@ -57,7 +56,7 @@ export const createEditor = (): Editor => {
         deselect: (...args) => deselect(editor, ...args),
         getAnchorAndFocusOffset: (...args) => getAnchorAndFocusOffset(editor, ...args),
         fixSelection: (...args) => fixSelection(editor, ...args),
-        translateSelection: (...args) => translateSelection(editor, ...args),
+        setSelectionOffset: (...args) => setSelectionOffset(editor, ...args),
     }
 
     return editor

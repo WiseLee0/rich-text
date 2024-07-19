@@ -21,14 +21,24 @@ export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y) => 
     else yIdx -= 1
 
     // 获取最近Y的行
-    const xArr = editor.getLineWidths(yIdx)
+    const xArr = editor.getBaseLineWidths(yIdx)
     if (!xArr) {
         console.warn('计算异常')
         return
     };
 
     // 找到最近的X
-    const xIdx = findClosestIndex(xArr, x)
+    let xIdx = findClosestIndex(xArr, x)
+
+    // 判断最后一个字符是不是换行
+    if (yIdx === baselines.length - 1) {
+        const text = editor.getText()
+        const lastBaseLine = baselines[baselines.length - 1]
+        if (text[text.length - 1] === '\n' && y > lastBaseLine.lineY + lastBaseLine.lineHeight) {
+            yIdx += 1
+            xIdx = 0
+        }
+    }
 
     const rangeOffset = [yIdx, xIdx] as [number, number]
     const range = {

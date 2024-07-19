@@ -1,10 +1,10 @@
-import { EditorInterface, MetricesInterface } from "..";
+import { Editor, EditorInterface, MetricesInterface, splitBaseLines } from "..";
 
 export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     if (editor.__baselines) return editor.__baselines
     editor.__baselines = []
 
-    const lines = editor.splitLines(editor.width + 0.1)
+    const lines = splitBaseLines(editor, editor.width + 0.1)
     if (!lines) return;
 
     let firstCharacter = 0;
@@ -47,4 +47,40 @@ const getMetricesLength = (metrices: MetricesInterface[]) => {
         len += metrice.codePoints.length
     }
     return len
+}
+
+
+// 获取当前基线行的宽度列表
+export const getBaseLineWidths: EditorInterface['getBaseLineWidths'] = (editor, baselineIdx) => {
+    const metrices = editor.getMetrices()
+    const baselines = editor.getBaselines()
+    const glyphs = editor.getGlyphs()
+    if (!baselines?.length || !glyphs?.length || !metrices?.length) return;
+    const xArr: number[] = []
+    const { firstCharacter, endCharacter, position, width } = baselines[baselineIdx]
+    const [start, end] = editor.transformMetricesRange(firstCharacter, endCharacter)
+    const glyphMap = new Map()
+    for (let i = 0; i < glyphs.length; i++) {
+        const glyph = glyphs[i];
+        glyphMap.set(glyph.firstCharacter, glyph)
+    }
+    for (let i = start; i < end; i++) {
+        const metrice = metrices[i]
+        if (metrice.name === "\n") continue;
+        const glyph = glyphMap.get(metrice.firstCharacter)
+        if (!glyph) {
+            console.warn('getBaseLineWidths exception')
+            continue;
+        }
+        if (metrice.isLigature) {
+            const step_w = metrice.xAdvance / metrice.codePoints.length
+            for (let j = 0; j < metrice.codePoints.length; j++) {
+                xArr.push(glyph.position.x + step_w * j)
+            }
+        } else {
+            xArr.push(glyph.position.x)
+        }
+    }
+    xArr.push(position.x + width)
+    return xArr
 }

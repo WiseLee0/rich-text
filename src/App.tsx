@@ -56,14 +56,18 @@ export default function App() {
 
     textareaRef.current?.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowRight') {
-        editorRef.current?.translateSelection(1)
-        updateRender()
-        e.preventDefault()
+        // const offset = editorRef.current?.getAnchorAndFocusOffset()
+        // if (!offset) return;
+        // editorRef.current?.setSelectionOffset(offset.anchorOffset + 1)
+        // updateRender()
+        // e.preventDefault()
       }
       if (e.key === 'ArrowLeft') {
-        editorRef.current?.translateSelection(-1)
-        updateRender()
-        e.preventDefault()
+        // const offset = editorRef.current?.getAnchorAndFocusOffset()
+        // if (!offset) return;
+        // editorRef.current?.setSelectionOffset(offset.anchorOffset - 1)
+        // updateRender()
+        // e.preventDefault()
       }
       if (e.key === 'Backspace') {
         editorRef.current?.deleteText()
@@ -90,7 +94,7 @@ export default function App() {
       fontSize: 24,
     })
     editorRef.current = editor
-    layout(196)
+    layout(163)
   }
 
   const main = async () => {

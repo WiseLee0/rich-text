@@ -27,9 +27,8 @@ export type Editor = {
     getBaselines: OmitFirstArg<EditorInterface['getBaselines']>
     getGlyphs: OmitFirstArg<EditorInterface['getGlyphs']>
     clearCache: OmitFirstArg<EditorInterface['clearCache']>
-    splitLines: OmitFirstArg<EditorInterface['splitLines']>
     getCursorRect: OmitFirstArg<EditorInterface['getCursorRect']>
-    getLineWidths: OmitFirstArg<EditorInterface['getLineWidths']>
+    getBaseLineWidths: OmitFirstArg<EditorInterface['getBaseLineWidths']>
     transformMetricesRange: OmitFirstArg<EditorInterface['transformMetricesRange']>
 
 
@@ -41,7 +40,7 @@ export type Editor = {
     deselect: OmitFirstArg<SelectionInterface['deselect']>
     getAnchorAndFocusOffset: OmitFirstArg<SelectionInterface['getAnchorAndFocusOffset']>
     fixSelection: OmitFirstArg<SelectionInterface['fixSelection']>
-    translateSelection: OmitFirstArg<SelectionInterface['translateSelection']>
+    setSelectionOffset: OmitFirstArg<SelectionInterface['setSelectionOffset']>
 }
 
 export type EditorInterface = {
@@ -59,8 +58,7 @@ export type EditorInterface = {
     getGlyphs: (editor: Editor) => GlyphsInterface[] | undefined
     getCursorRect: (editor: Editor) => Rect | undefined
     clearCache: (editor: Editor) => void
-    splitLines: (editor: Editor, maxWidth: number) => MetricesInterface[][] | undefined
-    getLineWidths: (editor: Editor, baselineY: number) => number[] | undefined
+    getBaseLineWidths: (editor: Editor, baselineIdx: number) => number[] | undefined
     transformMetricesRange: (editor: Editor, firstCharacter: number, endCharacter: number) => [number, number]
 }
 

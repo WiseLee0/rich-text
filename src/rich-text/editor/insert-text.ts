@@ -1,4 +1,4 @@
-import { EditorInterface } from "..";
+import { EditorInterface, wrapSelection } from "..";
 
 export const insertText: EditorInterface['insertText'] = (editor, text) => {
     let range = editor.getAnchorAndFocusOffset()
@@ -19,6 +19,10 @@ export const insertText: EditorInterface['insertText'] = (editor, text) => {
         editor.textData.characters = newText
         editor.clearCache()
         editor.apply()
-        editor.translateSelection(text.length)
+        if (text === '\n') {
+            wrapSelection(editor, 1)
+            return;
+        }
+        editor.setSelectionOffset(idx + text.length)
     }
 }

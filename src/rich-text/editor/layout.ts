@@ -1,4 +1,4 @@
-import { EditorInterface } from "..";
+import { EditorInterface, fixDefaultData, getH } from "..";
 
 export const layout: EditorInterface['layout'] = (editor, width, height) => {
     if (width === undefined && height === undefined) {
@@ -21,16 +21,20 @@ export const apply: EditorInterface['apply'] = (editor) => {
         editor.width = Infinity
     }
 
+    // 缺省数据，使用默认值填充
+    fixDefaultData(editor)
+
     const baselines = editor.getBaselines() ?? []
     const glyphs = editor.getGlyphs()
 
+
     if (editor.style.textAutoResize === 'WIDTH_AND_HEIGHT' && baselines.length) {
         editor.width = Math.max(...baselines.map(item => item.width))
-        editor.height = baselines[baselines.length - 1].lineY + baselines[baselines.length - 1].lineHeight
+        editor.height = getH(editor)
     }
 
     if (editor.style.textAutoResize === 'HEIGHT' && baselines.length) {
-        editor.height = baselines[baselines.length - 1].lineY + baselines[baselines.length - 1].lineHeight
+        editor.height = getH(editor)
     }
 
     editor.derivedTextData = {
