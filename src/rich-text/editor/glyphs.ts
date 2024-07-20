@@ -1,15 +1,15 @@
-import { EditorInterface } from "..";
+import { EditorInterface, baselineToMetricesRange } from "..";
 
 export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
-    if (editor.__glyphs) return editor.__glyphs
+    if (editor.derivedTextData.glyphs) return editor.derivedTextData.glyphs
     const metrices = editor.getMetrices()
     const baselines = editor.getBaselines()
     if (!metrices?.length || !baselines?.length) return;
-    editor.__glyphs = []
+    const glyphs = []
 
     for (let i = 0; i < baselines.length; i++) {
         const baseline = baselines[i];
-        const [start, end] = editor.transformMetricesRange(baseline.firstCharacter, baseline.endCharacter)
+        const [start, end] = baselineToMetricesRange(editor, baseline.firstCharacter, baseline.endCharacter)
         const line = metrices.slice(start, end)
         let x = baseline.position.x
         let count = 0
@@ -19,7 +19,7 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
                 count += metrice.codePoints.length
                 continue;
             }
-            editor.__glyphs.push({
+            glyphs.push({
                 commandsBlob: metrice.path,
                 position: {
                     x,
@@ -32,5 +32,6 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
             count += metrice.codePoints.length
         }
     }
-    return editor.__glyphs
+    editor.derivedTextData.glyphs = glyphs
+    return glyphs
 }

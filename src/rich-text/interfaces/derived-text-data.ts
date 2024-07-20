@@ -6,4 +6,5 @@ export interface DerivedTextDataInterface {
     glyphs: GlyphsInterface[]
     truncationStartIndex: number
     truncatedHeight: number
+    logicalCharacterOffset: number[]
 }

@@ -15,6 +15,8 @@ export default function App() {
   const [spinning, setSpinning] = useState(true)
   const [, updateRender] = useReducer(i => i + 1, 0)
   const editorRef = useRef<Editor>()
+  const mouseDownRef = useRef(false)
+
 
   const render = async () => {
     const [Skia, surface] = await loadSkia(canvasRef.current!);
@@ -35,7 +37,7 @@ export default function App() {
 
   const layout = (w?: number, h?: number) => {
     editorRef.current?.clearCache()
-    editorRef.current?.deselect()
+    editorRef.current?.deselection()
     editorRef.current?.layout(w, h)
     updateRender()
   }
@@ -44,10 +46,23 @@ export default function App() {
     canvasRef.current?.addEventListener('mousedown', e => {
       const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
       editorRef.current?.selectForXY(x, y)
+      mouseDownRef.current = true
+    })
+    canvasRef.current?.addEventListener('mousemove', e => {
+      if (!mouseDownRef.current) return;
+      const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
+      editorRef.current?.selectForXY(x, y, false)
+    })
+    canvasRef.current?.addEventListener('mouseup', e => {
+      if (!mouseDownRef.current) return;
+      mouseDownRef.current = false
+      const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
+      editorRef.current?.selectForXY(x, y, false)
       setTimeout(() => {
         textareaRef.current?.focus()
       }, 0);
     })
+
 
     textareaRef.current?.addEventListener('input', (e: any) => {
       editorRef.current?.insertText(e.data)
@@ -94,7 +109,7 @@ export default function App() {
       fontSize: 24,
     })
     editorRef.current = editor
-    layout(163)
+    layout(100)
   }
 
   const main = async () => {

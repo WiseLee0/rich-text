@@ -1,7 +1,7 @@
-import { EditorInterface } from ".."
+import { Editor } from ".."
 
 // 转换成度量信息的偏移值
-export const transformMetricesRange: EditorInterface['transformMetricesRange'] = (editor, firstCharacter: number, endCharacter: number) => {
+export const baselineToMetricesRange = (editor: Editor, firstCharacter: number, endCharacter: number) => {
     const metrices = editor.getMetrices()
     const result = [-1, -1] as [number, number]
     if (!metrices) return result
@@ -9,8 +9,11 @@ export const transformMetricesRange: EditorInterface['transformMetricesRange'] =
         const metrice = metrices[i]
         if (metrice.firstCharacter === firstCharacter) result[0] = i
         if (metrice.firstCharacter === endCharacter) result[1] = i
+        if (result[0] !== -1 && result[1] !== -1) break;
     }
-    if (result[0] < 0) result[0] = metrices.length
-    if (result[1] < 0) result[1] = metrices.length
+    if (result[1] === -1) result[1] = metrices.length
+    if (result[0] === -1) {
+        console.warn('baselineToMetricesRange expection')
+    }
     return result
 }

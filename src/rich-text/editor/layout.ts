@@ -26,6 +26,7 @@ export const apply: EditorInterface['apply'] = (editor) => {
 
     const baselines = editor.getBaselines() ?? []
     const glyphs = editor.getGlyphs()
+    const logicalCharacterOffset = editor.getLogicalCharacterOffset()
 
 
     if (editor.style.textAutoResize === 'WIDTH_AND_HEIGHT' && baselines.length) {
@@ -38,9 +39,9 @@ export const apply: EditorInterface['apply'] = (editor) => {
     }
 
     editor.derivedTextData = {
+        glyphs,
         baselines,
-        glyphs
+        logicalCharacterOffset
     }
-
     return editor.derivedTextData
 }

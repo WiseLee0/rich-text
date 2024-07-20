@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, setWH, layout, setSelection, getMetrices, insertText, getFont, getText, getBaselines, getGlyphs, clearCache, getCursorRect, selectForXY, isCollapse, hasSelection, deselect, getBaseLineWidths, getAnchorAndFocusOffset, apply, transformMetricesRange, fixSelection, deleteText, setSelectionOffset } from './'
+import { Editor, fontMgrFromData, setStyle, setWH, layout, setSelection, getMetrices, insertText, getSelection, getFont, getText, getBaselines, getGlyphs, clearCache, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects } from './'
 
 export const createEditor = (): Editor => {
 
@@ -18,13 +18,15 @@ export const createEditor = (): Editor => {
                 family: "Play", style: "Regular", postscript: "Play-Regular"
             },
         },
-        selection: {
-            anchor: [-1, -1],
-            focus: [-1, -1],
+        __selection: {
+            anchor: -1,
+            focus: -1,
+            anchorOffset: -1,
+            focusOffset: -1
         },
         derivedTextData: {},
         textData: {
-            characters: "twttle fii space    longtime\n\nnewline\n\n",
+            characters: "fiii\n\nfiiiii\nworld\nn\n",
         },
 
         // Core
@@ -36,27 +38,25 @@ export const createEditor = (): Editor => {
         fontMgrFromData: (...args) => fontMgrFromData(editor, ...args),
         setWH: (...args) => setWH(editor, ...args),
         insertText: (...args) => insertText(editor, ...args),
-        getMetrices: (...args) => getMetrices(editor, ...args),
         getText: (...args) => getText(editor, ...args),
         getFont: (...args) => getFont(editor, ...args),
+        getMetrices: (...args) => getMetrices(editor, ...args),
         getBaselines: (...args) => getBaselines(editor, ...args),
         getGlyphs: (...args) => getGlyphs(editor, ...args),
+        getLogicalCharacterOffset: (...args) => getLogicalCharacterOffset(editor, ...args),
         clearCache: (...args) => clearCache(editor, ...args),
-        getCursorRect: (...args) => getCursorRect(editor, ...args),
-        getBaseLineWidths: (...args) => getBaseLineWidths(editor, ...args),
-        transformMetricesRange: (...args) => transformMetricesRange(editor, ...args),
+        getBaseLineCharacterOffset: (...args) => getBaseLineCharacterOffset(editor, ...args),
         deleteText: (...args) => deleteText(editor, ...args),
 
 
         // Selection
         setSelection: (...args) => setSelection(editor, ...args),
+        getSelection: (...args) => getSelection(editor, ...args),
         selectForXY: (...args) => selectForXY(editor, ...args),
         isCollapse: (...args) => isCollapse(editor, ...args),
         hasSelection: (...args) => hasSelection(editor, ...args),
-        deselect: (...args) => deselect(editor, ...args),
-        getAnchorAndFocusOffset: (...args) => getAnchorAndFocusOffset(editor, ...args),
-        fixSelection: (...args) => fixSelection(editor, ...args),
-        setSelectionOffset: (...args) => setSelectionOffset(editor, ...args),
+        deselection: (...args) => deselection(editor, ...args),
+        getSelectionRects: (...args) => getSelectionRects(editor, ...args),
     }
 
     return editor

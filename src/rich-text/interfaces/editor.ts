@@ -5,15 +5,14 @@ export type Editor = {
     height: number
     style: StyleInterface
     fonMgr: FontInterface
-    selection: Selection
     derivedTextData: Partial<DerivedTextDataInterface>
     textData: TextDataInterface
 
     // cache
+    __selection: Selection
     __matrices?: MetricesInterface[]
-    __baselines?: BaseLineInterface[]
-    __glyphs?: GlyphsInterface[]
 
+    // editor
     setStyle: OmitFirstArg<EditorInterface['setStyle']>
     fontMgrFromData: OmitFirstArg<EditorInterface['fontMgrFromData']>
     setWH: OmitFirstArg<EditorInterface['setWH']>
@@ -22,25 +21,22 @@ export type Editor = {
     insertText: OmitFirstArg<EditorInterface['insertText']>
     deleteText: OmitFirstArg<EditorInterface['deleteText']>
     getMetrices: OmitFirstArg<EditorInterface['getMetrices']>
+    getLogicalCharacterOffset: OmitFirstArg<EditorInterface['getLogicalCharacterOffset']>
     getText: OmitFirstArg<EditorInterface['getText']>
     getFont: OmitFirstArg<EditorInterface['getFont']>
     getBaselines: OmitFirstArg<EditorInterface['getBaselines']>
     getGlyphs: OmitFirstArg<EditorInterface['getGlyphs']>
     clearCache: OmitFirstArg<EditorInterface['clearCache']>
-    getCursorRect: OmitFirstArg<EditorInterface['getCursorRect']>
-    getBaseLineWidths: OmitFirstArg<EditorInterface['getBaseLineWidths']>
-    transformMetricesRange: OmitFirstArg<EditorInterface['transformMetricesRange']>
-
+    getBaseLineCharacterOffset: OmitFirstArg<EditorInterface['getBaseLineCharacterOffset']>
 
     // selection
     setSelection: OmitFirstArg<SelectionInterface['setSelection']>
+    getSelection: OmitFirstArg<SelectionInterface['getSelection']>
     selectForXY: OmitFirstArg<SelectionInterface['selectForXY']>
     isCollapse: OmitFirstArg<SelectionInterface['isCollapse']>
     hasSelection: OmitFirstArg<SelectionInterface['hasSelection']>
-    deselect: OmitFirstArg<SelectionInterface['deselect']>
-    getAnchorAndFocusOffset: OmitFirstArg<SelectionInterface['getAnchorAndFocusOffset']>
-    fixSelection: OmitFirstArg<SelectionInterface['fixSelection']>
-    setSelectionOffset: OmitFirstArg<SelectionInterface['setSelectionOffset']>
+    deselection: OmitFirstArg<SelectionInterface['deselection']>
+    getSelectionRects: OmitFirstArg<SelectionInterface['getSelectionRects']>
 }
 
 export type EditorInterface = {
@@ -56,10 +52,9 @@ export type EditorInterface = {
     getMetrices: (editor: Editor) => MetricesInterface[] | undefined
     getBaselines: (editor: Editor) => BaseLineInterface[] | undefined
     getGlyphs: (editor: Editor) => GlyphsInterface[] | undefined
-    getCursorRect: (editor: Editor) => Rect | undefined
     clearCache: (editor: Editor) => void
-    getBaseLineWidths: (editor: Editor, baselineIdx: number) => number[] | undefined
-    transformMetricesRange: (editor: Editor, firstCharacter: number, endCharacter: number) => [number, number]
+    getBaseLineCharacterOffset: (editor: Editor, baselineIdx: number) => number[] | undefined
+    getLogicalCharacterOffset: (editor: Editor) => number[]
 }
 
 export type Rect = [number, number, number, number]

@@ -1,22 +1,19 @@
-import { Editor } from "..";
+import { Editor, Rect } from "..";
 
 export type Selection = Range
 export interface Range {
-    anchor: [number, number] // [行下标，基于行的字符偏移]
-    focus: [number, number]
-}
-export interface RangeOffset {
+    anchor: number,
+    focus: number,
     anchorOffset: number
     focusOffset: number
 }
 export interface SelectionInterface {
-    fixSelection: (editor: Editor) => void
-    setSelection: (editor: Editor, selection: Range) => void
-    selectForXY: (editor: Editor, x: number, y: number) => void
+    getSelection: (editor: Editor) => Selection
+    setSelection: (editor: Editor, selection: Partial<Range>) => void
+    selectForXY: (editor: Editor, x: number, y: number, isAnchor?: boolean) => void
+    getSelectionRects: (editor: Editor) => Rect[]
     isCollapse: (editor: Editor) => boolean
     hasSelection: (editor: Editor) => boolean
-    deselect: (editor: Editor) => void
-    getAnchorAndFocusOffset: (editor: Editor) => RangeOffset | undefined
-    setSelectionOffset: (editor: Editor, offset: number) => void
+    deselection: (editor: Editor) => void
 }
 

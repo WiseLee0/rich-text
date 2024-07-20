@@ -49,8 +49,14 @@ export const renderCursor = (Skia: CanvasKit, canvas: Canvas, editorRef: React.M
     if (!editorRef.current) return
     const editor = editorRef.current
     const paint = new Skia.Paint()
-    const rect = editor.getCursorRect()
-    if (!rect) return;
-    canvas.drawRect(Skia.XYWHRect(...rect), paint)
+    const rects = editor.getSelectionRects()
+    if (rects.length > 0 && !editor.isCollapse()) {
+        paint.setColor(Skia.Color(...theme_color))
+        paint.setAlphaf(0.3)
+    }
+    for (let i = 0; i < rects.length; i++) {
+        const rect = rects[i];
+        canvas.drawRect(Skia.XYWHRect(...rect), paint)
+    }
     paint.delete()
 }
