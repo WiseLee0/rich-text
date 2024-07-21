@@ -28,13 +28,12 @@ export const apply: EditorInterface['apply'] = (editor) => {
     const glyphs = editor.getGlyphs()
     const logicalCharacterOffset = editor.getLogicalCharacterOffset()
 
-
-    if (editor.style.textAutoResize === 'WIDTH_AND_HEIGHT' && baselines.length) {
-        editor.width = Math.max(...baselines.map(item => item.width))
+    if (editor.style.textAutoResize === 'WIDTH_AND_HEIGHT') {
+        editor.width = Math.max(...baselines.map(item => item.width), 0)
         editor.height = getH(editor)
     }
 
-    if (editor.style.textAutoResize === 'HEIGHT' && baselines.length) {
+    if (editor.style.textAutoResize === 'HEIGHT') {
         editor.height = getH(editor)
     }
 

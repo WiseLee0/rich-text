@@ -3,12 +3,21 @@ import { Rect, SelectionInterface } from "..";
 export const getSelectionRects: SelectionInterface['getSelectionRects'] = (editor) => {
     const { anchor, focus, anchorOffset, focusOffset } = editor.getSelection()
     const baselines = editor.getBaselines()
+    const text = editor.getText()
     if (!editor.hasSelection()) return [];
     if (!baselines?.length) {
         return [[0, 0, 1, editor.style.fontSize]]
     }
 
     const result: Rect[] = []
+
+    if (text === '\n') {
+        const lastBaseLine = baselines[0]
+        const { lineY, lineHeight } = lastBaseLine
+        const startX = lastBaseLine.position.x
+        result.push([startX, lineY, 1, lineHeight])
+        return result
+    }
     if (focus === baselines.length && editor.isCollapse()) {
         const lastBaseLine = baselines[baselines.length - 1]
         const { lineY, lineHeight } = lastBaseLine

@@ -8,7 +8,8 @@ export const fixDefaultData = (editor: Editor) => {
 }
 
 const defaultTextDataLines = (editor: Editor) => {
-    const splits = editor.textData.characters.split('\n')
+    const text = editor.getText()
+    const splits = text.split('\n')
     const lines: TextDataLinesInterface[] = []
     for (let i = 0; i < splits.length; i++) {
         lines.push({

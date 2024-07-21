@@ -28,8 +28,12 @@ export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y, isA
     if (yIdx === baselines.length - 1) {
         const text = editor.getText()
         const lastBaseLine = baselines[baselines.length - 1]
-        if (text[text.length - 1] === '\n' && y > lastBaseLine.lineY + lastBaseLine.lineHeight) {
+        if (text.length > 1 && text[text.length - 1] === '\n' && y > lastBaseLine.lineY + lastBaseLine.lineHeight) {
             yIdx += 1
+            xIdx = 0
+        }
+        if (text === '\n') {
+            yIdx = 0
             xIdx = 0
         }
     }

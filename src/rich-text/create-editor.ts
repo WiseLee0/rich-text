@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, setWH, layout, setSelection, getMetrices, insertText, getSelection, getFont, getText, getBaselines, getGlyphs, clearCache, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects } from './'
+import { Editor, fontMgrFromData, setStyle, setWH, layout, setSelection, getMetrices, insertText, getSelection, getFont, getText, getBaselines, getGlyphs, clearCache, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText } from './'
 
 export const createEditor = (): Editor => {
 
@@ -26,7 +26,7 @@ export const createEditor = (): Editor => {
         },
         derivedTextData: {},
         textData: {
-            characters: "fiii\n\nfiiiii\nworld\nn\n",
+            characters: "hello\n\n\nworld\nworld\nworld\n\n",
         },
 
         // Core
@@ -38,6 +38,7 @@ export const createEditor = (): Editor => {
         fontMgrFromData: (...args) => fontMgrFromData(editor, ...args),
         setWH: (...args) => setWH(editor, ...args),
         insertText: (...args) => insertText(editor, ...args),
+        replaceText: (...args) => replaceText(editor, ...args),
         getText: (...args) => getText(editor, ...args),
         getFont: (...args) => getFont(editor, ...args),
         getMetrices: (...args) => getMetrices(editor, ...args),

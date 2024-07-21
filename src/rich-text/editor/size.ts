@@ -11,8 +11,11 @@ export const getH = (editor: Editor) => {
     if (!baselines?.length) return 0;
     const lastBaseLine = baselines[baselines.length - 1]
     // 最后一个字符是换行符，则需要添加一段高度
-    const characters = editor.textData.characters
-    let wrapHeight = characters[characters.length - 1] === '\n' ? lastBaseLine.lineHeight : 0
+    const characters = editor.getText()
+    let wrapHeight = 0
+    if (characters.length > 1 && characters[characters.length - 1] === '\n') {
+        wrapHeight = lastBaseLine.lineHeight
+    }
 
     const height = lastBaseLine.lineY + lastBaseLine.lineHeight + wrapHeight
 

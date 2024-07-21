@@ -20,6 +20,7 @@ export type Editor = {
     apply: OmitFirstArg<EditorInterface['apply']>
     insertText: OmitFirstArg<EditorInterface['insertText']>
     deleteText: OmitFirstArg<EditorInterface['deleteText']>
+    replaceText: OmitFirstArg<EditorInterface['replaceText']>
     getMetrices: OmitFirstArg<EditorInterface['getMetrices']>
     getLogicalCharacterOffset: OmitFirstArg<EditorInterface['getLogicalCharacterOffset']>
     getText: OmitFirstArg<EditorInterface['getText']>
@@ -47,7 +48,8 @@ export type EditorInterface = {
     layout: (editor: Editor, width?: number, height?: number) => void
     apply: (editor: Editor) => void
     insertText: (editor: Editor, text: string) => void
-    deleteText: (editor: Editor, distance?: number) => void
+    deleteText: (editor: Editor) => void
+    replaceText: (editor: Editor, text: string) => void
     getText: (editor: Editor) => string
     getMetrices: (editor: Editor) => MetricesInterface[] | undefined
     getBaselines: (editor: Editor) => BaseLineInterface[] | undefined
