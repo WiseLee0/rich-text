@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, setWH, layout, setSelection, getMetrices, insertText, getSelection, getFont, getText, getBaselines, getGlyphs, clearCache, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText } from './'
+import { Editor, fontMgrFromData, setStyle, setWH, layout, setSelection, getMetrices, insertText, getSelection, getFont, getText, getBaselines, getGlyphs, clearCache, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset } from './'
 
 export const createEditor = (): Editor => {
 
@@ -54,6 +54,7 @@ export const createEditor = (): Editor => {
         setSelection: (...args) => setSelection(editor, ...args),
         getSelection: (...args) => getSelection(editor, ...args),
         selectForXY: (...args) => selectForXY(editor, ...args),
+        selectForCharacterOffset: (...args) => selectForCharacterOffset(editor, ...args),
         isCollapse: (...args) => isCollapse(editor, ...args),
         hasSelection: (...args) => hasSelection(editor, ...args),
         deselection: (...args) => deselection(editor, ...args),

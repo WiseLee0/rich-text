@@ -34,6 +34,7 @@ export type Editor = {
     setSelection: OmitFirstArg<SelectionInterface['setSelection']>
     getSelection: OmitFirstArg<SelectionInterface['getSelection']>
     selectForXY: OmitFirstArg<SelectionInterface['selectForXY']>
+    selectForCharacterOffset: OmitFirstArg<SelectionInterface['selectForCharacterOffset']>
     isCollapse: OmitFirstArg<SelectionInterface['isCollapse']>
     hasSelection: OmitFirstArg<SelectionInterface['hasSelection']>
     deselection: OmitFirstArg<SelectionInterface['deselection']>

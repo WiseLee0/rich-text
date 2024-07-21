@@ -30,7 +30,7 @@ export const deleteText: EditorInterface['deleteText'] = (editor) => {
     }
     const newText = text.substring(0, anchorCharacterIdx) + text.substring(focusCharacterIdx)
     editor.replaceText(newText)
-    editor.deselection()
     editor.clearCache()
     editor.apply()
+    editor.selectForCharacterOffset(anchorCharacterIdx)
 }
