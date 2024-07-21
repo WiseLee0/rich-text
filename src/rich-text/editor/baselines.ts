@@ -1,4 +1,4 @@
-import { EditorInterface, MetricesInterface, splitBaseLines, baselineToMetricesRange } from "..";
+import { EditorInterface, MetricesInterface, splitBaseLines } from "..";
 
 export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     if (editor.derivedTextData.baselines) return editor.derivedTextData.baselines
