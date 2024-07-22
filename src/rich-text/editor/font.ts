@@ -4,29 +4,56 @@ import type { FontCollection, Font } from "fontkit";
 
 export const fontMgrFromData: EditorInterface['fontMgrFromData'] = (editor, buffers) => {
     if (!buffers) return;
+    const { fonMgr } = editor
     for (let i = 0; i < buffers.length; i++) {
         const buffer = buffers[i];
         // fontkit类型错误，这里设置Any类型
         const font = fontkit.create(new Uint8Array(buffer) as any)
         if (Array.isArray(font)) {
-            editor.fonMgr.collections.push(font as FontCollection)
+            const fontCollection = font as FontCollection
+            for (let j = 0; j < fontCollection.fonts.length; j++) {
+                const _font = fontCollection.fonts[j];
+                const familyName = _font.familyName
+                const fontInfo = fonMgr.get(familyName)
+                if (fontInfo) {
+                    fontInfo.push(_font)
+                    fonMgr.set(familyName, fontInfo)
+                } else {
+                    fonMgr.set(familyName, [_font])
+                }
+            }
         } else {
-            editor.fonMgr.fonts.push(font as Font)
+            const _font = font as Font
+            const familyName = _font.familyName
+            const fontInfo = fonMgr.get(familyName)
+            if (fontInfo) {
+                fontInfo.push(_font)
+                fonMgr.set(familyName, fontInfo)
+            } else {
+                fonMgr.set(familyName, [_font])
+            }
         }
     }
 }
 
-export const getFont: EditorInterface['getFont'] = (editor, family) => {
-    const item = editor.fonMgr.fonts.find(item => item.familyName === family)
-    if (item) return item;
-    for (let i = 0; i < editor.fonMgr.collections.length; i++) {
-        const collections = editor.fonMgr.collections[i];
-        for (let j = 0; j < collections.fonts.length; j++) {
-            const font = collections.fonts[j];
-            if (font.familyName === family) {
-                return font;
-            }
-        }
-    }
+export const getFonts: EditorInterface['getFonts'] = (editor, family) => {
+    return editor.fonMgr.get(family ?? '')
+}
 
+export const getFont: EditorInterface['getFont'] = (editor, family, style) => {
+    const fonts = editor.fonMgr.get(family ?? '')
+    return fonts?.find(item => item.subfamilyName === style)
+}
+
+export const getFontFamilys: EditorInterface['getFontFamilys'] = (editor) => {
+    const list = []
+    for (const key of editor.fonMgr.keys()) {
+        list.push(key)
+    }
+    return list
+}
+
+export const getFontStyles: EditorInterface['getFontStyles'] = (editor, family) => {
+    const fonts = editor.getFonts(family ?? '')
+    return fonts?.map(item => item.subfamilyName) ?? []
 }

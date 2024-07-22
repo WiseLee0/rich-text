@@ -14,3 +14,19 @@ canvas:focus {
 body {
   user-select: none;
 }
+
+.page {
+  display: flex;
+}
+.page-pannel {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-tooltip-content {
+  font-size: 11px;
+}
+.ant-tooltip-inner {
+  padding: 2px 4px;
+}

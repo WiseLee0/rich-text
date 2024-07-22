@@ -5,9 +5,13 @@ import { Canvas } from 'canvaskit-wasm';
 import { Spin } from 'antd';
 import PlayRegular from './assets/Play-Regular.ttf'
 import ResidentEvil from './assets/resident_evil_7.otf'
-import { createEditor, Editor } from './rich-text';
-import { AutoResizeComp } from './components/autoResize';
+import AnonymousProRegular from './assets/Anonymous_Pro/AnonymousPro-Regular.ttf'
+import AnonymousProItalic from './assets/Anonymous_Pro/AnonymousPro-Italic.ttf'
+import AnonymousProBold from './assets/Anonymous_Pro/AnonymousPro-Bold.ttf'
+import { apply, createEditor, Editor } from './rich-text';
+import { AutoResizeComp } from './components/autoResize/index';
 import { renderBorder, renderCursor, renderText } from './render';
+import { TypographyComp } from './components/typography';
 
 export default function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -99,17 +103,18 @@ export default function App() {
 
   const initRichData = async () => {
     const data1 = await (await fetch(PlayRegular)).arrayBuffer()
-    const data2 = await (await fetch(ResidentEvil)).arrayBuffer()
     const editor = createEditor()
-    editor.fontMgrFromData([data1, data2])
+    editor.fontMgrFromData([data1])
     editor.setStyle({
       fontName: {
         family: "Play", style: "Regular", postscript: "Play-Regular"
       },
       fontSize: 24,
+      textAlignHorizontal: 'CENTER',
+      textAlignVertical: 'MIDDLE'
     })
     editorRef.current = editor
-    layout(100)
+    layout(150, 100)
   }
 
   const main = async () => {
@@ -126,10 +131,15 @@ export default function App() {
   return (
     <div>
       <Spin spinning={spinning} fullscreen />
-      <canvas ref={canvasRef} style={{ width: CANVAS_W, height: CANVAS_H }}></canvas>
-      <textarea
-        ref={textareaRef} tabIndex={-1} wrap="off" aria-hidden="true" spellCheck="false" autoCorrect="off" className="focus-target"></textarea>
-      <AutoResizeComp editorRef={editorRef} layout={layout} />
+      <div className='page'>
+        <canvas ref={canvasRef} style={{ width: CANVAS_W, height: CANVAS_H }}></canvas>
+        <textarea
+          ref={textareaRef} tabIndex={-1} wrap="off" aria-hidden="true" spellCheck="false" autoCorrect="off" className="focus-target"></textarea>
+        <div className='page-pannel'>
+          <AutoResizeComp editorRef={editorRef} layout={layout} />
+          <TypographyComp editorRef={editorRef} updateRender={updateRender} />
+        </div>
+      </div>
     </div>
   );
 }

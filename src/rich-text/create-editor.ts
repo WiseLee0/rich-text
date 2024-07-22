@@ -1,18 +1,15 @@
-import { Editor, fontMgrFromData, setStyle, setWH, layout, setSelection, getMetrices, insertText, getSelection, getFont, getText, getBaselines, getGlyphs, clearCache, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset } from './'
+import { Editor, fontMgrFromData, setStyle, setWH, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, clearCache, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getFontFamilys, getFontStyles } from './'
 
 export const createEditor = (): Editor => {
 
     const editor: Editor = {
         width: 0,
         height: 0,
-        fonMgr: {
-            fonts: [],
-            collections: []
-        },
+        fonMgr: new Map(),
         style: {
             fontSize: 12,
-            textAlignHorizontal: 'left',
-            textAlignVertical: 'top',
+            textAlignHorizontal: 'LEFT',
+            textAlignVertical: 'TOP',
             textAutoResize: 'WIDTH_AND_HEIGHT',
             fontName: {
                 family: "Play", style: "Regular", postscript: "Play-Regular"
@@ -26,7 +23,7 @@ export const createEditor = (): Editor => {
         },
         derivedTextData: {},
         textData: {
-            characters: "hello\n\n\nworld\nworld\nworld\n\n",
+            characters: "hello\nworlddr",
         },
 
         // Core
@@ -41,6 +38,9 @@ export const createEditor = (): Editor => {
         replaceText: (...args) => replaceText(editor, ...args),
         getText: (...args) => getText(editor, ...args),
         getFont: (...args) => getFont(editor, ...args),
+        getFonts: (...args) => getFonts(editor, ...args),
+        getFontFamilys: (...args) => getFontFamilys(editor, ...args),
+        getFontStyles: (...args) => getFontStyles(editor, ...args),
         getMetrices: (...args) => getMetrices(editor, ...args),
         getBaselines: (...args) => getBaselines(editor, ...args),
         getGlyphs: (...args) => getGlyphs(editor, ...args),

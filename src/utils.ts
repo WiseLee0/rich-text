@@ -1,7 +1,7 @@
 import CanvasKitInit from 'canvaskit-wasm';
 import CanvasKitWasm from "canvaskit-wasm/bin/canvaskit.wasm?url";
 export const CANVAS_W = 800
-export const CANVAS_H = 400
+export const CANVAS_H = 600
 export const CANVAS_MARING = 20
 export const loadSkia = async (canvasEle: HTMLCanvasElement) => {
     canvasEle.width = CANVAS_W * devicePixelRatio

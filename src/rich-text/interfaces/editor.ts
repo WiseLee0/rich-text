@@ -1,10 +1,11 @@
-import { FontInterface, OmitFirstArg, SelectionInterface, StyleInterface, Selection, DerivedTextDataInterface, TextDataInterface, Font, MetricesInterface, BaseLineInterface, GlyphsInterface } from "."
+import * as fontkit from 'fontkit'
+import { OmitFirstArg, SelectionInterface, StyleInterface, Selection, DerivedTextDataInterface, TextDataInterface, Font, MetricesInterface, BaseLineInterface, GlyphsInterface } from "."
 
 export type Editor = {
     width: number
     height: number
     style: StyleInterface
-    fonMgr: FontInterface
+    fonMgr: Map<string, fontkit.Font[]>
     derivedTextData: Partial<DerivedTextDataInterface>
     textData: TextDataInterface
 
@@ -24,7 +25,10 @@ export type Editor = {
     getMetrices: OmitFirstArg<EditorInterface['getMetrices']>
     getLogicalCharacterOffset: OmitFirstArg<EditorInterface['getLogicalCharacterOffset']>
     getText: OmitFirstArg<EditorInterface['getText']>
+    getFonts: OmitFirstArg<EditorInterface['getFonts']>
     getFont: OmitFirstArg<EditorInterface['getFont']>
+    getFontFamilys: OmitFirstArg<EditorInterface['getFontFamilys']>
+    getFontStyles: OmitFirstArg<EditorInterface['getFontStyles']>
     getBaselines: OmitFirstArg<EditorInterface['getBaselines']>
     getGlyphs: OmitFirstArg<EditorInterface['getGlyphs']>
     clearCache: OmitFirstArg<EditorInterface['clearCache']>
@@ -43,7 +47,10 @@ export type Editor = {
 
 export type EditorInterface = {
     fontMgrFromData: (editor: Editor, buffers: ArrayBuffer[]) => void
-    getFont: (editor: Editor, family: string) => Font | undefined
+    getFonts: (editor: Editor, family?: string) => Font[] | undefined
+    getFont: (editor: Editor, family?: string, style?: string) => Font | undefined
+    getFontFamilys: (editor: Editor) => string[]
+    getFontStyles: (editor: Editor, family?: string) => string[]
     setStyle: (editor: Editor, style: Partial<StyleInterface>) => void
     setWH: (editor: Editor, width?: number, height?: number) => void
     layout: (editor: Editor, width?: number, height?: number) => void

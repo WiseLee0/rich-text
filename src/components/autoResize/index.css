@@ -1,0 +1,28 @@
+.autoresieze-container {
+  width: 240px;
+  padding: 12px 20px;
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  border: 1px solid #e5e5e5;
+}
+
+.autoresieze-container .title {
+  font-weight: 550;
+  font-size: 12px;
+}
+
+.autoresieze-wh {
+  display: flex;
+  padding: 8px 0;
+}
+
+.autoresieze-adjust {
+}
+
+.autoresieze-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+}

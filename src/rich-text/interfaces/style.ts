@@ -1,7 +1,7 @@
 export interface StyleInterface {
     fontSize: number,
-    textAlignHorizontal: 'left' | 'right' | 'center' | 'justify',
-    textAlignVertical: 'top' | 'middle' | 'bottom',
+    textAlignHorizontal: 'LEFT' | 'RIGHT' | 'CENTER' | 'JUSTIFIED',
+    textAlignVertical: 'TOP' | 'MIDDLE' | 'BOTTOM',
     textCase?: "ORIGINAL" | "LOWER" | "UPPER" | "TITLE",
     textDecoration?: "STRIKETHROUGH" | "UNDERLINE",
     maxLines?: number,

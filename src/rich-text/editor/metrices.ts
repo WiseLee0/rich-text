@@ -24,7 +24,8 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
 
         const style = styleMap.get(characterStyleIDs?.[offset] || -1)
         let family = style?.fontName?.family ?? editor.style.fontName?.family
-        const font = editor.getFont(family)
+        let fontStyle = style?.fontName?.style ?? editor.style.fontName?.style
+        const font = editor.getFont(family, fontStyle)
         if (!font) continue
         const { glyphs, positions } = font.layout(token)
         const isWrap = token === '\n'
