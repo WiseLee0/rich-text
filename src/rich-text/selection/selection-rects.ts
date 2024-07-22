@@ -41,15 +41,13 @@ export const getSelectionRects: SelectionInterface['getSelectionRects'] = (edito
         const anchorStartX = anchorBaseLine.position.x
         const anchorXArr = editor.getBaseLineCharacterOffset(anchor)?.map(item => anchorStartX + item)
         if (!anchorXArr?.length) return result;
-        const anchorWidth = anchorBaseLine.width - (anchorXArr[anchorOffset] - anchorStartX)
-        result.push([anchorXArr[anchorOffset], anchorBaseLine.lineY, anchorWidth, anchorBaseLine.lineHeight])
+        result.push([anchorXArr[anchorOffset], anchorBaseLine.lineY, editor.width - anchorXArr[anchorOffset], anchorBaseLine.lineHeight])
 
         const focusBaseLine = baselines[focus]
         if (focusBaseLine) {
-            const startX = focusBaseLine.position.x
-            const focusXArr = editor.getBaseLineCharacterOffset(focus)?.map(item => startX + item)
+            const focusXArr = editor.getBaseLineCharacterOffset(focus)
             if (!focusXArr?.length) return result;
-            result.push([startX, focusBaseLine.lineY, focusXArr[focusOffset], focusBaseLine.lineHeight])
+            result.push([0, focusBaseLine.lineY, focusXArr[focusOffset], focusBaseLine.lineHeight])
         }
     }
 
@@ -57,8 +55,7 @@ export const getSelectionRects: SelectionInterface['getSelectionRects'] = (edito
         for (let i = anchor + 1; i < focus; i++) {
             const baseline = baselines[i];
             if (baseline) {
-                const startX = baseline.position.x
-                result.push([startX, baseline.lineY, baseline.width, baseline.lineHeight])
+                result.push([0, baseline.lineY, editor.width, baseline.lineHeight])
             }
         }
     }

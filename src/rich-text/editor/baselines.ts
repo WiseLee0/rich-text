@@ -30,8 +30,8 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
             width: lineWidth,
             firstCharacter,
             endCharacter,
-            lineHeight: Math.round(lineHeight),
-            lineAscent: Math.round(lineAscent)
+            lineHeight,
+            lineAscent
         })
 
         firstCharacter = endCharacter
