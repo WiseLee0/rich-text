@@ -23,7 +23,7 @@ export const createEditor = (): Editor => {
         },
         derivedTextData: {},
         textData: {
-            characters: "hello\nworlddr",
+            characters: " The quick brown fox jumps over 17 lazy dogs.\n\nnewline space",
         },
 
         // Core

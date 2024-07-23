@@ -1,4 +1,4 @@
-import { EditorInterface, baselineToMetricesRange } from "..";
+import { EditorInterface, baselineToMetricesRange, calcJustifiedSpaceWidth, getLineLastSpaceIdx } from "..";
 
 // 计算每行字符真实的偏移值
 export const getLogicalCharacterOffset: EditorInterface['getLogicalCharacterOffset'] = (editor) => {
@@ -13,6 +13,9 @@ export const getLogicalCharacterOffset: EditorInterface['getLogicalCharacterOffs
         const baseline = baselines[i];
         const { firstCharacter, endCharacter, width } = baseline
         let [start, end] = baselineToMetricesRange(editor, firstCharacter, endCharacter)
+        const line = metrices.slice(start, end)
+        const spaceIdx = start + getLineLastSpaceIdx(editor, firstCharacter, endCharacter)
+        let spaceWidth = i < baselines.length - 1 ? calcJustifiedSpaceWidth(editor, line, firstCharacter, endCharacter) : -1
         let offset = 0
         for (let j = start; j < end; j++) {
             const metrice = metrices[j];
@@ -24,9 +27,10 @@ export const getLogicalCharacterOffset: EditorInterface['getLogicalCharacterOffs
             } else {
                 logicalCharacterOffset.push(offset)
             }
-            offset += metrice.xAdvance
+            if (metrice.name === 'space' && j <= spaceIdx && spaceWidth > -1) offset += spaceWidth
+            else offset += metrice.xAdvance
         }
-       if(width !== 0) logicalCharacterOffset.push(offset)
+        if (width !== 0) logicalCharacterOffset.push(offset)
     }
     editor.derivedTextData.logicalCharacterOffset = logicalCharacterOffset
     return logicalCharacterOffset

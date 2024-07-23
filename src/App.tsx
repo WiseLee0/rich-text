@@ -4,11 +4,7 @@ import { CANVAS_W, CANVAS_H, loadSkia, CANVAS_MARING } from './utils';
 import { Canvas } from 'canvaskit-wasm';
 import { Spin } from 'antd';
 import PlayRegular from './assets/Play-Regular.ttf'
-import ResidentEvil from './assets/resident_evil_7.otf'
-import AnonymousProRegular from './assets/Anonymous_Pro/AnonymousPro-Regular.ttf'
-import AnonymousProItalic from './assets/Anonymous_Pro/AnonymousPro-Italic.ttf'
-import AnonymousProBold from './assets/Anonymous_Pro/AnonymousPro-Bold.ttf'
-import { apply, createEditor, Editor } from './rich-text';
+import { createEditor, Editor } from './rich-text';
 import { AutoResizeComp } from './components/autoResize/index';
 import { renderBorder, renderCursor, renderText } from './render';
 import { TypographyComp } from './components/typography';
@@ -110,11 +106,11 @@ export default function App() {
         family: "Play", style: "Regular", postscript: "Play-Regular"
       },
       fontSize: 24,
-      textAlignHorizontal: 'CENTER',
+      textAlignHorizontal: 'JUSTIFIED',
       textAlignVertical: 'MIDDLE'
     })
     editorRef.current = editor
-    layout(150, 100)
+    layout(175, 300)
   }
 
   const main = async () => {

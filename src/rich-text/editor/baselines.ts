@@ -1,4 +1,4 @@
-import { EditorInterface, MetricesInterface, splitBaseLines } from "..";
+import { calcJustifiedBaseLineWidth, EditorInterface, MetricesInterface, splitBaseLines } from "..";
 
 export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     if (editor.derivedTextData.baselines) return editor.derivedTextData.baselines
@@ -25,12 +25,11 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         lineHeightSum = editor.height - allLineHeight
     }
 
-
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
         endCharacter = firstCharacter + getMetricesLength(line)
-        const lineWidth = line.reduce((pre, cur) => pre + cur.xAdvance, 0)
         const lineHeight = lineHeights[i]
+        let lineWidth = line.reduce((pre, cur) => pre + cur.xAdvance, 0)
         const lineAscent = line.reduce((pre, cur) => Math.max(pre, cur.ascent), 0)
         let positionX = 0
         if (line.length !== 1 && lineWidth === 0 && line[0].name === '\n') {
@@ -46,6 +45,11 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         }
         if (textAlignHorizontal === 'RIGHT') {
             positionX = editor.width - lineWidth
+        }
+        if (textAlignHorizontal === 'JUSTIFIED') {
+            positionX = 0
+            const justifiedLineWidth = calcJustifiedBaseLineWidth(editor, lines, i, firstCharacter, endCharacter)
+            if (justifiedLineWidth > -1) lineWidth = justifiedLineWidth
         }
 
         baselines.push({
