@@ -4,7 +4,7 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
     if (editor.__matrices) return editor.__matrices
 
     const data = editor.textData
-    const familyTokens = familyTokenize(data)
+    const familyTokens = familyTokenize(data, editor.getText())
     if (!familyTokens.length) return;
 
     const { characterStyleIDs, styleOverrideTable } = data

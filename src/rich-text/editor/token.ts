@@ -78,8 +78,8 @@ export function wordTokenize(input: string) {
 /**
  * 将字符串按照字体进行分割
  */
-export function familyTokenize(textData: Record<string, any>) {
-    const { characterStyleIDs, styleOverrideTable, characters } = textData
+export function familyTokenize(textData: Record<string, any>, characters: string) {
+    const { characterStyleIDs, styleOverrideTable } = textData
     const familyModifySet = new Set<number>()
     for (let i = 0; i < styleOverrideTable?.length; i++) {
         const styleOverride = styleOverrideTable[i];

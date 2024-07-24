@@ -1,0 +1,21 @@
+.debug-container {
+  margin-top: 1px;
+  width: 240px;
+  padding: 12px 20px;
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  border: 1px solid #e5e5e5;
+}
+.debug-container .title {
+  font-weight: 550;
+  font-size: 12px;
+}
+.debug-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #00000080;
+    padding: 2px 0;
+  }

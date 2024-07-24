@@ -2,8 +2,8 @@ export interface StyleInterface {
     fontSize: number,
     textAlignHorizontal: 'LEFT' | 'RIGHT' | 'CENTER' | 'JUSTIFIED',
     textAlignVertical: 'TOP' | 'MIDDLE' | 'BOTTOM',
-    textCase?: "ORIGINAL" | "LOWER" | "UPPER" | "TITLE",
-    textDecoration?: "STRIKETHROUGH" | "UNDERLINE",
+    textCase?: "NONE" | "LOWER" | "UPPER" | "TITLE",
+    textDecoration?: "STRIKETHROUGH" | "UNDERLINE" | "NONE",
     maxLines?: number,
     textTruncation?: "DISABLED" | "ENDING",
     lineHeight?: {

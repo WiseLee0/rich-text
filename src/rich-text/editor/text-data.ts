@@ -1,5 +1,18 @@
-import { EditorInterface } from "..";
+import { EditorInterface, lineTokenize } from "..";
 
 export const getText: EditorInterface['getText'] = (editor) => {
-    return editor.textData.characters
+    let text = editor.textData.characters
+
+    const textCase = editor.style.textCase
+    if (textCase === 'LOWER') {
+        text = text.toLowerCase()
+    }
+    if (textCase === 'UPPER') {
+        text = text.toUpperCase()
+    }
+    if (textCase === 'TITLE') {
+        text = lineTokenize(text).map(item => `${item[0].toUpperCase()}${item.slice(1)}`).join('')
+    }
+
+    return text
 }

@@ -6,14 +6,19 @@ import { Spin } from 'antd';
 import PlayRegular from './assets/Play-Regular.ttf'
 import { createEditor, Editor } from './rich-text';
 import { AutoResizeComp } from './components/autoResize/index';
-import { renderBorder, renderCursor, renderText } from './render';
+import { renderBaseLine, renderBorder, renderCursor, renderGlyphBorder, renderText, renderTextDecoration } from './render';
 import { TypographyComp } from './components/typography';
+import { DebugComp } from './components/debug';
 
 export default function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [spinning, setSpinning] = useState(true)
   const [, updateRender] = useReducer(i => i + 1, 0)
+  const enableRef = useRef({
+    baseline: true,
+    glyphBorder: false
+  })
   const editorRef = useRef<Editor>()
   const mouseDownRef = useRef(false)
 
@@ -27,7 +32,10 @@ export default function App() {
       canvas.scale(devicePixelRatio, devicePixelRatio)
       canvas.translate(CANVAS_MARING, CANVAS_MARING)
       renderText(Skia, canvas, editorRef)
+      renderTextDecoration(Skia, canvas, editorRef)
       renderBorder(Skia, canvas, editorRef)
+      enableRef.current.baseline && renderBaseLine(Skia, canvas, editorRef)
+      enableRef.current.glyphBorder && renderGlyphBorder(Skia, canvas, editorRef)
       renderCursor(Skia, canvas, editorRef)
       canvas.restore()
       surface.requestAnimationFrame(drawFrame)
@@ -71,18 +79,10 @@ export default function App() {
 
     textareaRef.current?.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowRight') {
-        // const offset = editorRef.current?.getAnchorAndFocusOffset()
-        // if (!offset) return;
-        // editorRef.current?.setSelectionOffset(offset.anchorOffset + 1)
-        // updateRender()
-        // e.preventDefault()
+        e.preventDefault()
       }
       if (e.key === 'ArrowLeft') {
-        // const offset = editorRef.current?.getAnchorAndFocusOffset()
-        // if (!offset) return;
-        // editorRef.current?.setSelectionOffset(offset.anchorOffset - 1)
-        // updateRender()
-        // e.preventDefault()
+        e.preventDefault()
       }
       if (e.key === 'Backspace') {
         editorRef.current?.deleteText()
@@ -106,8 +106,8 @@ export default function App() {
         family: "Play", style: "Regular", postscript: "Play-Regular"
       },
       fontSize: 24,
-      textAlignHorizontal: 'JUSTIFIED',
-      textAlignVertical: 'MIDDLE'
+      textAlignHorizontal: 'CENTER',
+      textAlignVertical: 'MIDDLE',
     })
     editorRef.current = editor
     layout(175, 300)
@@ -134,6 +134,7 @@ export default function App() {
         <div className='page-pannel'>
           <AutoResizeComp editorRef={editorRef} layout={layout} />
           <TypographyComp editorRef={editorRef} updateRender={updateRender} />
+          <DebugComp editorRef={editorRef} updateRender={updateRender} enableRef={enableRef} />
         </div>
       </div>
     </div>

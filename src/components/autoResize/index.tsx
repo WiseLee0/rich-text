@@ -1,5 +1,4 @@
 import { InputNumber, Radio, Space, Tooltip } from "antd"
-import { CANVAS_H, CANVAS_W } from "../../utils"
 import { Editor } from "../../rich-text"
 import './index.css'
 
@@ -29,7 +28,6 @@ export const AutoResizeComp = (props: AutoResizeCompProps) => {
             <Space>
                 <InputNumber
                     min={0}
-                    max={CANVAS_W - 40}
                     addonBefore="W"
                     onChange={val => {
                         if (!val) return;
@@ -44,7 +42,6 @@ export const AutoResizeComp = (props: AutoResizeCompProps) => {
                     disabled={textAutoResize === 'WIDTH_AND_HEIGHT'} />
                 <InputNumber
                     min={0}
-                    max={CANVAS_H - 40}
                     onChange={val => {
                         if (!val) return;
                         layout(editorRef.current?.width ?? 0, val)
