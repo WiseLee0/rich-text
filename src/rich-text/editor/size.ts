@@ -1,10 +1,4 @@
-import { Editor, EditorInterface } from "..";
-
-// 设置文本宽高
-export const setWH: EditorInterface['setWH'] = (editor, width, height) => {
-    if (width !== undefined) editor.width = width
-    if (height !== undefined) editor.height = height
-}
+import { Editor } from "..";
 
 export const getH = (editor: Editor) => {
     const baselines = editor.getBaselines()

@@ -44,16 +44,3 @@ export const getFont: EditorInterface['getFont'] = (editor, family, style) => {
     const fonts = editor.fonMgr.get(family ?? '')
     return fonts?.find(item => item.subfamilyName === style)
 }
-
-export const getFontFamilys: EditorInterface['getFontFamilys'] = (editor) => {
-    const list = []
-    for (const key of editor.fonMgr.keys()) {
-        list.push(key)
-    }
-    return list
-}
-
-export const getFontStyles: EditorInterface['getFontStyles'] = (editor, family) => {
-    const fonts = editor.getFonts(family ?? '')
-    return fonts?.map(item => item.subfamilyName) ?? []
-}
