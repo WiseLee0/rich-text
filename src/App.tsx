@@ -106,7 +106,7 @@ export default function App() {
         family: "Play", style: "Regular", postscript: "Play-Regular"
       },
       fontSize: 24,
-      textAlignHorizontal: 'CENTER',
+      textAlignHorizontal: 'JUSTIFIED',
       textAlignVertical: 'MIDDLE',
     })
     editorRef.current = editor

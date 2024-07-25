@@ -1,7 +1,5 @@
-export * from './font'
 export * from './style'
 export * from './size'
-export * from './layout'
 export * from './insert-text'
 export * from './token'
 export * from './metrices'

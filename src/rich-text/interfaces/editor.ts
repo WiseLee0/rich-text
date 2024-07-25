@@ -19,19 +19,15 @@ export type Editor = {
     __selection: Selection
     __matrices?: MetricesInterface[]
 
-    // editor
-    /** 设置样式 */
-    setStyle: OmitFirstArg<EditorInterface['setStyle']>
-    /** 设置字体数据 */
-    fontMgrFromData: OmitFirstArg<EditorInterface['fontMgrFromData']>
-    /** 获取指定字体名称下的字体列表 */
-    getFonts: OmitFirstArg<EditorInterface['getFonts']>
-    /** 获取指定字体 */
-    getFont: OmitFirstArg<EditorInterface['getFont']>
+    // core
     /** 布局段落中的文本，使其包装到给定的宽度和高度 */
     layout: OmitFirstArg<EditorInterface['layout']>
     /** 计算文本布局 */
     apply: OmitFirstArg<EditorInterface['apply']>
+
+    // editor
+    /** 设置样式 */
+    setStyle: OmitFirstArg<EditorInterface['setStyle']>
     /** 获取文本内容 */
     getText: OmitFirstArg<EditorInterface['getText']>
     /** 插入文本 */
@@ -52,6 +48,14 @@ export type Editor = {
     getGlyphs: OmitFirstArg<EditorInterface['getGlyphs']>
     /** 清除计算缓存 */
     clearCache: OmitFirstArg<EditorInterface['clearCache']>
+
+    // font
+    /** 设置字体数据 */
+    fontMgrFromData: OmitFirstArg<EditorInterface['fontMgrFromData']>
+    /** 获取指定字体名称下的字体列表 */
+    getFonts: OmitFirstArg<EditorInterface['getFonts']>
+    /** 获取指定字体 */
+    getFont: OmitFirstArg<EditorInterface['getFont']>
 
     // selection
     /** 设置光标选区 */

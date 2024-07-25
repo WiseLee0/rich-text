@@ -32,12 +32,9 @@ export const createEditor = (): Editor => {
 
         // Editor
         setStyle: (...args) => setStyle(editor, ...args),
-        fontMgrFromData: (...args) => fontMgrFromData(editor, ...args),
         insertText: (...args) => insertText(editor, ...args),
         replaceText: (...args) => replaceText(editor, ...args),
         getText: (...args) => getText(editor, ...args),
-        getFont: (...args) => getFont(editor, ...args),
-        getFonts: (...args) => getFonts(editor, ...args),
         getMetrices: (...args) => getMetrices(editor, ...args),
         getBaselines: (...args) => getBaselines(editor, ...args),
         getGlyphs: (...args) => getGlyphs(editor, ...args),
@@ -46,6 +43,10 @@ export const createEditor = (): Editor => {
         getBaseLineCharacterOffset: (...args) => getBaseLineCharacterOffset(editor, ...args),
         deleteText: (...args) => deleteText(editor, ...args),
 
+        // Font
+        fontMgrFromData: (...args) => fontMgrFromData(editor, ...args),
+        getFont: (...args) => getFont(editor, ...args),
+        getFonts: (...args) => getFonts(editor, ...args),
 
         // Selection
         setSelection: (...args) => setSelection(editor, ...args),

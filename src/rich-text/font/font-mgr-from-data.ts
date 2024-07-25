@@ -1,6 +1,6 @@
-import { EditorInterface } from "..";
 import * as fontkit from 'fontkit'
 import type { FontCollection, Font } from "fontkit";
+import { EditorInterface } from '..';
 
 export const fontMgrFromData: EditorInterface['fontMgrFromData'] = (editor, buffers) => {
     if (!buffers) return;
@@ -34,13 +34,4 @@ export const fontMgrFromData: EditorInterface['fontMgrFromData'] = (editor, buff
             }
         }
     }
-}
-
-export const getFonts: EditorInterface['getFonts'] = (editor, family) => {
-    return editor.fonMgr.get(family ?? '')
-}
-
-export const getFont: EditorInterface['getFont'] = (editor, family, style) => {
-    const fonts = editor.fonMgr.get(family ?? '')
-    return fonts?.find(item => item.subfamilyName === style)
 }
