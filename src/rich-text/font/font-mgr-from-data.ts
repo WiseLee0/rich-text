@@ -1,6 +1,20 @@
 import * as fontkit from 'fontkit'
 import type { FontCollection, Font } from "fontkit";
-import { EditorInterface } from '..';
+import { Editor, EditorInterface } from '..';
+
+const addFont = (editor: Editor, font: Font) => {
+    const { fonMgr } = editor
+    const familyName = font.familyName
+    const fontInfo = fonMgr.get(familyName)
+    if (fontInfo) {
+        const hasFont = fontInfo.find(item => item.constructor.name === font.constructor.name)
+        if (hasFont) return;
+        fontInfo.push(font)
+        fonMgr.set(familyName, fontInfo)
+    } else {
+        fonMgr.set(familyName, [font])
+    }
+}
 
 export const fontMgrFromData: EditorInterface['fontMgrFromData'] = (editor, buffers) => {
     if (!buffers) return;
@@ -12,26 +26,10 @@ export const fontMgrFromData: EditorInterface['fontMgrFromData'] = (editor, buff
         if (Array.isArray(font)) {
             const fontCollection = font as FontCollection
             for (let j = 0; j < fontCollection.fonts.length; j++) {
-                const _font = fontCollection.fonts[j];
-                const familyName = _font.familyName
-                const fontInfo = fonMgr.get(familyName)
-                if (fontInfo) {
-                    fontInfo.push(_font)
-                    fonMgr.set(familyName, fontInfo)
-                } else {
-                    fonMgr.set(familyName, [_font])
-                }
+                addFont(editor, fontCollection.fonts[j])
             }
         } else {
-            const _font = font as Font
-            const familyName = _font.familyName
-            const fontInfo = fonMgr.get(familyName)
-            if (fontInfo) {
-                fontInfo.push(_font)
-                fonMgr.set(familyName, fontInfo)
-            } else {
-                fonMgr.set(familyName, [_font])
-            }
+            addFont(editor, font as Font)
         }
     }
 }

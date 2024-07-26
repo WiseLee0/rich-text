@@ -23,4 +23,8 @@ export interface StyleInterface {
         units: "PERCENT" | "PIXELS"
     },
     textAutoResize: "NONE" | "HEIGHT" | "WIDTH_AND_HEIGHT"
+    fontVariations: {
+        axisName: string,
+        value: number
+    }[]
 }

@@ -1,28 +1,16 @@
-import { Radio, RadioChangeEvent, Select, Tooltip } from "antd"
+import { InputNumber, Radio, RadioChangeEvent, Select, Slider, Tooltip } from "antd"
 import { Editor, StyleInterface } from "../../rich-text"
 import './index.css'
 import { useState } from "react"
-import PlayRegularURL from "../../assets/Play-Regular.ttf?url";
-import AnonymousProRegularURL from "../../assets/Anonymous_Pro/AnonymousPro-Regular.ttf?url";
-import AnonymousProBoldURL from "../../assets/Anonymous_Pro/AnonymousPro-Bold.ttf?url";
-import AnonymousProItalicURL from "../../assets/Anonymous_Pro/AnonymousPro-Italic.ttf?url";
+import { fontListData } from './font-list'
+
 
 type TypographyCompProps = {
     editorRef: React.MutableRefObject<Editor | undefined>
     updateRender: () => void
 }
 
-const fontList = [
-    {
-        family: "Play",
-        styles: ["Regular"],
-        assets: [PlayRegularURL]
-    }, {
-        family: "Anonymous Pro",
-        styles: ["Regular", "Bold", "Italic"],
-        assets: [AnonymousProRegularURL, AnonymousProBoldURL, AnonymousProItalicURL]
-    }
-]
+
 
 export const TypographyComp = (props: TypographyCompProps) => {
     const { editorRef, updateRender } = props
@@ -30,10 +18,10 @@ export const TypographyComp = (props: TypographyCompProps) => {
     const [family, setFamily] = useState('Play')
     const [style, setStyle] = useState('Regular')
 
-    const fontOptions = fontList.map(item => ({ label: item.family, value: item.family }))
-    const styleOptions = fontList.find(item => item.family === family)?.styles.map(item => ({ label: item, value: item })) || []
-
+    const fontOptions = fontListData.familyList.map(item => ({ label: item, value: item }))
+    const styleOptions = fontListData.styleList[family]?.map(item => ({ label: item, value: item }))
     const fontSizeOptions = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 24, 32, 36, 40, 48].map(item => ({ label: item, value: item.toString() }))
+    const variationAxes = fontListData.variationAxesList[`${family}#${style}`]
 
     const update = () => {
         editor?.deselection()
@@ -43,44 +31,54 @@ export const TypographyComp = (props: TypographyCompProps) => {
     }
 
     const loadFontAsset = async (family: string, style: string) => {
-        const fontIdx = fontList.findIndex(item => item.family === family)
-        const styleIdx = fontList[fontIdx]?.styles.findIndex(item => item === style)
-        if (styleIdx > -1) {
-            const asset = fontList[fontIdx].assets[styleIdx];
+        const asset = fontListData.assetList[`${family}#${style}`]
+        if (asset) {
             const fontData = await (await fetch(asset)).arrayBuffer()
             editor?.fontMgrFromData([fontData])
         }
     }
 
     const handleFamilyChange = async (family: string) => {
-        setFamily(family)
-        const style = fontList.find(item => item.family === family)?.styles[0]
+        const style = fontListData.styleList[family]?.[0]
+        const postscript = fontListData.postscriptList[`${family}#${style}`]
+        if (!style || !postscript) return
         await loadFontAsset(family, style ?? '')
         const font = editor?.getFont(family, style)
-        if (!font) return;
+        if (!font) {
+            console.warn("切换查找字体失败")
+            return
+        }
         editor?.setStyle({
             fontName: {
-                family: font.familyName,
-                style: font.subfamilyName,
-                postscript: `${font.postscriptName}-${font.subfamilyName}`
+                family,
+                style,
+                postscript
             },
         })
         update()
+        setFamily(family)
+        setStyle(style)
     }
 
     const handleStyleChange = async (style: string) => {
-        setStyle(style)
-        await loadFontAsset(family ?? '', style)
+        const postscript = fontListData.postscriptList[`${family}#${style}`]
+        if (!style || !postscript) return
+        await loadFontAsset(family, style ?? '')
         const font = editor?.getFont(family, style)
-        if (!font) return;
+        if (!font) {
+            console.warn("切换查找字体样式失败")
+            return
+        }
         editor?.setStyle({
             fontName: {
-                family: font.familyName,
-                style: font.subfamilyName,
-                postscript: `${font.postscriptName}-${font.subfamilyName}`
+                family,
+                style,
+                postscript
             },
         })
         update()
+        setFamily(family)
+        setStyle(style)
     }
 
     const handleFontSizeChange = (size: string) => {
@@ -119,6 +117,64 @@ export const TypographyComp = (props: TypographyCompProps) => {
         update()
     }
 
+    const changeVariationAxes = (val: number | null, name: string) => {
+        if (val === null) return;
+        const fontVariations = editor?.style?.fontVariations
+        if (!fontVariations?.length) {
+            const variations = variationAxes.map(item => {
+                let value = item.value
+                if (item.name === name) {
+                    value = val
+                }
+                return {
+                    axisName: item.name,
+                    value
+                }
+            })
+            editor?.setStyle({
+                fontVariations: variations
+            })
+            update()
+            return
+        }
+        const variation = fontVariations.find(item => item.axisName === name)
+        if (!variation) {
+            console.warn('changeVariationAxes exception')
+            return;
+        }
+        variation.value = val
+        editor?.setStyle({
+            fontVariations
+        })
+        update()
+    }
+
+    const showVariationAxes = () => {
+        if (!variationAxes?.length) return <></>
+        return variationAxes.map(item => {
+            const value = editor?.style.fontVariations.find(font => font.axisName === item.name)?.value ?? item.value
+            if (item.name === "Width") {
+                return <div key={"width"}>
+                    <div className="typography-row">
+                        <span>字宽</span>
+                        <InputNumber size="small" min={item.min} max={item.max} value={value} onChange={(val) => changeVariationAxes(val, 'Width')} />
+                    </div>
+                    <Slider min={item.min} max={item.max} value={value} onChange={(val) => changeVariationAxes(val, 'Width')} />
+                </div>
+            }
+            if (item.name === "Weight") {
+                return <div key={"Weight"}>
+                    <div className="typography-row" >
+                        <span>字重</span>
+                        <InputNumber size="small" min={item.min} max={item.max} value={value} onChange={(val) => changeVariationAxes(val, 'Weight')} />
+                    </div>
+                    <Slider min={item.min} max={item.max} value={value} onChange={(val) => changeVariationAxes(val, 'Weight')} />
+                </div>
+            }
+            return <></>
+        })
+    }
+
 
     return <div className="typography-container">
         <span className="title">字体排版</span>
@@ -142,6 +198,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
                 options={fontSizeOptions}
             />
         </div>
+        {showVariationAxes()}
         <div className="typography-row">
             <span>水平对齐</span>
             <div>

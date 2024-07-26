@@ -14,6 +14,7 @@ export const createEditor = (): Editor => {
             fontName: {
                 family: "Play", style: "Regular", postscript: "Play-Regular"
             },
+            fontVariations: []
         },
         __selection: {
             anchor: -1,
