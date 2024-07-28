@@ -52,7 +52,12 @@ export default function App() {
 
   const handleEvents = () => {
     canvasRef.current?.addEventListener('mousedown', e => {
+      if (!editorRef.current) return;
       const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
+      if (x > editorRef.current.width || y > editorRef.current.height || x < 0 || y < 0) {
+        editorRef.current.deselection()
+        return
+      }
       editorRef.current?.selectForXY(x, y)
       mouseDownRef.current = true
     })

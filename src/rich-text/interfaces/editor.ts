@@ -66,6 +66,8 @@ export type Editor = {
     selectForXY: OmitFirstArg<SelectionInterface['selectForXY']>
     /** 通过字符偏移值，设置光标选区 */
     selectForCharacterOffset: OmitFirstArg<SelectionInterface['selectForCharacterOffset']>
+    /** 通过光标选区，获取字符偏移值 */
+    getSelectCharacterOffset: OmitFirstArg<SelectionInterface['getSelectCharacterOffset']>
     /** 光标是否闭合 */
     isCollapse: OmitFirstArg<SelectionInterface['isCollapse']>
     /** 是否存在选区 */

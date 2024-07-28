@@ -12,6 +12,7 @@ export interface SelectionInterface {
     setSelection: (editor: Editor, selection: Partial<Range>) => void
     selectForXY: (editor: Editor, x: number, y: number, isAnchor?: boolean) => void
     selectForCharacterOffset: (editor: Editor, characterOffset: number) => void
+    getSelectCharacterOffset: (editor: Editor) => { anchor: number, focus: number } | undefined
     getSelectionRects: (editor: Editor) => Rect[]
     isCollapse: (editor: Editor) => boolean
     hasSelection: (editor: Editor) => boolean

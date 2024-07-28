@@ -1,4 +1,4 @@
-export * from './style'
+export * from './set-style'
 export * from './size'
 export * from './insert-text'
 export * from './token'

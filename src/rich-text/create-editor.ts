@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, clearCache, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, } from './'
+import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, clearCache, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, } from './'
 
 export const createEditor = (): Editor => {
 
@@ -24,7 +24,7 @@ export const createEditor = (): Editor => {
         },
         derivedTextData: {},
         textData: {
-            characters: " The quick brown fox jumps over 17 lazy dogs.\n\nnewline space",
+            "characters": "hello\nworld"
         },
 
         // Core
@@ -54,6 +54,7 @@ export const createEditor = (): Editor => {
         getSelection: (...args) => getSelection(editor, ...args),
         selectForXY: (...args) => selectForXY(editor, ...args),
         selectForCharacterOffset: (...args) => selectForCharacterOffset(editor, ...args),
+        getSelectCharacterOffset: (...args) => getSelectCharacterOffset(editor, ...args),
         isCollapse: (...args) => isCollapse(editor, ...args),
         hasSelection: (...args) => hasSelection(editor, ...args),
         deselection: (...args) => deselection(editor, ...args),
