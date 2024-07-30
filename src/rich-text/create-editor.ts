@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, clearCache, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, } from './'
+import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, clearCache, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyle, } from './'
 
 export const createEditor = (): Editor => {
 
@@ -12,7 +12,7 @@ export const createEditor = (): Editor => {
             textAlignVertical: 'TOP',
             textAutoResize: 'WIDTH_AND_HEIGHT',
             fontName: {
-                family: "Play", style: "Regular", postscript: "Play-Regular"
+                family: "Play", style: "Regular", postscript: "Play"
             },
             fontVariations: []
         },
@@ -24,7 +24,7 @@ export const createEditor = (): Editor => {
         },
         derivedTextData: {},
         textData: {
-            "characters": "hello\nworld"
+            "characters": "helloworld"
         },
 
         // Core
@@ -33,6 +33,7 @@ export const createEditor = (): Editor => {
 
         // Editor
         setStyle: (...args) => setStyle(editor, ...args),
+        getStyle: (...args) => getStyle(editor, ...args),
         insertText: (...args) => insertText(editor, ...args),
         replaceText: (...args) => replaceText(editor, ...args),
         getText: (...args) => getText(editor, ...args),

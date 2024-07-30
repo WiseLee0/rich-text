@@ -4,6 +4,7 @@ export const getSelectCharacterOffset: SelectionInterface['getSelectCharacterOff
     if (!editor.hasSelection()) return;
     const selection = editor.getSelection()
     const baselines = editor.getBaselines()
+    const text = editor.getText()
     const { anchor, focus, anchorOffset, focusOffset } = selection
     if (!baselines) return { anchor: 0, focus: 0 }
 
@@ -23,6 +24,9 @@ export const getSelectCharacterOffset: SelectionInterface['getSelectCharacterOff
         r_focus = baselines[focus].firstCharacter + focusOffset
     }
 
+    if (text[r_focus] === '\n') {
+        r_focus++
+    }
 
     return {
         anchor: r_anchor,

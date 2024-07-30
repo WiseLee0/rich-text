@@ -28,6 +28,8 @@ export type Editor = {
     // editor
     /** 设置样式 */
     setStyle: OmitFirstArg<EditorInterface['setStyle']>
+    /** 获取样式 */
+    getStyle: OmitFirstArg<EditorInterface['getStyle']>
     /** 获取文本内容 */
     getText: OmitFirstArg<EditorInterface['getText']>
     /** 插入文本 */
@@ -83,6 +85,7 @@ export type EditorInterface = {
     getFonts: (editor: Editor, family?: string) => Font[] | undefined
     getFont: (editor: Editor, family?: string, style?: string) => Font | undefined
     setStyle: (editor: Editor, style: Partial<StyleInterface>) => void
+    getStyle: (editor: Editor, ignoreSelection?: boolean) => StyleInterface
     layout: (editor: Editor, width?: number, height?: number) => void
     apply: (editor: Editor) => void
     insertText: (editor: Editor, text: string) => void

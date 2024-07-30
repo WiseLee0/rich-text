@@ -1,7 +1,7 @@
 import { InputNumber, Radio, RadioChangeEvent, Select, Slider, Tooltip } from "antd"
 import { Editor, StyleInterface } from "../../rich-text"
 import './index.css'
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { fontListData } from './font-list'
 
 
@@ -14,13 +14,15 @@ type TypographyCompProps = {
 
 export const TypographyComp = (props: TypographyCompProps) => {
     const { editorRef, updateRender } = props
-    const editor = editorRef.current
-    const [family, setFamily] = useState('Play')
-    const [style, setStyle] = useState('Regular')
+    const editor = editorRef.current!
+
+    const [family, setFamily] = useState(editor.style.fontName!.family)
+    const [style, setStyle] = useState(editor.style.fontName!.style)
+    const [fontSize, setFontSize] = useState(editor.style.fontSize)
 
     const fontOptions = fontListData.familyList.map(item => ({ label: item, value: item }))
     const styleOptions = fontListData.styleList[family]?.map(item => ({ label: item, value: item }))
-    const fontSizeOptions = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 24, 32, 36, 40, 48].map(item => ({ label: item, value: item.toString() }))
+    const fontSizeOptions = [12, 16, 20, 24, 32, 36, 40, 48].map(item => ({ label: item, value: item.toString() }))
     const variationAxes = fontListData.variationAxesList[`${family}#${style}`]
 
     const update = () => {
@@ -83,6 +85,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
 
     const handleFontSizeChange = (size: string) => {
         if (!size) return;
+        setFontSize(parseInt(size, 10))
         editor?.setStyle({
             fontSize: parseInt(size, 10)
         })
@@ -175,6 +178,17 @@ export const TypographyComp = (props: TypographyCompProps) => {
         })
     }
 
+    useEffect(() => {
+        const watchSelection = () => {
+            const style = editorRef.current?.getStyle()
+            if (style?.fontName?.family) setFamily(style.fontName.family)
+            if (style?.fontName?.style) setStyle(style.fontName.style)
+            if (style?.fontSize) setFontSize(style.fontSize)
+            requestAnimationFrame(watchSelection)
+        }
+        requestAnimationFrame(watchSelection)
+    }, [])
+
 
     return <div className="typography-container">
         <span className="title">字体排版</span>
@@ -192,7 +206,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
                 options={styleOptions}
             />
             <Select
-                value={editor?.style.fontSize.toString()}
+                value={fontSize.toString()}
                 style={{ width: 110 }}
                 onChange={handleFontSizeChange}
                 options={fontSizeOptions}

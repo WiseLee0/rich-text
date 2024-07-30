@@ -17,12 +17,11 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
     }
 
     editor.__matrices = []
-    let offset = 0
+    let familyTokenOffset = 0
     let firstCharacter = 0
     for (let i = 0; i < familyTokens.length; i++) {
         const token = familyTokens[i];
-
-        const style = styleMap.get(characterStyleIDs?.[offset] || -1)
+        const style = styleMap.get(characterStyleIDs?.[familyTokenOffset] || -1)
         let family = style?.fontName?.family ?? editor.style.fontName?.family
         let fontStyle = style?.fontName?.style ?? editor.style.fontName?.style
         const font = editor.getFont(family, fontStyle)
@@ -31,7 +30,7 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
         const isWrap = token === '\n'
         for (let j = 0; j < glyphs.length; j++) {
             const glyph = glyphs[j]
-            const style = styleMap.get(characterStyleIDs?.[offset + j] || -1)
+            const style = styleMap.get(characterStyleIDs?.[familyTokenOffset + j] || -1)
             const fontSize = style?.fontSize ?? editor.style.fontSize
             let unitsPerPx = fontSize / (font.unitsPerEm || 1000);
             const xAdvance = isWrap ? 0 : positions[j].xAdvance * unitsPerPx
@@ -52,7 +51,7 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
             })
             firstCharacter += glyph.codePoints.length;
         }
-        offset += token.length
+        familyTokenOffset += token.length
     }
 
     return editor.__matrices;

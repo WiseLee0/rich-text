@@ -22,7 +22,6 @@ export default function App() {
   const editorRef = useRef<Editor>()
   const mouseDownRef = useRef(false)
 
-
   const render = async () => {
     const [Skia, surface] = await loadSkia(canvasRef.current!);
     setSpinning(false)
@@ -107,9 +106,6 @@ export default function App() {
     const editor = createEditor()
     editor.fontMgrFromData([data1])
     editor.setStyle({
-      fontName: {
-        family: "Play", style: "Regular", postscript: "Play-Regular"
-      },
       fontSize: 24,
       textAlignHorizontal: 'JUSTIFIED',
       textAlignVertical: 'MIDDLE',
@@ -137,9 +133,9 @@ export default function App() {
         <textarea
           ref={textareaRef} tabIndex={-1} wrap="off" aria-hidden="true" spellCheck="false" autoCorrect="off" className="focus-target"></textarea>
         <div className='page-pannel'>
-          <AutoResizeComp editorRef={editorRef} layout={layout} />
-          <TypographyComp editorRef={editorRef} updateRender={updateRender} />
-          <DebugComp editorRef={editorRef} updateRender={updateRender} enableRef={enableRef} />
+          {editorRef.current && <AutoResizeComp editorRef={editorRef} layout={layout} />}
+          {editorRef.current && <TypographyComp editorRef={editorRef} updateRender={updateRender} />}
+          {editorRef.current && <DebugComp editorRef={editorRef} updateRender={updateRender} enableRef={enableRef} />}
         </div>
       </div>
     </div>
