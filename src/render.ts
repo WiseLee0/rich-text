@@ -90,6 +90,7 @@ export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.Mut
         canvas.clipPath(path, Skia.ClipOp.Intersect, true)
         for (let i = 0; i < fillPaints.length; i++) {
             const fillPaint = fillPaints[i];
+            if(!fillPaint.visible) continue
             // 注意：这里alpha取opacity
             paint.setColor([fillPaint.color.r, fillPaint.color.g, fillPaint.color.b, fillPaint.opacity])
             canvas.drawPaint(paint)
