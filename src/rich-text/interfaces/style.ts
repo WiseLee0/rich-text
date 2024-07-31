@@ -27,4 +27,20 @@ export interface StyleInterface {
         axisName: string,
         value: number
     }[]
+    fillPaints: FillPaintType[]
 }
+
+export type FillPaintType = {
+    type: "SOLID",
+    color: {
+        r: number,
+        g: number,
+        b: number,
+        a: number
+    },
+    opacity: number,
+    visible: boolean,
+    blendMode: BlendModeType
+}
+
+export type BlendModeType = "NORMAL" | "DARKEN"

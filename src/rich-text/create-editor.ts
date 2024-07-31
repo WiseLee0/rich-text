@@ -14,6 +14,20 @@ export const createEditor = (): Editor => {
             fontName: {
                 family: "Play", style: "Regular", postscript: "Play"
             },
+            fillPaints: [
+                {
+                    "type": "SOLID",
+                    "color": {
+                        "r": 0.9,
+                        "g": 0.14,
+                        "b": 0.14,
+                        "a": 1
+                    },
+                    "opacity": 0.7,
+                    "visible": true,
+                    "blendMode": "NORMAL"
+                },
+            ],
             fontVariations: []
         },
         __selection: {

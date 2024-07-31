@@ -1,4 +1,4 @@
-import { EditorInterface } from "..";
+import { clearCache, EditorInterface } from "..";
 
 export const insertText: EditorInterface['insertText'] = (editor, content) => {
     if (!editor.hasSelection()) return;
@@ -20,7 +20,7 @@ export const insertText: EditorInterface['insertText'] = (editor, content) => {
 
     const newText = text.substring(0, characterIdx) + content + text.substring(characterIdx)
     editor.replaceText(newText)
-    editor.clearCache()
+    clearCache(editor)
     editor.apply()
     editor.selectForCharacterOffset(characterIdx + content.length)
 

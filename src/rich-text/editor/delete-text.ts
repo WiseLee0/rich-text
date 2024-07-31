@@ -1,4 +1,4 @@
-import { EditorInterface, mergeStyleOverride } from "..";
+import { clearCache, EditorInterface, mergeStyleOverride } from "..";
 
 export const deleteText: EditorInterface['deleteText'] = (editor) => {
     if (!editor.hasSelection()) return;
@@ -30,7 +30,7 @@ export const deleteText: EditorInterface['deleteText'] = (editor) => {
     }
     const newText = text.substring(0, anchorCharacterIdx) + text.substring(focusCharacterIdx)
     editor.replaceText(newText)
-    editor.clearCache()
+    clearCache(editor)
     editor.apply()
     editor.selectForCharacterOffset(anchorCharacterIdx)
 
