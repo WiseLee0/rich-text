@@ -1,4 +1,4 @@
-import { EditorInterface } from "..";
+import { EditorInterface, mergeStyleOverride } from "..";
 
 export const deleteText: EditorInterface['deleteText'] = (editor) => {
     if (!editor.hasSelection()) return;
@@ -33,4 +33,11 @@ export const deleteText: EditorInterface['deleteText'] = (editor) => {
     editor.clearCache()
     editor.apply()
     editor.selectForCharacterOffset(anchorCharacterIdx)
+
+    // 更新局部样式表
+    const { characterStyleIDs, styleOverrideTable } = editor.textData
+    if (characterStyleIDs?.length && styleOverrideTable?.length) {
+        characterStyleIDs?.splice(anchorCharacterIdx, focusCharacterIdx - anchorCharacterIdx)
+        mergeStyleOverride(editor, characterStyleIDs, styleOverrideTable)
+    }
 }

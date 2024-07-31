@@ -1,4 +1,4 @@
-import { deepEqual, EditorInterface, StyleInterface } from "..";
+import { deepEqual, Editor, EditorInterface, StyleInterface } from "..";
 
 export const setStyle: EditorInterface['setStyle'] = (editor, styles) => {
     if (styles.fontName) {
@@ -15,25 +15,25 @@ export const setStyle: EditorInterface['setStyle'] = (editor, styles) => {
 
 
 /** 控制哪些属性允许局部更新样式 */
-const getChangeStyles = (styles: Partial<StyleInterface>) => {
+const getChangeStyles = (styles: Partial<StyleInterface>, isAllSelectModify: boolean) => {
     const changeStyles: Partial<StyleInterface> = {}
     if (styles['fontName']) {
         changeStyles['fontName'] = styles['fontName']
         changeStyles['fontVariations'] = styles['fontVariations'] ?? []
-        delete styles['fontName']
-        delete styles['fontVariations']
+        if (!isAllSelectModify) delete styles['fontName']
+        if (!isAllSelectModify) delete styles['fontVariations']
     }
     if (styles['fontSize']) {
         changeStyles['fontSize'] = styles['fontSize']
-        delete styles['fontSize']
+        if (!isAllSelectModify) delete styles['fontSize']
     }
     if (styles['textDecoration']) {
         changeStyles['textDecoration'] = styles['textDecoration']
-        delete styles['textDecoration']
+        if (!isAllSelectModify) delete styles['textDecoration']
     }
     if (styles['hyperlink']) {
         changeStyles['hyperlink'] = styles['hyperlink']
-        delete styles['hyperlink']
+        if (!isAllSelectModify) delete styles['hyperlink']
     }
 
     return changeStyles
@@ -44,15 +44,24 @@ const handleStyleOverride: EditorInterface['setStyle'] = (editor, styles) => {
     let characterOffset = editor.getSelectCharacterOffset()
     let anchor = characterOffset?.anchor ?? 0
     let focus = characterOffset?.focus ?? editor.textData.characters.length
-
-    const changeStyles = getChangeStyles(styles)
-    if (!Object.keys(changeStyles).length) return
-
     const { textData } = editor
     const { characterStyleIDs, styleOverrideTable } = textData
+    const isAllSelectModify = anchor === 0 && focus === editor.textData.characters.length  // 全选修改
+
+    // 全选修改，则先应用一次
+    if (isAllSelectModify) {
+        editor.style = {
+            ...editor.style,
+            ...styles
+        }
+    }
+
+    const changeStyles = getChangeStyles(styles, isAllSelectModify)
+    if (!Object.keys(changeStyles).length) return
 
     // 第一次局部修改
     if (!characterStyleIDs?.length || !styleOverrideTable?.length) {
+        if (isAllSelectModify) return
         textData.characterStyleIDs = new Array(focus).fill(0, 0, anchor).fill(1, anchor, focus)
         textData.styleOverrideTable = [{
             styleID: 1,
@@ -96,7 +105,23 @@ const handleStyleOverride: EditorInterface['setStyle'] = (editor, styles) => {
             newStyleOverrideTableMap.set(styleID, styleOverrideTableMap.get(styleID)!)
         }
     }
+    mergeStyleOverride(editor, newCharacterStyleIDs, newStyleOverrideTableMap)
+}
 
+export const mergeStyleOverride = (editor: Editor, characterStyleIDs: number[], styleOverrideTable: Record<string, any> | Map<number, Record<string, any>>) => {
+    const { textData } = editor
+    const newCharacterStyleIDs = [...characterStyleIDs]
+    let newStyleOverrideTableMap: Map<number, Record<string, any>> = new Map()
+    if (styleOverrideTable instanceof Map) {
+        newStyleOverrideTableMap = styleOverrideTable
+    } else {
+        for (let i = 0; i < styleOverrideTable.length; i++) {
+            const { styleID, ...rest } = styleOverrideTable[i];
+            newStyleOverrideTableMap.set(styleID, rest)
+        }
+    }
+
+    let maxStyleID = Math.max(...newCharacterStyleIDs)
     // 合并样式覆盖表，找到相同的样式进行分组
     const visitStyleIDSet = new Set<number>()
     const visitStyleIDMap = new Map<number, Set<number>>()
@@ -137,32 +162,52 @@ const handleStyleOverride: EditorInterface['setStyle'] = (editor, styles) => {
     }
 
     // 判断是否和主样式一致，一致则删除局部样式表
-    if (newStyleOverrideTableMap.size === 1) {
-        let isEqual = true
-        for (const [_styleID, element] of newStyleOverrideTableMap) {
-            for (const key in element) {
-                if (!deepEqual(element[key], editor.style[key as keyof StyleInterface])) {
-                    isEqual = false
-                    break
-                }
+    const resultStyleOverrideTableMap = new Map<number, any>()
+    let resultCharacterStyleIDs = [...newCharacterStyleIDs]
+    for (const [styleID, element] of newStyleOverrideTableMap) {
+        const newElement: any = {}
+        let needDelete = true
+        for (const key in element) {
+            if (!deepEqual(element[key], editor.style[key as keyof StyleInterface])) {
+                newElement[key] = element[key]
+                needDelete = false
             }
-            if (!isEqual) break
         }
-        if (isEqual) {
-            delete textData.styleOverrideTable
-            delete textData.characterStyleIDs
-            return;
+        if (needDelete) {
+            resultCharacterStyleIDs = resultCharacterStyleIDs.map(item => {
+                if (item === styleID) return 0
+                return item
+            })
+            continue
         }
+        resultStyleOverrideTableMap.set(styleID, newElement)
+    }
+    if (!resultStyleOverrideTableMap.size) {
+        delete textData.styleOverrideTable
+        delete textData.characterStyleIDs
+        return
     }
 
-    textData.characterStyleIDs = newCharacterStyleIDs
+    while (resultCharacterStyleIDs[resultCharacterStyleIDs.length - 1] === 0) {
+        resultCharacterStyleIDs.pop()
+    }
+
+    if (!resultCharacterStyleIDs.length) {
+        delete textData.styleOverrideTable
+        delete textData.characterStyleIDs
+        return
+    }
+
+    textData.characterStyleIDs = resultCharacterStyleIDs
+    const resultCharacterStyleIDSet = new Set(resultCharacterStyleIDs)
     const newStyleOverrideTable: Record<string, any>[] = []
-    for (const [styleID, element] of newStyleOverrideTableMap) {
-        newStyleOverrideTable.push({
-            styleID,
-            ...element
-        })
+    for (const [styleID, element] of resultStyleOverrideTableMap) {
+        if (resultCharacterStyleIDSet.has(styleID)) {
+            newStyleOverrideTable.push({
+                styleID,
+                ...element
+            })
+        }
     }
     textData.styleOverrideTable = newStyleOverrideTable
 }
-

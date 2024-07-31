@@ -50,6 +50,8 @@ export type Editor = {
     getGlyphs: OmitFirstArg<EditorInterface['getGlyphs']>
     /** 清除计算缓存 */
     clearCache: OmitFirstArg<EditorInterface['clearCache']>
+    /** 获取文本修饰矩形，用于绘制 */
+    getTextDecorationRects: OmitFirstArg<EditorInterface['getTextDecorationRects']>
 
     // font
     /** 设置字体数据 */
@@ -98,6 +100,7 @@ export type EditorInterface = {
     clearCache: (editor: Editor) => void
     getBaseLineCharacterOffset: (editor: Editor, baselineIdx: number) => number[] | undefined
     getLogicalCharacterOffset: (editor: Editor) => number[]
+    getTextDecorationRects: (editor: Editor) => Rect[]
 }
 
 export type Rect = [number, number, number, number]

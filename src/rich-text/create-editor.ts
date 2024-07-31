@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, clearCache, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyle, } from './'
+import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, clearCache, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyle, getTextDecorationRects, } from './'
 
 export const createEditor = (): Editor => {
 
@@ -7,9 +7,9 @@ export const createEditor = (): Editor => {
         height: 0,
         fonMgr: new Map(),
         style: {
-            fontSize: 12,
-            textAlignHorizontal: 'LEFT',
-            textAlignVertical: 'TOP',
+            fontSize: 24,
+            textAlignHorizontal: 'CENTER',
+            textAlignVertical: 'MIDDLE',
             textAutoResize: 'WIDTH_AND_HEIGHT',
             fontName: {
                 family: "Play", style: "Regular", postscript: "Play"
@@ -24,7 +24,7 @@ export const createEditor = (): Editor => {
         },
         derivedTextData: {},
         textData: {
-            "characters": "helloworld"
+            characters: "hellofiiworld\nnewline",
         },
 
         // Core
@@ -44,6 +44,7 @@ export const createEditor = (): Editor => {
         clearCache: (...args) => clearCache(editor, ...args),
         getBaseLineCharacterOffset: (...args) => getBaseLineCharacterOffset(editor, ...args),
         deleteText: (...args) => deleteText(editor, ...args),
+        getTextDecorationRects: (...args) => getTextDecorationRects(editor, ...args),
 
         // Font
         fontMgrFromData: (...args) => fontMgrFromData(editor, ...args),

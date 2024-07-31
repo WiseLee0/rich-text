@@ -105,13 +105,8 @@ export default function App() {
     const data1 = await (await fetch(PlayRegular)).arrayBuffer()
     const editor = createEditor()
     editor.fontMgrFromData([data1])
-    editor.setStyle({
-      fontSize: 24,
-      textAlignHorizontal: 'JUSTIFIED',
-      textAlignVertical: 'MIDDLE',
-    })
     editorRef.current = editor
-    layout(175, 300)
+    layout(375, 300)
   }
 
   const main = async () => {

@@ -51,29 +51,13 @@ export const renderBaseLine = (Skia: CanvasKit, canvas: Canvas, editorRef: React
 export const renderTextDecoration = (Skia: CanvasKit, canvas: Canvas, editorRef: React.MutableRefObject<Editor | undefined>) => {
     const editor = editorRef.current
     const baselines = editor?.getBaselines()
-    if (!baselines?.length) return;
+    if (!baselines?.length || !editor) return;
     const paint = new Skia.Paint()
     paint.setAntiAlias(true)
-
-    // 渲染基线
-    if (editor?.style.textDecoration === 'UNDERLINE') {
-        for (let i = 0; i < baselines?.length; i++) {
-            const baseline = baselines[i];
-            canvas.save()
-            canvas.translate(baseline.position.x, baseline.lineY + baseline.lineHeight * 0.9)
-            canvas.drawRect([0, 0, Math.min(baseline.width, editor.width), 1], paint)
-            canvas.restore()
-        }
-    }
-
-    if (editor?.style.textDecoration === 'STRIKETHROUGH') {
-        for (let i = 0; i < baselines?.length; i++) {
-            const baseline = baselines[i];
-            canvas.save()
-            canvas.translate(baseline.position.x, baseline.lineY + baseline.lineHeight * 0.6)
-            canvas.drawRect([0, 0, Math.min(baseline.width, editor.width), 1], paint)
-            canvas.restore()
-        }
+    const rects = editor.getTextDecorationRects()
+    for (let i = 0; i < rects.length; i++) {
+        const rect = rects[i];
+        canvas.drawRect(Skia.XYWHRect(...rect), paint)
     }
     paint.delete()
 }

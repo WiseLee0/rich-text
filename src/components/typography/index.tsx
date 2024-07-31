@@ -15,10 +15,12 @@ type TypographyCompProps = {
 export const TypographyComp = (props: TypographyCompProps) => {
     const { editorRef, updateRender } = props
     const editor = editorRef.current!
+    const editorStyle = editor.getStyle(true)
 
-    const [family, setFamily] = useState(editor.style.fontName!.family)
-    const [style, setStyle] = useState(editor.style.fontName!.style)
-    const [fontSize, setFontSize] = useState(editor.style.fontSize)
+    const [family, setFamily] = useState(editorStyle.fontName!.family)
+    const [style, setStyle] = useState(editorStyle.fontName!.style)
+    const [fontSize, setFontSize] = useState(editorStyle.fontSize)
+    const [textDecoration, setTextDecoration] = useState(editor.style.textDecoration)
 
     const fontOptions = fontListData.familyList.map(item => ({ label: item, value: item }))
     const styleOptions = fontListData.styleList[family]?.map(item => ({ label: item, value: item }))
@@ -107,6 +109,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
     }
 
     const handleTextDecorationChange = (e: RadioChangeEvent) => {
+        setTextDecoration(e.target.value)
         editor?.setStyle({
             textDecoration: e.target.value
         })
@@ -184,6 +187,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
             if (style?.fontName?.family) setFamily(style.fontName.family)
             if (style?.fontName?.style) setStyle(style.fontName.style)
             if (style?.fontSize) setFontSize(style.fontSize)
+            if (style?.textDecoration) setTextDecoration(style.textDecoration)
             requestAnimationFrame(watchSelection)
         }
         requestAnimationFrame(watchSelection)
@@ -280,7 +284,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
         <div className="typography-row">
             <span>文本修饰</span>
             <div>
-                <Radio.Group buttonStyle="solid" value={editor?.style.textDecoration ?? "NONE"} onChange={handleTextDecorationChange}>
+                <Radio.Group buttonStyle="solid" value={textDecoration ?? "NONE"} onChange={handleTextDecorationChange}>
                     <Tooltip placement="bottom" title={"无"} mouseEnterDelay={1}>
                         <Radio.Button value="NONE" style={{ height: 24, padding: 0 }} >
                             <span className="typography-icon">

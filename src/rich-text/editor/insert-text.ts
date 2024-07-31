@@ -23,4 +23,15 @@ export const insertText: EditorInterface['insertText'] = (editor, content) => {
     editor.clearCache()
     editor.apply()
     editor.selectForCharacterOffset(characterIdx + content.length)
+
+    // 更新局部样式表
+    const { characterStyleIDs, characters } = editor.textData
+    let styleID = characterStyleIDs?.[characterIdx - 1]
+    if (characterIdx - 1 < 0 || characters[characterIdx - 1] === '\n') {
+        styleID = characterStyleIDs?.[characterIdx]
+    }
+    if (characterStyleIDs?.length && styleID !== undefined) {
+        const styleIDArr = new Array(content.length).fill(styleID)
+        characterStyleIDs.splice(characterIdx, 0, ...styleIDArr)
+    }
 }
