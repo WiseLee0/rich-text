@@ -13,7 +13,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     const lineHeights = lines.map(line => line.reduce((pre, cur) => Math.max(pre, cur.height), 0))
     const allLineHeight = lineHeights.reduce((pre, cur) => pre + cur, 0)
 
-    const { textAlignHorizontal, textAlignVertical } = editor.style
+    const { textAlignHorizontal, textAlignVertical, textAutoResize } = editor.style
 
     if (textAlignVertical === 'TOP') {
         lineHeightSum = 0
@@ -24,7 +24,10 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     if (textAlignVertical === 'BOTTOM') {
         lineHeightSum = editor.height - allLineHeight
     }
-
+    if (textAutoResize !== 'NONE') {
+        lineHeightSum = 0
+    }
+    let lienMaxWidth = 0
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
         endCharacter = firstCharacter + getMetricesLength(line)
@@ -50,6 +53,15 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
             positionX = 0
             const justifiedLineWidth = calcJustifiedBaseLineWidth(editor, lines, i, firstCharacter, endCharacter)
             if (justifiedLineWidth > -1) lineWidth = justifiedLineWidth
+        }
+        if (textAutoResize === 'WIDTH_AND_HEIGHT') {
+            lienMaxWidth = Math.max(lienMaxWidth, lineWidth)
+            if (textAlignHorizontal === 'CENTER') {
+                positionX = (lienMaxWidth - lineWidth) / 2
+            }
+            if (textAlignHorizontal === 'RIGHT') {
+                positionX = lienMaxWidth - lineWidth
+            }
         }
 
         baselines.push({
