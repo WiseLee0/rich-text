@@ -43,7 +43,7 @@ export const FillsComp = (props: FillsCompProps) => {
         </div>
         {editor.style.fillPaints.map((_item, idx) => {
             const fillIdx = editor.style.fillPaints.length - idx - 1
-            return <FillItemComp data={editor.style.fillPaints[fillIdx]} key={fillIdx.toString()} removeFillPaint={() => { removeFillPaint(idx) }} />
+            return <FillItemComp data={editor.style.fillPaints[fillIdx]} key={Math.random().toString()} removeFillPaint={() => { removeFillPaint(fillIdx) }} />
         })}
     </div>
 }

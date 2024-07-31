@@ -193,7 +193,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
 
 
     return <div className="typography-container">
-        <span className="title">字体排版</span>
+        <span className="title">字体排印</span>
         <Select
             value={family}
             style={{ margin: '8px 0' }}

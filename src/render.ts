@@ -83,10 +83,17 @@ export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.Mut
     // 渲染文字
     for (let i = 0; i < glyphs?.length; i++) {
         const glyph = glyphs[i];
+        const fillPaints = editor.getFillPaintsForGlyph(glyph.firstCharacter)
         const path = Skia.Path.MakeFromSVGString(glyph.commandsBlob)!
         canvas.save()
         canvas.translate(glyph.position.x, glyph.position.y)
-        canvas.drawPath(path, paint)
+        canvas.clipPath(path, Skia.ClipOp.Intersect, true)
+        for (let i = 0; i < fillPaints.length; i++) {
+            const fillPaint = fillPaints[i];
+            // 注意：这里alpha取opacity
+            paint.setColor([fillPaint.color.r, fillPaint.color.g, fillPaint.color.b, fillPaint.opacity])
+            canvas.drawPaint(paint)
+        }
         canvas.restore()
         path.delete()
     }

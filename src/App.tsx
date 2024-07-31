@@ -17,7 +17,7 @@ export default function App() {
   const [spinning, setSpinning] = useState(true)
   const [, updateRender] = useReducer(i => i + 1, 0)
   const enableRef = useRef({
-    baseline: true,
+    baseline: false,
     glyphBorder: false
   })
   const editorRef = useRef<Editor>()

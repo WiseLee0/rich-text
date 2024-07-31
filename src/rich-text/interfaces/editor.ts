@@ -1,5 +1,5 @@
 import * as fontkit from 'fontkit'
-import { OmitFirstArg, SelectionInterface, StyleInterface, Selection, DerivedTextDataInterface, TextDataInterface, Font, MetricesInterface, BaseLineInterface, GlyphsInterface } from "."
+import { OmitFirstArg, SelectionInterface, StyleInterface, Selection, DerivedTextDataInterface, TextDataInterface, Font, MetricesInterface, BaseLineInterface, GlyphsInterface, FillPaintType } from "."
 
 export type Editor = {
     /** 文本宽度 */
@@ -48,6 +48,8 @@ export type Editor = {
     getBaselines: OmitFirstArg<EditorInterface['getBaselines']>
     /** 获取字符信息 */
     getGlyphs: OmitFirstArg<EditorInterface['getGlyphs']>
+    /** 获取字符填充样式 */
+    getFillPaintsForGlyph: OmitFirstArg<EditorInterface['getFillPaintsForGlyph']>
     /** 获取文本修饰矩形，用于绘制 */
     getTextDecorationRects: OmitFirstArg<EditorInterface['getTextDecorationRects']>
 
@@ -99,6 +101,7 @@ export type EditorInterface = {
     getBaseLineCharacterOffset: (editor: Editor, baselineIdx: number) => number[] | undefined
     getLogicalCharacterOffset: (editor: Editor) => number[]
     getTextDecorationRects: (editor: Editor) => Rect[]
+    getFillPaintsForGlyph:  (editor: Editor, firstCharacter: number) => FillPaintType[]
 }
 
 export type Rect = [number, number, number, number]
