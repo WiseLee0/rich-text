@@ -106,7 +106,10 @@ export default function App() {
     const editor = createEditor()
     editor.fontMgrFromData([data1])
     editorRef.current = editor
-    layout(375, 300)
+    layout(375, 300);
+    (window as any).getEditor = () => {
+      return editorRef.current
+    }
   }
 
   const main = async () => {
