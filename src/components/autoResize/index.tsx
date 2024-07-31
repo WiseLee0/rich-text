@@ -4,10 +4,17 @@ import './index.css'
 
 type AutoResizeCompProps = {
     editorRef: React.MutableRefObject<Editor | undefined>
-    layout: (w?: number, h?: number) => void
+    updateRender: () => void
 }
 export const AutoResizeComp = (props: AutoResizeCompProps) => {
-    const { editorRef, layout } = props
+    const { editorRef, updateRender } = props
+
+    const layout = (w?: number, h?: number) => {
+        const editor = editorRef.current;
+        editor?.deselection()
+        editor?.layout(w, h)
+        updateRender()
+    }
 
     const handleChange = (e: any) => {
         if (e.target.value === 'WIDTH_AND_HEIGHT') {

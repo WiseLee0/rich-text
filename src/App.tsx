@@ -4,11 +4,12 @@ import { CANVAS_W, CANVAS_H, loadSkia, CANVAS_MARING } from './utils';
 import { Canvas } from 'canvaskit-wasm';
 import { Spin } from 'antd';
 import PlayRegular from './assets/Play-Regular.ttf'
-import { createEditor, Editor } from './rich-text';
+import { createEditor, Editor, layout } from './rich-text';
 import { AutoResizeComp } from './components/autoResize/index';
 import { renderBaseLine, renderBorder, renderCursor, renderGlyphBorder, renderText, renderTextDecoration } from './render';
 import { TypographyComp } from './components/typography';
 import { DebugComp } from './components/debug';
+import { FillsComp } from './components/fills';
 
 export default function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -40,13 +41,6 @@ export default function App() {
       surface.requestAnimationFrame(drawFrame)
     }
     surface.requestAnimationFrame(drawFrame)
-  }
-
-  const layout = (w?: number, h?: number) => {
-    editorRef.current?.clearCache()
-    editorRef.current?.deselection()
-    editorRef.current?.layout(w, h)
-    updateRender()
   }
 
   const handleEvents = () => {
@@ -105,8 +99,8 @@ export default function App() {
     const data1 = await (await fetch(PlayRegular)).arrayBuffer()
     const editor = createEditor()
     editor.fontMgrFromData([data1])
-    editorRef.current = editor
-    layout(375, 300);
+    editorRef.current = editor;
+    editor.layout(300, 300);
     (window as any).getEditor = () => {
       return editorRef.current
     }
@@ -131,8 +125,9 @@ export default function App() {
         <textarea
           ref={textareaRef} tabIndex={-1} wrap="off" aria-hidden="true" spellCheck="false" autoCorrect="off" className="focus-target"></textarea>
         <div className='page-pannel'>
-          {editorRef.current && <AutoResizeComp editorRef={editorRef} layout={layout} />}
+          {editorRef.current && <AutoResizeComp editorRef={editorRef} updateRender={updateRender} />}
           {editorRef.current && <TypographyComp editorRef={editorRef} updateRender={updateRender} />}
+          {editorRef.current && <FillsComp editorRef={editorRef} updateRender={updateRender} />}
           {editorRef.current && <DebugComp editorRef={editorRef} updateRender={updateRender} enableRef={enableRef} />}
         </div>
       </div>

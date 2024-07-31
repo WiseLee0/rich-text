@@ -48,8 +48,6 @@ export type Editor = {
     getBaselines: OmitFirstArg<EditorInterface['getBaselines']>
     /** 获取字符信息 */
     getGlyphs: OmitFirstArg<EditorInterface['getGlyphs']>
-    /** 清除计算缓存 */
-    clearCache: OmitFirstArg<EditorInterface['clearCache']>
     /** 获取文本修饰矩形，用于绘制 */
     getTextDecorationRects: OmitFirstArg<EditorInterface['getTextDecorationRects']>
 

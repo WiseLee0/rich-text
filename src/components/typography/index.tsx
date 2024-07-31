@@ -28,8 +28,6 @@ export const TypographyComp = (props: TypographyCompProps) => {
     const variationAxes = fontListData.variationAxesList[`${family}#${style}`]
 
     const update = () => {
-        editor?.deselection()
-        editor?.clearCache()
         editor?.apply()
         updateRender()
     }

@@ -1,6 +1,7 @@
-import { EditorInterface, fixDefaultData, getH } from ".."
+import { clearCache, EditorInterface, fixDefaultData, getH } from ".."
 
 export const apply: EditorInterface['apply'] = (editor) => {
+    clearCache(editor)
     if (editor.style.textAutoResize === 'WIDTH_AND_HEIGHT') {
         editor.width = Infinity
     }
