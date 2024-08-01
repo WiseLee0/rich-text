@@ -1,4 +1,4 @@
-import { Switch } from 'antd'
+import { Button, Switch } from 'antd'
 import { Editor } from '../../rich-text'
 import './index.css'
 import { useState } from 'react'
@@ -25,6 +25,19 @@ export const DebugComp = (props: DebugCompProps) => {
                 enableRef.current.glyphBorder = val
                 updateRender()
             }} />
+        </div>
+        <div className="debug-row" style={{ marginTop: 10 }}>
+            <span>打印文本数据</span>
+            <Button
+                type="primary"
+                size="small"
+                onClick={() => {
+                    const info = (window as any).getData()
+                    console.log(info);
+                }}
+            >
+                Click me!
+            </Button>
         </div>
     </div>
 }

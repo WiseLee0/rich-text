@@ -2,7 +2,7 @@ import { Button } from "antd"
 import { deepClone, deepEqual, Editor, FillPaintType } from "../../rich-text"
 import { FillItemComp } from "./fill-item"
 import './index.css'
-import { useEffect, useReducer, useState } from "react"
+import { useEffect, useState } from "react"
 
 type FillsCompProps = {
     editorRef: React.MutableRefObject<Editor | undefined>

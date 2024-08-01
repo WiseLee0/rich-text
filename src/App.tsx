@@ -10,6 +10,7 @@ import { renderBaseLine, renderBorder, renderCursor, renderGlyphBorder, renderTe
 import { TypographyComp } from './components/typography';
 import { DebugComp } from './components/debug';
 import { FillsComp } from './components/fills';
+import { OpenTypeComp } from './components/openType';
 
 export default function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -179,6 +180,7 @@ export default function App() {
           {editorRef.current && <AutoResizeComp editorRef={editorRef} updateRender={updateRender} />}
           {editorRef.current && <TypographyComp editorRef={editorRef} updateRender={updateRender} />}
           {editorRef.current && <FillsComp editorRef={editorRef} updateRender={updateRender} />}
+          {editorRef.current && <OpenTypeComp editorRef={editorRef} updateRender={updateRender} />}
           {editorRef.current && <DebugComp editorRef={editorRef} updateRender={updateRender} enableRef={enableRef} />}
         </div>
       </div>

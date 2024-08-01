@@ -1,4 +1,4 @@
-.typography-container {
+.opentype-container {
   margin-top: 1px;
   width: 240px;
   padding: 12px 20px;
@@ -7,11 +7,13 @@
   flex-direction: column;
   border: 1px solid #e5e5e5;
 }
-.typography-container .title {
+.opentype-container .title {
   font-weight: 550;
   font-size: 12px;
+  margin-bottom: 10px;
 }
-.typography-row {
+
+.opentype-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -20,7 +22,7 @@
   padding: 2px 0;
   margin-bottom: 2px;
 }
-.typography-icon {
+.opentype-icon {
   width: 24px;
   height: 24px;
 }

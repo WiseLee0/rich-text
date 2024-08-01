@@ -28,7 +28,7 @@ export const createEditor = (): Editor => {
                     "blendMode": "NORMAL"
                 },
             ],
-            fontVariations: []
+            fontVariations: [],
         },
         __selection: {
             anchor: -1,
