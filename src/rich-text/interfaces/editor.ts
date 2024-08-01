@@ -99,6 +99,7 @@ export type EditorInterface = {
     getBaselines: (editor: Editor) => BaseLineInterface[] | undefined
     getGlyphs: (editor: Editor) => GlyphsInterface[] | undefined
     clearCache: (editor: Editor) => void
+    clearGetStyleCache: (editor: Editor) => void
     getBaseLineCharacterOffset: (editor: Editor, baselineIdx: number) => number[] | undefined
     getLogicalCharacterOffset: (editor: Editor) => number[]
     getTextDecorationRects: (editor: Editor) => Rect[]
