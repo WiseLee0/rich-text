@@ -104,6 +104,15 @@ export default function App() {
     (window as any).getEditor = () => {
       return editorRef.current
     }
+    (window as any).getData = () => {
+      const obj: any = {}
+      const editor = editorRef.current! as any
+      for (const key in editor) {
+        if (editor[key] instanceof Function) continue
+        obj[key] = editor[key]
+      }
+      return obj
+    }
   }
 
   const main = async () => {
@@ -124,7 +133,7 @@ export default function App() {
         <canvas ref={canvasRef} style={{ width: CANVAS_W, height: CANVAS_H }}></canvas>
         <textarea
           ref={textareaRef} tabIndex={-1} wrap="off" aria-hidden="true" spellCheck="false" autoCorrect="off" className="focus-target"></textarea>
-        <div className='page-pannel'>
+        <div className='page-pannel' style={{ maxHeight: CANVAS_H }}>
           {editorRef.current && <AutoResizeComp editorRef={editorRef} updateRender={updateRender} />}
           {editorRef.current && <TypographyComp editorRef={editorRef} updateRender={updateRender} />}
           {editorRef.current && <FillsComp editorRef={editorRef} updateRender={updateRender} />}

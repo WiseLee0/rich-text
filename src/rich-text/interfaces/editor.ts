@@ -17,6 +17,7 @@ export type Editor = {
 
     // cache
     __selection: Selection
+    __select_styles: Partial<{ anchor: number, focus: number, styles: StyleInterface }>
     __matrices?: MetricesInterface[]
 
     // core
@@ -101,7 +102,7 @@ export type EditorInterface = {
     getBaseLineCharacterOffset: (editor: Editor, baselineIdx: number) => number[] | undefined
     getLogicalCharacterOffset: (editor: Editor) => number[]
     getTextDecorationRects: (editor: Editor) => Rect[]
-    getFillPaintsForGlyph:  (editor: Editor, firstCharacter: number) => FillPaintType[]
+    getFillPaintsForGlyph: (editor: Editor, firstCharacter: number) => FillPaintType[]
 }
 
 export type Rect = [number, number, number, number]

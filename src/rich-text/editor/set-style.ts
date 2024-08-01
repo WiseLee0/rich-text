@@ -35,6 +35,10 @@ const getChangeStyles = (styles: Partial<StyleInterface>, isAllSelectModify: boo
         changeStyles['hyperlink'] = styles['hyperlink']
         if (!isAllSelectModify) delete styles['hyperlink']
     }
+    if (styles['fillPaints']) {
+        changeStyles['fillPaints'] = styles['fillPaints']
+        if (!isAllSelectModify) delete styles['fillPaints']
+    }
 
     return changeStyles
 }
@@ -121,30 +125,38 @@ export const mergeStyleOverride = (editor: Editor, characterStyleIDs: number[], 
         }
     }
 
-    let maxStyleID = Math.max(...newCharacterStyleIDs)
-    // 合并样式覆盖表，找到相同的样式进行分组
+    // 检查临近样式是否能合并 比如：[0,0,1,1,2,3,0,0,4,5]，检查[1,1,2,3]、[4,5]是否能合并ID
     const visitStyleIDSet = new Set<number>()
     const visitStyleIDMap = new Map<number, Set<number>>()
     for (let i = 0; i < newCharacterStyleIDs.length; i++) {
         const styleID = newCharacterStyleIDs[i];
-        if (visitStyleIDSet.has(styleID)) continue
-        const override = newStyleOverrideTableMap.get(styleID)
-        if (!override) continue
+        if (visitStyleIDSet.has(styleID) || styleID === 0) continue
+        const curOverride = newStyleOverrideTableMap.get(styleID)
+        if (!curOverride) {
+            console.warn('mergeStyleOverride exception')
+            continue
+        }
+        // 获取临近的样式ID
         const temp_set = new Set<number>()
-        for (const [key, value] of newStyleOverrideTableMap) {
-            if (key !== styleID && deepEqual(override, value)) {
-                visitStyleIDSet.add(key)
-                visitStyleIDSet.add(styleID)
-                temp_set.add(key)
-                temp_set.add(styleID)
+        for (let j = i; j < newCharacterStyleIDs.length; j++) {
+            const nextID = newCharacterStyleIDs[j]
+            if (!nextID) break;
+            if (nextID === styleID) continue
+            const nextOverride = newStyleOverrideTableMap.get(nextID)
+            if (!curOverride) {
+                console.warn('mergeStyleOverride exception')
+                continue
+            }
+            if (deepEqual(curOverride, nextOverride)) {
+                visitStyleIDSet.add(nextID)
+                temp_set.add(nextID)
             }
         }
         if (temp_set.size > 0) {
-            maxStyleID++
-            visitStyleIDMap.set(maxStyleID, temp_set)
+            visitStyleIDMap.set(styleID, temp_set)
         }
     }
-    // 合并样式覆盖表，更新之前样式
+    // 如果检查[1,1,2,3]、[4,5]结果能合并，则执行合并更新样式ID逻辑
     for (const [changeStyleID, replaceStyleIDSet] of visitStyleIDMap) {
         for (let i = 0; i < newCharacterStyleIDs.length; i++) {
             const styleID = newCharacterStyleIDs[i];
@@ -187,11 +199,9 @@ export const mergeStyleOverride = (editor: Editor, characterStyleIDs: number[], 
         delete textData.characterStyleIDs
         return
     }
-
     while (resultCharacterStyleIDs[resultCharacterStyleIDs.length - 1] === 0) {
         resultCharacterStyleIDs.pop()
     }
-
     if (!resultCharacterStyleIDs.length) {
         delete textData.styleOverrideTable
         delete textData.characterStyleIDs

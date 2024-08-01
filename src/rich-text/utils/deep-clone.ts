@@ -1,4 +1,4 @@
-export function deepClone(obj: any) {
+export function deepClone<T extends any>(obj: T) {
     let objClone: any = Array.isArray(obj) ? [] : {};
 
     if (obj && typeof obj === "object") {
@@ -14,5 +14,5 @@ export function deepClone(obj: any) {
     } else {
         return obj;
     }
-    return objClone;
+    return objClone as T;
 }

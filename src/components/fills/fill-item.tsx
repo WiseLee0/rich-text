@@ -1,25 +1,35 @@
 import { Button, ColorPicker, InputNumber } from "antd";
 import { useState } from "react";
-import { FillPaintType } from "../../rich-text";
+import { deepClone, Editor, FillPaintType } from "../../rich-text";
 import { hexToRgba, rgbaToHex } from "../../utils";
 
 type FillItemCompProps = {
-    data: FillPaintType,
+    editorRef: React.MutableRefObject<Editor | undefined>
+    fillPaints: FillPaintType[]
+    fillIdx: number
     removeFillPaint: () => void
 }
 
 
 
 export const FillItemComp = (props: FillItemCompProps) => {
-    const { data, removeFillPaint } = props
-    const hexColor = rgbaToHex(data.color.r, data.color.g, data.color.b, data.opacity)
+    const { editorRef, fillPaints, fillIdx, removeFillPaint } = props
+    const fillPaint = fillPaints[fillIdx]
+    const hexColor = rgbaToHex(fillPaint.color.r, fillPaint.color.g, fillPaint.color.b, fillPaint.opacity)
     const [color, setColor] = useState(hexColor)
-    const [visible, setVisible] = useState(data.visible)
+    const [visible, setVisible] = useState(fillPaint.visible)
     const alpha = color.length > 7 ? Math.round((parseInt(color.slice(-2), 16) / 255) * 100) : 100
 
+    const updateFillPaints = () => {
+        editorRef.current?.setStyle({
+            fillPaints: deepClone(fillPaints)
+        })
+    }
+
     const changeVisible = () => {
-        data.visible = !visible
+        fillPaint.visible = !visible
         setVisible(!visible)
+        updateFillPaints()
     }
 
     return <div className="fills-row">
@@ -33,11 +43,12 @@ export const FillItemComp = (props: FillItemCompProps) => {
                     setColor(colorHex)
                     const rbga = hexToRgba(colorHex)
                     if (rbga) {
-                        data.color.r = rbga.r
-                        data.color.g = rbga.g
-                        data.color.b = rbga.b
-                        data.opacity = rbga.a
+                        fillPaint.color.r = rbga.r
+                        fillPaint.color.g = rbga.g
+                        fillPaint.color.b = rbga.b
+                        fillPaint.opacity = rbga.a
                     }
+                    updateFillPaints()
                 }}
                 showText={(color) => {
                     return <div style={{ width: 55 }}>{color.toHexString().slice(1, 7).toUpperCase()}</div>
@@ -59,11 +70,12 @@ export const FillItemComp = (props: FillItemCompProps) => {
                     setColor(colorHex)
                     const rbga = hexToRgba(colorHex)
                     if (rbga) {
-                        data.color.r = rbga.r
-                        data.color.g = rbga.g
-                        data.color.b = rbga.b
-                        data.opacity = rbga.a
+                        fillPaint.color.r = rbga.r
+                        fillPaint.color.g = rbga.g
+                        fillPaint.color.b = rbga.b
+                        fillPaint.opacity = rbga.a
                     }
+                    updateFillPaints()
                 }}
             />
         </div>

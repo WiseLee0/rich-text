@@ -36,9 +36,10 @@ export const createEditor = (): Editor => {
             anchorOffset: -1,
             focusOffset: -1
         },
+        __select_styles: {},
         derivedTextData: {},
         textData: {
-            characters: "hellofiiworld\nnewline",
+            characters: "helloworld\nnewline",
         },
 
         // Core

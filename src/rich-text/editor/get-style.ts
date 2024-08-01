@@ -8,8 +8,15 @@ export const getStyle: EditorInterface['getStyle'] = (editor, ignoreSelection) =
     let characterOffset = editor.getSelectCharacterOffset()
     let anchor = characterOffset?.anchor ?? 0
     let focus = characterOffset?.focus ?? editor.textData.characters.length
+    const { __select_styles } = editor
+    if (__select_styles?.focus === focus && __select_styles?.anchor === anchor) return deepClone(__select_styles.styles!)
+    __select_styles.focus = focus
+    __select_styles.anchor = anchor
     const { characterStyleIDs, styleOverrideTable } = editor.textData
-    if (anchor === focus && anchor === 0) return deepClone(editor.style)
+    if (anchor === focus && anchor === 0) {
+        __select_styles.styles = editor.style
+        return deepClone(__select_styles.styles)
+    }
     if (anchor === focus && anchor !== 0) anchor -= 1
     const styleIDs = characterStyleIDs.slice(anchor, focus)
     if (focus > characterStyleIDs.length) styleIDs.push(0)
@@ -48,8 +55,9 @@ export const getStyle: EditorInterface['getStyle'] = (editor, ignoreSelection) =
             }
         }
     }
-    return deepClone({
+    __select_styles.styles = {
         ...editor.style,
         ...styles,
-    })
+    }
+    return deepClone(__select_styles.styles)
 }
