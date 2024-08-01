@@ -70,6 +70,11 @@ export const renderBorder = (Skia: CanvasKit, canvas: Canvas, editorRef: React.M
     const size = 3
     paint.setColor(Skia.Color(...theme_color))
     paint.setStyle(Skia.PaintStyle.Stroke)
+    if (editor.hasSelection()) {
+        canvas.drawRect([0, 0, width, height], paint)
+        paint.delete()
+        return
+    }
     const rect1 = [-size, -size, size * 2, size * 2]
     const rect2 = [width - size * 2, -size, width + size, size * 2]
     const rect3 = [- size, height - size * 2, size * 2, height + size]
