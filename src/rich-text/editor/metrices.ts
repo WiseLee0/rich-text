@@ -30,7 +30,7 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
         const isWrap = token === '\n'
         for (let j = 0; j < glyphs.length; j++) {
             const glyph = glyphs[j]
-            const style = styleMap.get(characterStyleIDs?.[familyTokenOffset + j] || -1)
+            const style = styleMap.get(characterStyleIDs?.[firstCharacter] || -1)
             const fontSize = style?.fontSize ?? editor.style.fontSize
             let unitsPerPx = fontSize / (font.unitsPerEm || 1000);
             const xAdvance = isWrap ? 0 : positions[j].xAdvance * unitsPerPx

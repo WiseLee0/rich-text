@@ -39,7 +39,7 @@ export const createEditor = (): Editor => {
         __select_styles: {},
         derivedTextData: {},
         textData: {
-            characters: "helloworld\nnewline",
+            characters: "hellofiiworld\nnewline",
         },
 
         // Core
