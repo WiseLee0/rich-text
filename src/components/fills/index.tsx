@@ -2,7 +2,7 @@ import { Button } from "antd"
 import { deepClone, deepEqual, Editor, FillPaintType } from "../../rich-text"
 import { FillItemComp } from "./fill-item"
 import './index.css'
-import { useEffect, useState } from "react"
+import { useEffect, useReducer, useState } from "react"
 
 type FillsCompProps = {
     editorRef: React.MutableRefObject<Editor | undefined>
@@ -64,8 +64,10 @@ export const FillsComp = (props: FillsCompProps) => {
             }
         }
         editorRef.current?.addEventListener('selection', watchSelection)
+        editorRef.current?.addEventListener('setStyle', watchSelection)
         return () => {
             editorRef.current?.removeEventListener('selection', watchSelection)
+            editorRef.current?.removeEventListener('setStyle', watchSelection)
         }
     }, [fillPaints])
 
@@ -76,7 +78,7 @@ export const FillsComp = (props: FillsCompProps) => {
         </div>
         {isFillMix && <span style={{ fontSize: 12, color: '#0000004d' }}>点击 + 进行重置混合样式</span>}
         {!isFillMix && fillPaints.map((_item, idx) => {
-            const fillIdx = editor.style.fillPaints.length - idx - 1
+            const fillIdx = fillPaints.length - 1 - idx
             return <FillItemComp editorRef={editorRef} fillPaints={fillPaints} fillIdx={fillIdx} key={Math.random().toString()} removeFillPaint={() => { removeFillPaint(fillIdx) }} />
         })}
     </div>

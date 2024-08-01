@@ -4,7 +4,7 @@ import { CANVAS_W, CANVAS_H, loadSkia, CANVAS_MARING } from './utils';
 import { Canvas } from 'canvaskit-wasm';
 import { Spin } from 'antd';
 import PlayRegular from './assets/Play-Regular.ttf'
-import { createEditor, Editor, layout } from './rich-text';
+import { createEditor, Editor } from './rich-text';
 import { AutoResizeComp } from './components/autoResize/index';
 import { renderBaseLine, renderBorder, renderCursor, renderGlyphBorder, renderText, renderTextDecoration } from './render';
 import { TypographyComp } from './components/typography';
