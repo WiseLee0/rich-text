@@ -31,14 +31,15 @@ export interface StyleInterface {
         value: number,
         units: "PERCENT" | "PIXELS"
     },
+    /** 可变字体 */
     fontVariations: {
         axisName: string,
         value: number
     }[]
     /** 填充样式 */
     fillPaints: FillPaintType[],
-    /** OpenType特性关闭列表 */
-    toggledOffOTFeatures?: string[]
+    /** 字体常见连字 */
+    fontLigatures: "ENABLE" | "DISABLE"
 }
 
 export type FillPaintType = {

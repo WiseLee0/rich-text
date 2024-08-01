@@ -84,9 +84,7 @@ const getLayoutFeatures = (editor: Editor) => {
         mkmk: true
     }
     const style = editor.getStyle(true)
-    style.toggledOffOTFeatures?.map(item => {
-        const key = item.toLowerCase();
-        (feature as any)[key] = false;
-    })
+    if (style.fontLigatures === "DISABLE") feature.liga = false
+    
     return feature
 }
