@@ -186,9 +186,11 @@ export const TypographyComp = (props: TypographyCompProps) => {
             if (style?.fontName?.style) setStyle(style.fontName.style)
             if (style?.fontSize) setFontSize(style.fontSize)
             if (style?.textDecoration) setTextDecoration(style.textDecoration)
-            requestAnimationFrame(watchSelection)
         }
-        requestAnimationFrame(watchSelection)
+        editorRef.current?.addEventListener('selection', watchSelection)
+        return () => {
+            editorRef.current?.removeEventListener('selection', watchSelection)
+        }
     }, [])
 
 

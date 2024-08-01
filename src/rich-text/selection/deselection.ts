@@ -1,4 +1,4 @@
-import { SelectionInterface } from ".."
+import { execEvent, SelectionInterface } from ".."
 
 export const deselection: SelectionInterface['deselection'] = (editor) => {
     editor.__selection = {
@@ -7,4 +7,5 @@ export const deselection: SelectionInterface['deselection'] = (editor) => {
         anchorOffset: -1,
         focusOffset: -1
     }
+    execEvent(editor, 'selection')
 }

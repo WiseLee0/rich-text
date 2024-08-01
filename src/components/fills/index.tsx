@@ -50,7 +50,6 @@ export const FillsComp = (props: FillsCompProps) => {
     }
 
     useEffect(() => {
-        let handle: number
         const watchSelection = () => {
             const style = editorRef.current?.getStyle() as any
             if (style?.fillPaints) {
@@ -63,13 +62,12 @@ export const FillsComp = (props: FillsCompProps) => {
                     }
                 }
             }
-            handle = requestAnimationFrame(watchSelection)
         }
-        handle = requestAnimationFrame(watchSelection)
+        editorRef.current?.addEventListener('selection', watchSelection)
         return () => {
-            handle && cancelAnimationFrame(handle)
+            editorRef.current?.removeEventListener('selection', watchSelection)
         }
-    }, [setFillPaints, fillPaints])
+    }, [fillPaints])
 
     return <div className="fills-container">
         <div className="fills-head">

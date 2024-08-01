@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyle, getTextDecorationRects, getFillPaintsForGlyph, } from './'
+import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyle, getTextDecorationRects, getFillPaintsForGlyph, addEventListener, removeEventListener } from './'
 
 export const createEditor = (): Editor => {
 
@@ -37,6 +37,7 @@ export const createEditor = (): Editor => {
             focusOffset: -1
         },
         __select_styles: {},
+        __events: {},
         derivedTextData: {},
         textData: {
             characters: "hellofiiworld\nnewline",
@@ -60,6 +61,8 @@ export const createEditor = (): Editor => {
         deleteText: (...args) => deleteText(editor, ...args),
         getTextDecorationRects: (...args) => getTextDecorationRects(editor, ...args),
         getFillPaintsForGlyph: (...args) => getFillPaintsForGlyph(editor, ...args),
+        addEventListener: (...args) => addEventListener(editor, ...args),
+        removeEventListener: (...args) => removeEventListener(editor, ...args),
 
         // Font
         fontMgrFromData: (...args) => fontMgrFromData(editor, ...args),

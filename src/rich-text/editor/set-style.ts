@@ -1,7 +1,7 @@
-import { clearGetStyleCache, deepEqual, Editor, EditorInterface, StyleInterface } from "..";
+import { clearGetStyleCache, deepEqual, Editor, EditorInterface, execEvent, StyleInterface } from "..";
 
 export const setStyle: EditorInterface['setStyle'] = (editor, styles) => {
-    
+
     clearGetStyleCache(editor)  // 清除获取样式缓存
 
     if (styles.fontName) {
@@ -14,6 +14,8 @@ export const setStyle: EditorInterface['setStyle'] = (editor, styles) => {
         ...editor.style,
         ...styles
     }
+
+    execEvent(editor, 'setStyle')
 }
 
 

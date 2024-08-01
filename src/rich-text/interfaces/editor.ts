@@ -1,5 +1,5 @@
 import * as fontkit from 'fontkit'
-import { OmitFirstArg, SelectionInterface, StyleInterface, Selection, DerivedTextDataInterface, TextDataInterface, Font, MetricesInterface, BaseLineInterface, GlyphsInterface, FillPaintType } from "."
+import { OmitFirstArg, SelectionInterface, StyleInterface, Selection, DerivedTextDataInterface, TextDataInterface, Font, MetricesInterface, BaseLineInterface, GlyphsInterface, FillPaintType, EventType, EventListenerType } from "."
 
 export type Editor = {
     /** 文本宽度 */
@@ -16,6 +16,7 @@ export type Editor = {
     textData: TextDataInterface
 
     // cache
+    __events: Partial<EventType>
     __selection: Selection
     __select_styles: Partial<{ anchor: number, focus: number, styles: StyleInterface }>
     __matrices?: MetricesInterface[]
@@ -53,6 +54,10 @@ export type Editor = {
     getFillPaintsForGlyph: OmitFirstArg<EditorInterface['getFillPaintsForGlyph']>
     /** 获取文本修饰矩形，用于绘制 */
     getTextDecorationRects: OmitFirstArg<EditorInterface['getTextDecorationRects']>
+    /** 添加事件监听 */
+    addEventListener: OmitFirstArg<EditorInterface['addEventListener']>
+    /** 移除事件监听 */
+    removeEventListener: OmitFirstArg<EditorInterface['removeEventListener']>
 
     // font
     /** 设置字体数据 */
@@ -104,6 +109,9 @@ export type EditorInterface = {
     getLogicalCharacterOffset: (editor: Editor) => number[]
     getTextDecorationRects: (editor: Editor) => Rect[]
     getFillPaintsForGlyph: (editor: Editor, firstCharacter: number) => FillPaintType[]
+    addEventListener: EventListenerType
+    removeEventListener: EventListenerType
+    execEvent: (editor: Editor, type: keyof EventType) => void
 }
 
 export type Rect = [number, number, number, number]

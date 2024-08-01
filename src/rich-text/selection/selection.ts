@@ -1,11 +1,11 @@
-import { SelectionInterface } from '..'
+import { execEvent, SelectionInterface } from '..'
 
 export const setSelection: SelectionInterface['setSelection'] = (editor, range) => {
     editor.__selection = {
         ...editor.__selection,
         ...range
     }
-
+    execEvent(editor, 'selection')
 }
 
 export const getSelection: SelectionInterface['getSelection'] = (editor) => {
