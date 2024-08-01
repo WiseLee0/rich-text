@@ -22,6 +22,7 @@ export default function App() {
   })
   const editorRef = useRef<Editor>()
   const mouseDownRef = useRef(false)
+  const editorDownRef = useRef(false)
 
   const render = async () => {
     const [Skia, surface] = await loadSkia(canvasRef.current!);
@@ -34,7 +35,7 @@ export default function App() {
       renderText(Skia, canvas, editorRef)
       renderTextDecoration(Skia, canvas, editorRef)
       renderBorder(Skia, canvas, editorRef)
-      enableRef.current.baseline && renderBaseLine(Skia, canvas, editorRef)
+      renderBaseLine(Skia, canvas, editorRef, enableRef)
       enableRef.current.glyphBorder && renderGlyphBorder(Skia, canvas, editorRef)
       renderCursor(Skia, canvas, editorRef)
       canvas.restore()
@@ -45,23 +46,64 @@ export default function App() {
 
   const handleEvents = () => {
     canvasRef.current?.addEventListener('mousedown', e => {
-      if (!editorRef.current) return;
+      // 拖拽框事件
       const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
+      if (Math.abs(x - editorRef.current!.width) < 5 && Math.abs(y - editorRef.current!.height) < 5) {
+        mouseDownRef.current = true
+        canvasRef.current!.style.cursor = 'nwse-resize';
+      } else if (Math.abs(x - editorRef.current!.width) < 5) {
+        mouseDownRef.current = true
+        canvasRef.current!.style.cursor = 'ew-resize';
+      } else if (Math.abs(y - editorRef.current!.height) < 5) {
+        mouseDownRef.current = true
+        canvasRef.current!.style.cursor = 'ns-resize';
+      } else {
+        mouseDownRef.current = false
+        canvasRef.current!.style.cursor = 'default';
+      }
+      if (mouseDownRef.current) {
+        editorRef.current?.deselection()
+        return
+      }
+
+      // 编辑事件
+      if (!editorRef.current) return;
       if (x > editorRef.current.width || y > editorRef.current.height || x < 0 || y < 0) {
         editorRef.current.deselection()
         return
       }
       editorRef.current?.selectForXY(x, y)
-      mouseDownRef.current = true
+      editorDownRef.current = true
     })
     canvasRef.current?.addEventListener('mousemove', e => {
-      if (!mouseDownRef.current) return;
       const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
+
+      // 拖拽框事件
+      if (mouseDownRef.current && canvasRef.current!.style.cursor === 'ew-resize') {
+        editorRef.current!.layout(x, editorRef.current?.height ?? 0)
+        updateRender()
+        return
+      }
+      if (mouseDownRef.current && canvasRef.current!.style.cursor === 'ns-resize') {
+        editorRef.current!.layout(editorRef.current?.width, y)
+        updateRender()
+        return
+      }
+      if (mouseDownRef.current && canvasRef.current!.style.cursor === 'nwse-resize') {
+        editorRef.current!.layout(x, y)
+        updateRender()
+        return
+      }
+
+      // 编辑事件
+      if (!editorDownRef.current) return;
       editorRef.current?.selectForXY(x, y, false)
     })
     canvasRef.current?.addEventListener('mouseup', e => {
-      if (!mouseDownRef.current) return;
       mouseDownRef.current = false
+      canvasRef.current!.style.cursor = 'default';
+      if (!editorDownRef.current) return;
+      editorDownRef.current = false
       const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
       editorRef.current?.selectForXY(x, y, false)
       setTimeout(() => {
@@ -100,7 +142,7 @@ export default function App() {
     const editor = createEditor()
     editor.fontMgrFromData([data1])
     editorRef.current = editor;
-    editor.layout(300, 300);
+    editor.layout(300, 150);
     (window as any).getEditor = () => {
       return editorRef.current
     }

@@ -28,13 +28,14 @@ export const renderGlyphBorder = (Skia: CanvasKit, canvas: Canvas, editorRef: Re
     paint.delete()
 }
 
-export const renderBaseLine = (Skia: CanvasKit, canvas: Canvas, editorRef: React.MutableRefObject<Editor | undefined>) => {
+export const renderBaseLine = (Skia: CanvasKit, canvas: Canvas, editorRef: React.MutableRefObject<Editor | undefined>, enableRef: React.MutableRefObject<any>) => {
     const editor = editorRef.current
     if (!editor || !editor.derivedTextData) return;
     const { baselines } = editor.derivedTextData
     if (!baselines?.length) return;
     const paint = new Skia.Paint()
     paint.setAntiAlias(true)
+    if (editor.hasSelection() && !enableRef.current.baseline) return
 
     // 渲染基线
     paint.setColor(Skia.Color(...theme_color))
@@ -66,9 +67,25 @@ export const renderBorder = (Skia: CanvasKit, canvas: Canvas, editorRef: React.M
     const editor = editorRef.current!
     const { width, height } = editor
     const paint = new Skia.Paint()
+    const size = 3
     paint.setColor(Skia.Color(...theme_color))
     paint.setStyle(Skia.PaintStyle.Stroke)
+    const rect1 = [-size, -size, size * 2, size * 2]
+    const rect2 = [width - size * 2, -size, width + size, size * 2]
+    const rect3 = [- size, height - size * 2, size * 2, height + size]
+    const rect4 = [width - size * 2, height - size * 2, width + size, height + size]
+    canvas.save()
+    canvas.clipRect(rect1, Skia.ClipOp.Difference, true)
+    canvas.clipRect(rect2, Skia.ClipOp.Difference, true)
+    canvas.clipRect(rect3, Skia.ClipOp.Difference, true)
+    canvas.clipRect(rect4, Skia.ClipOp.Difference, true)
     canvas.drawRect([0, 0, width, height], paint)
+    canvas.restore()
+
+    canvas.drawRect(rect1, paint)
+    canvas.drawRect(rect2, paint)
+    canvas.drawRect(rect3, paint)
+    canvas.drawRect(rect4, paint)
     paint.delete()
 }
 
@@ -90,7 +107,7 @@ export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.Mut
         canvas.clipPath(path, Skia.ClipOp.Intersect, true)
         for (let i = 0; i < fillPaints.length; i++) {
             const fillPaint = fillPaints[i];
-            if(!fillPaint.visible) continue
+            if (!fillPaint.visible) continue
             // 注意：这里alpha取opacity
             paint.setColor([fillPaint.color.r, fillPaint.color.g, fillPaint.color.b, fillPaint.opacity])
             canvas.drawPaint(paint)
