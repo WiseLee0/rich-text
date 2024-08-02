@@ -1,7 +1,7 @@
 import { Radio, RadioChangeEvent, Tooltip } from 'antd'
 import './index.css'
 import { Editor } from '../../rich-text'
-import { useEffect, useState } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 type OpenTypeCompProps = {
     editorRef: React.MutableRefObject<Editor | undefined>
 }
@@ -9,6 +9,7 @@ export const OpenTypeComp = (props: OpenTypeCompProps) => {
     const { editorRef } = props
     const editor = editorRef.current!
     const fullStyle = editor.getStyle(true)
+    const [, updateRender] = useReducer(i => i + 1, 0)
     const [fontLigatures, setFontLigatures] = useState(fullStyle.fontLigatures)
     const [fontPosition, setFontPosition] = useState(fullStyle.fontPosition)
     const [fontNumericFraction, setFontNumericFraction] = useState(fullStyle.fontNumericFraction)
@@ -49,10 +50,13 @@ export const OpenTypeComp = (props: OpenTypeCompProps) => {
             const style = editorRef.current?.getStyle()
             if (style?.fontLigatures) setFontLigatures(style.fontLigatures)
             if (style?.fontPosition) setFontPosition(style.fontPosition)
+            updateRender()
         }
         editorRef.current?.addEventListener('selection', watchSelection)
+        editorRef.current?.addEventListener('setStyle', watchSelection)
         return () => {
             editorRef.current?.removeEventListener('selection', watchSelection)
+            editorRef.current?.removeEventListener('setStyle', watchSelection)
         }
     }, [])
 
