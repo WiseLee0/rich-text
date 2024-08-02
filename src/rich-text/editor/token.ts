@@ -86,6 +86,9 @@ export function fontTokenize(textData: Record<string, any>, characters: string) 
         if (styleOverride.fontLigatures === "DISABLE") {
             modifySet.add(styleOverride.styleID)
         }
+        if (styleOverride.fontPosition !== "NONE") {
+            modifySet.add(styleOverride.styleID)
+        }
         if (styleOverride?.fontName?.family) {
             modifySet.add(styleOverride.styleID)
         }

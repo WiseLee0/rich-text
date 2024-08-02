@@ -20,9 +20,6 @@ export const insertText: EditorInterface['insertText'] = (editor, content) => {
 
     const newText = text.substring(0, characterIdx) + content + text.substring(characterIdx)
     editor.replaceText(newText)
-    clearCache(editor)
-    editor.apply()
-    editor.selectForCharacterOffset(characterIdx + content.length)
 
     // 更新局部样式表
     const { characterStyleIDs, characters } = editor.textData
@@ -34,4 +31,6 @@ export const insertText: EditorInterface['insertText'] = (editor, content) => {
         const styleIDArr = new Array(content.length).fill(styleID)
         characterStyleIDs.splice(characterIdx, 0, ...styleIDArr)
     }
+    editor.apply()
+    editor.selectForCharacterOffset(characterIdx + content.length)
 }

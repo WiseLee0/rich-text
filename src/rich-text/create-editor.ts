@@ -31,7 +31,9 @@ export const createEditor = (): Editor => {
             fontVariations: [],
             fontLigatures: "ENABLE",
             textDecoration: "NONE",
-            textCase: "NONE"
+            textCase: "NONE",
+            fontPosition: "NONE",
+            fontNumericFraction: "DISABLE"
         },
         __selection: {
             anchor: -1,
@@ -43,7 +45,7 @@ export const createEditor = (): Editor => {
         __events: {},
         derivedTextData: {},
         textData: {
-            characters: "hellofiiworfiild\nnewline",
+            characters: "hellofiiworld\nnewline\nH23O1CH2/4",
         },
 
         // Core

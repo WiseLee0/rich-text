@@ -40,6 +40,10 @@ export interface StyleInterface {
     fillPaints: FillPaintType[],
     /** 字体常见连字 */
     fontLigatures: "ENABLE" | "DISABLE"
+    /** 数字位置 上标&下标 */
+    fontPosition: "NONE" | "SUPER" | "SUB"
+    /** 数字分数 */
+    fontNumericFraction: "ENABLE" | "DISABLE"
 }
 
 export type FillPaintType = {

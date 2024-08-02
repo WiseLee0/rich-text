@@ -30,14 +30,14 @@ export const deleteText: EditorInterface['deleteText'] = (editor) => {
     }
     const newText = text.substring(0, anchorCharacterIdx) + text.substring(focusCharacterIdx)
     editor.replaceText(newText)
-    clearCache(editor)
-    editor.apply()
-    editor.selectForCharacterOffset(anchorCharacterIdx)
-
+   
     // 更新局部样式表
     const { characterStyleIDs, styleOverrideTable } = editor.textData
     if (characterStyleIDs?.length && styleOverrideTable?.length) {
         characterStyleIDs?.splice(anchorCharacterIdx, focusCharacterIdx - anchorCharacterIdx)
         mergeStyleOverride(editor, characterStyleIDs, styleOverrideTable)
     }
+
+    editor.apply()
+    editor.selectForCharacterOffset(anchorCharacterIdx)
 }

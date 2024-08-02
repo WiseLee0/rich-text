@@ -48,6 +48,14 @@ const getChangeStyles = (styles: Partial<StyleInterface>, isAllSelectModify: boo
         changeStyles['fontLigatures'] = styles['fontLigatures']
         if (!isAllSelectModify) delete styles['fontLigatures']
     }
+    if (styles['fontPosition']) {
+        changeStyles['fontPosition'] = styles['fontPosition']
+        if (!isAllSelectModify) delete styles['fontPosition']
+    }
+    if (styles['fontNumericFraction']) {
+        changeStyles['fontNumericFraction'] = styles['fontNumericFraction']
+        if (!isAllSelectModify) delete styles['fontNumericFraction']
+    }
     return changeStyles
 }
 
