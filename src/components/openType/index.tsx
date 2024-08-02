@@ -60,6 +60,8 @@ export const OpenTypeComp = (props: OpenTypeCompProps) => {
         }
     }, [])
 
+    if(!(showLiga || showPosition || showFrac)) return <></>
+
     return <div className='opentype-container'>
         <span className="title">字体特性</span>
         {showLiga && <div className="opentype-row">
@@ -80,7 +82,7 @@ export const OpenTypeComp = (props: OpenTypeCompProps) => {
             </Radio.Group>
         </div>}
         {showPosition && <div className="opentype-row">
-            <span>数字位置</span>
+            <span>数字角标</span>
             <Radio.Group buttonStyle="solid" value={fontPosition} onChange={handleFontPositionChange}>
                 {showPositionSubs && <Tooltip placement="bottom" title={"下标"} mouseEnterDelay={1}>
                     <Radio.Button value="SUB" style={{ height: 24, padding: 0 }} >
