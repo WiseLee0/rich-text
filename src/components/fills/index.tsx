@@ -2,15 +2,16 @@ import { Button } from "antd"
 import { deepClone, deepEqual, Editor, FillPaintType } from "../../rich-text"
 import { FillItemComp } from "./fill-item"
 import './index.css'
-import { useEffect, useState } from "react"
+import { useEffect, useReducer, useState } from "react"
 
 type FillsCompProps = {
     editorRef: React.MutableRefObject<Editor | undefined>
-    updateRender: () => void
 }
 export const FillsComp = (props: FillsCompProps) => {
-    const { editorRef, updateRender } = props
+    const { editorRef } = props
     const editor = editorRef.current!;
+    
+    const [, updateRender] = useReducer(i => i + 1, 0)
     const [fillPaints, setFillPaints] = useState<FillPaintType[]>(deepClone(editor.style.fillPaints))
     const [isFillMix, setIsFillMix] = useState(false)
 

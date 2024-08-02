@@ -7,7 +7,6 @@ import { fontListData } from './font-list'
 
 type TypographyCompProps = {
     editorRef: React.MutableRefObject<Editor | undefined>
-    updateRender: () => void
 }
 
 

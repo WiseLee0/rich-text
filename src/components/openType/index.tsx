@@ -4,10 +4,9 @@ import { Editor } from '../../rich-text'
 import { useEffect, useState } from 'react'
 type OpenTypeCompProps = {
     editorRef: React.MutableRefObject<Editor | undefined>
-    updateRender: () => void
 }
 export const OpenTypeComp = (props: OpenTypeCompProps) => {
-    const { editorRef, updateRender } = props
+    const { editorRef } = props
     const editor = editorRef.current!
     const fullStyle = editor.getStyle(true)
     const [fontLigatures, setFontLigatures] = useState(fullStyle.fontLigatures)

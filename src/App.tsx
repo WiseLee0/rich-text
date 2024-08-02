@@ -178,9 +178,9 @@ export default function App() {
           ref={textareaRef} tabIndex={-1} wrap="off" aria-hidden="true" spellCheck="false" autoCorrect="off" className="focus-target"></textarea>
         <div className='page-pannel' style={{ maxHeight: CANVAS_H }}>
           {editorRef.current && <AutoResizeComp editorRef={editorRef} updateRender={updateRender} />}
-          {editorRef.current && <TypographyComp editorRef={editorRef} updateRender={updateRender} />}
-          {editorRef.current && <FillsComp editorRef={editorRef} updateRender={updateRender} />}
-          {editorRef.current && <OpenTypeComp editorRef={editorRef} updateRender={updateRender} />}
+          {editorRef.current && <TypographyComp editorRef={editorRef} />}
+          {editorRef.current && <FillsComp editorRef={editorRef} />}
+          {editorRef.current && <OpenTypeComp editorRef={editorRef} />}
           {editorRef.current && <DebugComp editorRef={editorRef} updateRender={updateRender} enableRef={enableRef} />}
         </div>
       </div>
