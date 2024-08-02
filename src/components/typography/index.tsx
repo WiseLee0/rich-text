@@ -187,6 +187,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
             if (style?.fontName?.style) setStyle(style.fontName.style)
             if (style?.fontSize) setFontSize(style.fontSize)
             if (style?.textDecoration) setTextDecoration(style.textDecoration)
+            else setTextDecoration("NONE")
         }
         editorRef.current?.addEventListener('selection', watchSelection)
         return () => {

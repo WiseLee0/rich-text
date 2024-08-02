@@ -8,7 +8,6 @@ export const getTextDecorationRects: EditorInterface['getTextDecorationRects'] =
     const style = editor.getStyle(true)
     const { textDecoration } = style
     const { styleOverrideTable, characterStyleIDs } = editor.textData
-    if (textDecoration === 'NONE') return []
     const rects: Rect[] = []
     if (!characterStyleIDs?.length || !styleOverrideTable?.length) {
         if (textDecoration === 'UNDERLINE') {

@@ -8,9 +8,9 @@ export interface StyleInterface {
     /** 水平垂直方式 */
     textAlignVertical: 'TOP' | 'MIDDLE' | 'BOTTOM',
     /** 大小写 */
-    textCase?: "NONE" | "LOWER" | "UPPER" | "TITLE",
+    textCase: "NONE" | "LOWER" | "UPPER" | "TITLE",
     /** 文本修饰 */
-    textDecoration?: "STRIKETHROUGH" | "UNDERLINE" | "NONE",
+    textDecoration: "STRIKETHROUGH" | "UNDERLINE" | "NONE",
     maxLines?: number,
     textTruncation?: "DISABLED" | "ENDING",
     lineHeight?: {
@@ -21,7 +21,7 @@ export interface StyleInterface {
         url: string
     },
     /** 字体 */
-    fontName?: {
+    fontName: {
         family: string,
         style: string,
         postscript: string

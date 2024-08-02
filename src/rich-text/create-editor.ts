@@ -29,7 +29,9 @@ export const createEditor = (): Editor => {
                 },
             ],
             fontVariations: [],
-            fontLigatures: "ENABLE"
+            fontLigatures: "ENABLE",
+            textDecoration: "NONE",
+            textCase: "NONE"
         },
         __selection: {
             anchor: -1,

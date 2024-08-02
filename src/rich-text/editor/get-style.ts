@@ -31,29 +31,31 @@ export const getStyle: EditorInterface['getStyle'] = (editor, ignoreSelection) =
     const styles: Record<string, any> = {}
     for (let i = 0; i < styleIDs.length; i++) {
         const styleID = styleIDs[i];
-        const override: any = { ...editor.style, ...styleOverrideTableMap.get(styleID) }
-        if (override) {
-            for (const key in override) {
-                const style = styles[key]
-                if (!style) {
-                    styles[key] = deepClone(override[key as keyof StyleInterface])
-                    continue
+        const overrideStyles: any = { ...editor.style, ...styleOverrideTableMap.get(styleID) }
+        if (!overrideStyles) continue;
+        for (const key in overrideStyles) {
+            const overrideStyle = overrideStyles[key]
+            const style = styles[key]
+            // 应用覆盖样式表
+            if (!style) {
+                styles[key] = deepClone(overrideStyle)
+                continue
+            }
+            if (style === 'mix') continue
+            if (key === 'fontName') {
+                if (style['family'] !== overrideStyle['family']) {
+                    styles[key]['family'] = 'mix'
                 }
-                if (style === 'mix') continue
-                if (key === 'fontName') {
-                    if (style['family'] !== override[key]['family']) {
-                        styles[key]['family'] = 'mix'
-                    }
-                    if (style['style'] !== override[key]['style']) {
-                        styles[key]['style'] = 'mix'
-                    }
-                    continue;
+                if (style['style'] !== overrideStyle['style']) {
+                    styles[key]['style'] = 'mix'
                 }
-                if (!deepEqual(style, override[key as keyof StyleInterface])) {
-                    styles[key] = 'mix'
-                }
+                continue;
+            }
+            if (!deepEqual(style, overrideStyle)) {
+                styles[key] = 'mix'
             }
         }
+
     }
     __select_styles.styles = {
         ...editor.style,
