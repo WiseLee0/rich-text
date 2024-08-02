@@ -1,7 +1,7 @@
 import { InputNumber, Radio, RadioChangeEvent, Select, Slider, Tooltip } from "antd"
 import { Editor, StyleInterface } from "../../rich-text"
 import './index.css'
-import { useEffect, useState } from "react"
+import { useEffect, useReducer, useState } from "react"
 import { fontListData } from './font-list'
 
 
@@ -13,10 +13,11 @@ type TypographyCompProps = {
 
 
 export const TypographyComp = (props: TypographyCompProps) => {
-    const { editorRef, updateRender } = props
+    const { editorRef } = props
     const editor = editorRef.current!
     const editorStyle = editor.getStyle(true)
 
+    const [, updateRender] = useReducer(i => i + 1, 0)
     const [family, setFamily] = useState(editorStyle.fontName!.family)
     const [style, setStyle] = useState(editorStyle.fontName!.style)
     const [fontSize, setFontSize] = useState(editorStyle.fontSize)

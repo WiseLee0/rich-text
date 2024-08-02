@@ -41,7 +41,7 @@ export const createEditor = (): Editor => {
         __events: {},
         derivedTextData: {},
         textData: {
-            characters: "hellofiiworld\nnewline",
+            characters: "hellofiiworfiild\nnewline",
         },
 
         // Core

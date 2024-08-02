@@ -78,13 +78,16 @@ export function wordTokenize(input: string) {
 /**
  * 将字符串按照字体进行分割
  */
-export function familyTokenize(textData: Record<string, any>, characters: string) {
+export function fontTokenize(textData: Record<string, any>, characters: string) {
     const { characterStyleIDs, styleOverrideTable } = textData
-    const familyModifySet = new Set<number>()
+    const modifySet = new Set<number>()
     for (let i = 0; i < styleOverrideTable?.length; i++) {
         const styleOverride = styleOverrideTable[i];
+        if (styleOverride.fontLigatures === "DISABLE") {
+            modifySet.add(styleOverride.styleID)
+        }
         if (styleOverride?.fontName?.family) {
-            familyModifySet.add(styleOverride.styleID)
+            modifySet.add(styleOverride.styleID)
         }
     }
 
@@ -98,7 +101,7 @@ export function familyTokenize(textData: Record<string, any>, characters: string
             token.push(char)
             continue
         }
-        if (characterStyleIDs && familyModifySet.has(characterStyleIDs[i])) {
+        if (characterStyleIDs && modifySet.has(characterStyleIDs[i])) {
             if (str.length) token.push(str)
             str = char
             let idx = i

@@ -1,7 +1,7 @@
-import { Radio, RadioChangeEvent, Switch, Tooltip } from 'antd'
+import { Radio, RadioChangeEvent, Tooltip } from 'antd'
 import './index.css'
 import { Editor } from '../../rich-text'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 type OpenTypeCompProps = {
     editorRef: React.MutableRefObject<Editor | undefined>
     updateRender: () => void
@@ -21,6 +21,17 @@ export const OpenTypeComp = (props: OpenTypeCompProps) => {
         editor.apply()
         setFontLigatures(e.target.value)
     }
+
+    useEffect(() => {
+        const watchSelection = () => {
+            const style = editorRef.current?.getStyle()
+            if (style?.fontLigatures) setFontLigatures(style.fontLigatures)
+        }
+        editorRef.current?.addEventListener('selection', watchSelection)
+        return () => {
+            editorRef.current?.removeEventListener('selection', watchSelection)
+        }
+    }, [])
 
     return <div className='opentype-container'>
         <span className="title">OpenType 特性</span>

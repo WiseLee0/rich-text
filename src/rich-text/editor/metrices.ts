@@ -1,11 +1,11 @@
-import { Editor, EditorInterface, familyTokenize } from "..";
+import { Editor, EditorInterface, fontTokenize } from "..";
 
 export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
     if (editor.__matrices) return editor.__matrices
 
     const data = editor.textData
-    const familyTokens = familyTokenize(data, editor.getText())
-    if (!familyTokens.length) return;
+    const tokens = fontTokenize(data, editor.getText())
+    if (!tokens.length) return;
 
     const { characterStyleIDs, styleOverrideTable } = data
     const styleMap = new Map<number, any>()
@@ -17,16 +17,16 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
     }
 
     editor.__matrices = []
-    let familyTokenOffset = 0
+    let tokenOffset = 0
     let firstCharacter = 0
-    for (let i = 0; i < familyTokens.length; i++) {
-        const token = familyTokens[i];
-        const style = styleMap.get(characterStyleIDs?.[familyTokenOffset] || -1)
+    for (let i = 0; i < tokens.length; i++) {
+        const token = tokens[i];
+        const style = styleMap.get(characterStyleIDs?.[tokenOffset] || -1)
         let family = style?.fontName?.family ?? editor.style.fontName?.family
         let fontStyle = style?.fontName?.style ?? editor.style.fontName?.style
         const font = editor.getFont(family, fontStyle)
         if (!font) continue
-        const features = getLayoutFeatures(editor)
+        const features = getLayoutFeatures(editor, tokenOffset)
         const { glyphs, positions } = font.layout(token, features)
         const isWrap = token === '\n'
         for (let j = 0; j < glyphs.length; j++) {
@@ -52,13 +52,13 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
             })
             firstCharacter += glyph.codePoints.length;
         }
-        familyTokenOffset += token.length
+        tokenOffset += token.length
     }
 
     return editor.__matrices;
 }
 
-const getLayoutFeatures = (editor: Editor) => {
+const getLayoutFeatures = (editor: Editor, offset: number) => {
     const feature = {
         // 在特定字符对之间调整字符间距，以确保视觉上的均衡和美观
         kern: true,
@@ -83,8 +83,10 @@ const getLayoutFeatures = (editor: Editor) => {
         // 标记到标记定位，用于定位一个标记相对于另一个标记的位置
         mkmk: true
     }
-    const style = editor.getStyle(true)
+    const styleID = editor.textData?.characterStyleIDs?.[offset]
+    const overrideStyle = editor.textData?.styleOverrideTable?.find(item => item.styleID === styleID)
+    const style = overrideStyle ?? editor.getStyle(true)
     if (style.fontLigatures === "DISABLE") feature.liga = false
-    
+
     return feature
 }
