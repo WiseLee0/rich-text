@@ -131,7 +131,7 @@ const wordLines = (lines: MetricesInterface[][], metrices: MetricesInterface[], 
 }
 
 const splitWordGroup = (editor: Editor) => {
-    const metrices = editor.__matrices ?? editor.getMetrices()
+    const metrices = editor.__metrices ?? editor.getMetrices()
     if (!metrices) return;
 
     const text = editor.getText()

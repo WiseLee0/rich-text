@@ -5,7 +5,7 @@ export const getTextDecorationRects: EditorInterface['getTextDecorationRects'] =
     const glyphs = editor?.getGlyphs()
     const metrices = editor?.getMetrices()
     if (!baselines?.length || !glyphs?.length || !metrices?.length) return [];
-    const style = editor.getStyle(true)
+    const style = editor.getStyle()
     const { textDecoration } = style
     const { styleOverrideTable, characterStyleIDs } = editor.textData
     const rects: Rect[] = []
@@ -38,6 +38,7 @@ export const getTextDecorationRects: EditorInterface['getTextDecorationRects'] =
 
     for (let i = 0; i < glyphs.length; i++) {
         const glyph = glyphs[i];
+        if(glyph.firstCharacter === undefined) continue
         const metrice = metricesMap.get(glyph.firstCharacter)
         if (!metrice) {
             console.warn('getTextDecorationRects exception')

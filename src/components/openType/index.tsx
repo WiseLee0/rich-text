@@ -8,7 +8,7 @@ type OpenTypeCompProps = {
 export const OpenTypeComp = (props: OpenTypeCompProps) => {
     const { editorRef } = props
     const editor = editorRef.current!
-    const fullStyle = editor.getStyle(true)
+    const fullStyle = editor.getStyle()
     const [, updateRender] = useReducer(i => i + 1, 0)
     const [fontLigatures, setFontLigatures] = useState(fullStyle.fontLigatures)
     const [fontPosition, setFontPosition] = useState(fullStyle.fontPosition)
@@ -47,7 +47,7 @@ export const OpenTypeComp = (props: OpenTypeCompProps) => {
 
     useEffect(() => {
         const watchSelection = () => {
-            const style = editorRef.current?.getStyle()
+            const style = editorRef.current?.getStyleForSelection()
             if (style?.fontLigatures) setFontLigatures(style.fontLigatures)
             if (style?.fontPosition) setFontPosition(style.fontPosition)
             updateRender()

@@ -19,11 +19,14 @@ export type Editor = {
     __events: Partial<EventType>
     __selection: Selection
     __select_styles: Partial<{ anchor: number, focus: number, styles: StyleInterface }>
-    __matrices?: MetricesInterface[]
+    __metrices?: MetricesInterface[]
+    __truncation_metrice?: Map<string, MetricesInterface>
 
     // core
     /** 布局段落中的文本，使其包装到给定的宽度和高度 */
     layout: OmitFirstArg<EditorInterface['layout']>
+    layoutW: OmitFirstArg<EditorInterface['layoutW']>
+    layoutH: OmitFirstArg<EditorInterface['layoutH']>
     /** 计算文本布局 */
     apply: OmitFirstArg<EditorInterface['apply']>
 
@@ -32,6 +35,8 @@ export type Editor = {
     setStyle: OmitFirstArg<EditorInterface['setStyle']>
     /** 获取样式 */
     getStyle: OmitFirstArg<EditorInterface['getStyle']>
+    /** 获取选区样式 */
+    getStyleForSelection: OmitFirstArg<EditorInterface['getStyleForSelection']>
     /** 获取文本内容 */
     getText: OmitFirstArg<EditorInterface['getText']>
     /** 插入文本 */
@@ -93,8 +98,11 @@ export type EditorInterface = {
     getFonts: (editor: Editor, family?: string) => Font[] | undefined
     getFont: (editor: Editor, family?: string, style?: string) => Font | undefined
     setStyle: (editor: Editor, style: Partial<StyleInterface>) => void
-    getStyle: (editor: Editor, ignoreSelection?: boolean) => StyleInterface
+    getStyleForSelection: (editor: Editor) => StyleInterface
+    getStyle: (editor: Editor, firstCharacter?: number) => StyleInterface
     layout: (editor: Editor, width?: number, height?: number) => void
+    layoutW: (editor: Editor, width: number) => void
+    layoutH: (editor: Editor, height: number) => void
     apply: (editor: Editor) => void
     insertText: (editor: Editor, text: string) => void
     deleteText: (editor: Editor) => void
@@ -108,10 +116,11 @@ export type EditorInterface = {
     getBaseLineCharacterOffset: (editor: Editor, baselineIdx: number) => number[] | undefined
     getLogicalCharacterOffset: (editor: Editor) => number[]
     getTextDecorationRects: (editor: Editor) => Rect[]
-    getFillPaintsForGlyph: (editor: Editor, firstCharacter: number) => FillPaintType[]
+    getFillPaintsForGlyph: (editor: Editor, firstCharacter?: number) => FillPaintType[]
     addEventListener: EventListenerType
     removeEventListener: EventListenerType
     execEvent: (editor: Editor, type: keyof EventType) => void
+    handleTextTruncation: (editor: Editor) => void
 }
 
 export type Rect = [number, number, number, number]

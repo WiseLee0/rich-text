@@ -5,5 +5,6 @@ export interface GlyphsInterface {
         y: number
     },
     fontSize: number,
-    firstCharacter: number
+    firstCharacter?: number
+    xAdvance?: number
 }

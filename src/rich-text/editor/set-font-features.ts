@@ -27,7 +27,7 @@ export const setFontFeatures = (editor: Editor, offset: number) => {
     }
     const styleID = editor.textData?.characterStyleIDs?.[offset]
     const overrideStyle = editor.textData?.styleOverrideTable?.find(item => item.styleID === styleID)
-    const style = overrideStyle ?? editor.getStyle(true)
+    const style = overrideStyle ?? editor.getStyle()
     if (style.fontLigatures === "DISABLE") feature.liga = false
     if (style.fontPosition === "SUPER") feature.sups = true
     if (style.fontPosition === "SUB") feature.subs = true

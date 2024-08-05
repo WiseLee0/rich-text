@@ -15,3 +15,11 @@ export const layout: EditorInterface['layout'] = (editor, width, height) => {
     }
     return editor.apply()
 }
+
+export const layoutW: EditorInterface['layoutW'] = (editor, width) => {
+    return editor.layout(width)
+}
+
+export const layoutH: EditorInterface['layoutH'] = (editor, height) => {
+    return editor.layout(editor.width, height)
+}

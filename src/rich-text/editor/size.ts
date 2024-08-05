@@ -3,6 +3,12 @@ import { Editor } from "..";
 export const getH = (editor: Editor) => {
     const baselines = editor.getBaselines()
     if (!baselines?.length) return 0;
+
+    // 省略文本
+    if (editor.style.textTruncation === 'ENABLE' && editor.style.truncatedHeight > -1) {
+        return editor.style.truncatedHeight
+    }
+
     const lastBaseLine = baselines[baselines.length - 1]
     // 最后一个字符是换行符，则需要添加一段高度
     const characters = editor.getText()

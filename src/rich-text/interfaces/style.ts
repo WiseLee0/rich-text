@@ -11,8 +11,16 @@ export interface StyleInterface {
     textCase: "NONE" | "LOWER" | "UPPER" | "TITLE",
     /** 文本修饰 */
     textDecoration: "STRIKETHROUGH" | "UNDERLINE" | "NONE",
-    maxLines?: number,
-    textTruncation?: "DISABLED" | "ENDING",
+    
+    /** 文本省略 */
+    textTruncation: SwitchType,
+    /** 省略最大行数 */
+    maxLines: number,
+    /** 省略开始下标字符 */
+    truncationStartIndex: number,
+    /** 省略高度 */
+    truncatedHeight: number,
+
     lineHeight?: {
         value: number,
         units: "PERCENT" | "PIXELS"
@@ -39,11 +47,11 @@ export interface StyleInterface {
     /** 填充样式 */
     fillPaints: FillPaintType[],
     /** 字体常见连字 */
-    fontLigatures: "ENABLE" | "DISABLE"
+    fontLigatures: SwitchType
     /** 数字位置 上标&下标 */
     fontPosition: "NONE" | "SUPER" | "SUB"
     /** 数字分数 */
-    fontNumericFraction: "ENABLE" | "DISABLE"
+    fontNumericFraction: SwitchType
 }
 
 export type FillPaintType = {
@@ -60,3 +68,5 @@ export type FillPaintType = {
 }
 
 export type BlendModeType = "NORMAL" | "DARKEN"
+
+type SwitchType = "DISABLE" | "ENABLE"

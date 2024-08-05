@@ -14,7 +14,7 @@ type TypographyCompProps = {
 export const TypographyComp = (props: TypographyCompProps) => {
     const { editorRef } = props
     const editor = editorRef.current!
-    const editorStyle = editor.getStyle(true)
+    const editorStyle = editor.getStyle()
 
     const [, updateRender] = useReducer(i => i + 1, 0)
     const [family, setFamily] = useState(editorStyle.fontName!.family)
@@ -181,7 +181,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
 
     useEffect(() => {
         const watchSelection = () => {
-            const style = editorRef.current?.getStyle()
+            const style = editorRef.current?.getStyleForSelection()
             if (style?.fontName?.family) setFamily(style.fontName.family)
             if (style?.fontName?.style) setStyle(style.fontName.style)
             if (style?.fontSize) setFontSize(style.fontSize)

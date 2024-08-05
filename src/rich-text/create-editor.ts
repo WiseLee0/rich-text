@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyle, getTextDecorationRects, getFillPaintsForGlyph, addEventListener, removeEventListener } from './'
+import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyph, addEventListener, removeEventListener, layoutW, layoutH, getStyle } from './'
 
 export const createEditor = (): Editor => {
 
@@ -8,8 +8,8 @@ export const createEditor = (): Editor => {
         fonMgr: new Map(),
         style: {
             fontSize: 24,
-            textAlignHorizontal: 'CENTER',
-            textAlignVertical: 'MIDDLE',
+            textAlignHorizontal: 'LEFT',
+            textAlignVertical: 'TOP',
             textAutoResize: 'WIDTH_AND_HEIGHT',
             fontName: {
                 family: "Play", style: "Regular", postscript: "Play"
@@ -33,7 +33,11 @@ export const createEditor = (): Editor => {
             textDecoration: "NONE",
             textCase: "NONE",
             fontPosition: "NONE",
-            fontNumericFraction: "DISABLE"
+            fontNumericFraction: "DISABLE",
+            maxLines: 1,
+            textTruncation: "ENABLE",
+            truncationStartIndex: -1,
+            truncatedHeight: -1
         },
         __selection: {
             anchor: -1,
@@ -45,16 +49,19 @@ export const createEditor = (): Editor => {
         __events: {},
         derivedTextData: {},
         textData: {
-            characters: "hellofiiworld\nnewline\nH23O1CH2/4",
+            characters: "hello\n123123\n123",
         },
 
         // Core
         layout: (...args) => layout(editor, ...args),
+        layoutW: (...args) => layoutW(editor, ...args),
+        layoutH: (...args) => layoutH(editor, ...args),
         apply: (...args) => apply(editor, ...args),
 
         // Editor
         setStyle: (...args) => setStyle(editor, ...args),
-        getStyle: (...args) => getStyle(editor, ...args),
+        getStyle:  (...args) => getStyle(editor, ...args),
+        getStyleForSelection: (...args) => getStyleForSelection(editor, ...args),
         insertText: (...args) => insertText(editor, ...args),
         replaceText: (...args) => replaceText(editor, ...args),
         getText: (...args) => getText(editor, ...args),

@@ -11,6 +11,7 @@ import { TypographyComp } from './components/typography';
 import { DebugComp } from './components/debug';
 import { FillsComp } from './components/fills';
 import { OpenTypeComp } from './components/openType';
+import { ParagraphComp } from './components/paragraph';
 
 export default function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -81,12 +82,12 @@ export default function App() {
 
       // 拖拽框事件
       if (mouseDownRef.current && canvasRef.current!.style.cursor === 'ew-resize') {
-        editorRef.current!.layout(x, editorRef.current?.height ?? 0)
+        editorRef.current!.layoutW(x)
         updateRender()
         return
       }
       if (mouseDownRef.current && canvasRef.current!.style.cursor === 'ns-resize') {
-        editorRef.current!.layout(editorRef.current?.width, y)
+        editorRef.current!.layoutH(y)
         updateRender()
         return
       }
@@ -143,7 +144,7 @@ export default function App() {
     const editor = createEditor()
     editor.fontMgrFromData([data1])
     editorRef.current = editor;
-    editor.layout(300, 150);
+    editor.layout(121);
     (window as any).getEditor = () => {
       return editorRef.current
     }
@@ -179,6 +180,7 @@ export default function App() {
         <div className='page-pannel' style={{ maxHeight: CANVAS_H }}>
           {editorRef.current && <AutoResizeComp editorRef={editorRef} updateRender={updateRender} />}
           {editorRef.current && <TypographyComp editorRef={editorRef} />}
+          {editorRef.current && <ParagraphComp editorRef={editorRef} />}
           {editorRef.current && <FillsComp editorRef={editorRef} />}
           {editorRef.current && <OpenTypeComp editorRef={editorRef} />}
           {editorRef.current && <DebugComp editorRef={editorRef} updateRender={updateRender} enableRef={enableRef} />}
