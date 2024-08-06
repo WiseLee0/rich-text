@@ -34,7 +34,7 @@ export const createEditor = (): Editor => {
             textCase: "NONE",
             fontPosition: "NONE",
             fontNumericFraction: "DISABLE",
-            maxLines: 1,
+            maxLines: 2,
             textTruncation: "ENABLE",
             truncationStartIndex: -1,
             truncatedHeight: -1

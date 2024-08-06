@@ -1,7 +1,7 @@
 import { InputNumber, Radio, RadioChangeEvent } from "antd"
 import { Editor, StyleInterface } from "../../rich-text"
 import './index.css'
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 type ParagraphCompProps = {
     editorRef: React.MutableRefObject<Editor | undefined>
@@ -31,8 +31,20 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
         editor?.apply()
     }
 
+    useEffect(() => {
+        const watchSelection = () => {
+            const style = editorRef.current?.getStyleForSelection()
+            if (style?.maxLines) setMaxLine(style.maxLines)
+            if (style?.textTruncation) setTextTruncation(style.textTruncation)
+        }
+        editorRef.current?.addEventListener('selection', watchSelection)
+        return () => {
+            editorRef.current?.removeEventListener('selection', watchSelection)
+        }
+    }, [])
+
     return <div className="paragraph-container">
-        <span className="title">基础设置</span>
+        <span className="title">段落排印</span>
         <div className="paragraph-row">
             <span>截断文本</span>
             <Radio.Group buttonStyle="solid" value={textTruncation} onChange={handleTextTruncationChange}>
@@ -48,16 +60,15 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
                 </Radio.Button>
             </Radio.Group>
         </div>
-        <div className="paragraph-row">
+        {!disableMaxLine && <div className="paragraph-row">
             <span>最大行数</span>
             <InputNumber
-                disabled={disableMaxLine}
                 style={{ width: 70 }}
                 min={0}
                 onChange={handleMaxLineChange}
                 size="small"
                 value={maxLine}
             />
-        </div>
+        </div>}
     </div>
 }

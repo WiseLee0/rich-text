@@ -23,8 +23,10 @@ export default function App() {
     glyphBorder: false
   })
   const editorRef = useRef<Editor>()
-  const mouseDownRef = useRef(false)
-  const editorDownRef = useRef(false)
+  const mouseRef = useRef({
+    cursor: 'defalut',
+    isDown: false
+  })
 
   const render = async () => {
     const [Skia, surface] = await loadSkia(canvasRef.current!);
@@ -46,105 +48,12 @@ export default function App() {
     surface.requestAnimationFrame(drawFrame)
   }
 
-  const handleEvents = () => {
-    canvasRef.current?.addEventListener('mousedown', e => {
-      // 拖拽框事件
-      const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
-      if (Math.abs(x - editorRef.current!.width) < 5 && Math.abs(y - editorRef.current!.height) < 5) {
-        mouseDownRef.current = true
-        canvasRef.current!.style.cursor = 'nwse-resize';
-      } else if (Math.abs(x - editorRef.current!.width) < 5) {
-        mouseDownRef.current = true
-        canvasRef.current!.style.cursor = 'ew-resize';
-      } else if (Math.abs(y - editorRef.current!.height) < 5) {
-        mouseDownRef.current = true
-        canvasRef.current!.style.cursor = 'ns-resize';
-      } else {
-        mouseDownRef.current = false
-        canvasRef.current!.style.cursor = 'default';
-      }
-      if (mouseDownRef.current) {
-        editorRef.current?.deselection()
-        return
-      }
-
-      // 编辑事件
-      if (!editorRef.current) return;
-      if (x > editorRef.current.width || y > editorRef.current.height || x < 0 || y < 0) {
-        editorRef.current.deselection()
-        return
-      }
-      editorRef.current?.selectForXY(x, y)
-      editorDownRef.current = true
-    })
-    canvasRef.current?.addEventListener('mousemove', e => {
-      const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
-
-      // 拖拽框事件
-      if (mouseDownRef.current && canvasRef.current!.style.cursor === 'ew-resize') {
-        editorRef.current!.layoutW(x)
-        updateRender()
-        return
-      }
-      if (mouseDownRef.current && canvasRef.current!.style.cursor === 'ns-resize') {
-        editorRef.current!.layoutH(y)
-        updateRender()
-        return
-      }
-      if (mouseDownRef.current && canvasRef.current!.style.cursor === 'nwse-resize') {
-        editorRef.current!.layout(x, y)
-        updateRender()
-        return
-      }
-
-      // 编辑事件
-      if (!editorDownRef.current) return;
-      editorRef.current?.selectForXY(x, y, false)
-    })
-    canvasRef.current?.addEventListener('mouseup', e => {
-      mouseDownRef.current = false
-      canvasRef.current!.style.cursor = 'default';
-      if (!editorDownRef.current) return;
-      editorDownRef.current = false
-      const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
-      editorRef.current?.selectForXY(x, y, false)
-      setTimeout(() => {
-        textareaRef.current?.focus()
-      }, 0);
-    })
-
-
-    textareaRef.current?.addEventListener('input', (e: any) => {
-      editorRef.current?.insertText(e.data)
-      updateRender()
-    })
-
-    textareaRef.current?.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight') {
-        e.preventDefault()
-      }
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault()
-      }
-      if (e.key === 'Backspace') {
-        editorRef.current?.deleteText()
-        updateRender()
-        e.preventDefault()
-      }
-      if (e.key === 'Enter') {
-        editorRef.current?.insertText('\n')
-        updateRender()
-        e.preventDefault()
-      }
-    })
-  }
-
   const initRichData = async () => {
     const data1 = await (await fetch(PlayRegular)).arrayBuffer()
     const editor = createEditor()
     editor.fontMgrFromData([data1])
     editorRef.current = editor;
-    editor.layout(121);
+    editor.layout(150);
     (window as any).getEditor = () => {
       return editorRef.current
     }
@@ -162,11 +71,105 @@ export default function App() {
   const main = async () => {
     await initRichData()
     await render()
-    handleEvents()
   }
 
   useEffect(() => {
     main()
+  }, [])
+
+  useEffect(() => {
+    const setCursor = (x: number, y: number) => {
+      if (Math.abs(x - editorRef.current!.width) < 5 && Math.abs(y - editorRef.current!.height) < 5) {
+        mouseRef.current.cursor = 'nwse-resize'
+      } else if (Math.abs(x - editorRef.current!.width) < 5) {
+        mouseRef.current.cursor = 'ew-resize'
+      } else if (Math.abs(y - editorRef.current!.height) < 5) {
+        mouseRef.current.cursor = 'ns-resize'
+      } else {
+        mouseRef.current.cursor = 'default'
+      }
+      canvasRef.current!.style.cursor = mouseRef.current.cursor
+    }
+    const setCanvasStyleCursor = (x: number, y: number) => {
+      if (Math.abs(x - editorRef.current!.width) < 5 && Math.abs(y - editorRef.current!.height) < 5) {
+        canvasRef.current!.style.cursor = 'nwse-resize'
+      } else if (Math.abs(x - editorRef.current!.width) < 5) {
+        canvasRef.current!.style.cursor = 'ew-resize'
+      } else if (Math.abs(y - editorRef.current!.height) < 5) {
+        canvasRef.current!.style.cursor = 'ns-resize'
+      } else {
+        canvasRef.current!.style.cursor = 'default'
+      }
+    }
+    const handleCanvasMouseDown = (e: MouseEvent) => {
+      const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
+      mouseRef.current.isDown = true
+      setCursor(x, y)
+      const editor = editorRef.current!
+      if (mouseRef.current.cursor !== 'default' || x > editor.width || y > editor.height || x < 0 || y < 0) {
+        editorRef.current?.deselection()
+        return
+      }
+      editorRef.current?.selectForXY(x, y)
+    }
+    const handleCanvasMouseMove = (e: MouseEvent) => {
+      const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
+      setCanvasStyleCursor(x, y)
+      const editor = editorRef.current!
+      if (mouseRef.current.isDown && editor.hasSelection()) editor.selectForXY(x, y, false)
+      if (mouseRef.current.isDown) {
+        if (mouseRef.current.cursor === 'nwse-resize') {
+          editor.layout(x, y)
+        } else if (mouseRef.current.cursor === 'ew-resize') {
+          editor.layoutW(x)
+        } else if (mouseRef.current.cursor === 'ns-resize') {
+          editor.layoutH(y)
+        }
+        updateRender()
+      }
+    }
+    const handleCanvasMouseUp = (e: MouseEvent) => {
+      const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
+      mouseRef.current.isDown = false
+      setCursor(x, y)
+      setTimeout(() => {
+        textareaRef.current?.focus()
+      }, 0);
+    }
+    const hanldeInsertText = (e: any) => {
+      editorRef.current?.insertText(e.data)
+      updateRender()
+    }
+    const handleTextareaKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') {
+        e.preventDefault()
+      }
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault()
+      }
+      if (e.key === 'Backspace') {
+        editorRef.current?.deleteText()
+        updateRender()
+        e.preventDefault()
+      }
+      if (e.key === 'Enter') {
+        editorRef.current?.insertText('\n')
+        updateRender()
+        e.preventDefault()
+      }
+    }
+    canvasRef.current?.addEventListener('mousedown', handleCanvasMouseDown)
+    canvasRef.current?.addEventListener('mousemove', handleCanvasMouseMove)
+    canvasRef.current?.addEventListener('mouseup', handleCanvasMouseUp)
+    textareaRef.current?.addEventListener('input', hanldeInsertText)
+    textareaRef.current?.addEventListener('keydown', handleTextareaKeyDown)
+    return () => {
+      canvasRef.current?.removeEventListener('mousedown', handleCanvasMouseDown)
+      canvasRef.current?.removeEventListener('mousemove', handleCanvasMouseMove)
+      canvasRef.current?.removeEventListener('mouseup', handleCanvasMouseUp)
+      textareaRef.current?.removeEventListener('input', hanldeInsertText)
+      textareaRef.current?.removeEventListener('keydown', handleTextareaKeyDown)
+    }
   }, [])
 
 

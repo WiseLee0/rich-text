@@ -17,6 +17,7 @@ export const layout: EditorInterface['layout'] = (editor, width, height) => {
 }
 
 export const layoutW: EditorInterface['layoutW'] = (editor, width) => {
+    if (editor.style.textAutoResize === 'NONE') return editor.layout(width, editor.height)
     return editor.layout(width)
 }
 
