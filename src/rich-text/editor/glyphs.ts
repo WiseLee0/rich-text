@@ -17,7 +17,7 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
         let maxLines = editor.style.maxLines
         for (let i = 0; i < baselines.length; i++) {
             const baseline = baselines[i];
-            if (baseline.lineY + baseline.lineHeight < editor.height) {
+            if (baseline.lineY + baseline.lineHeight <= editor.height) {
                 maxLines = i + 1
                 continue
             }
