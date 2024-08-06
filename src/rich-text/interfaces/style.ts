@@ -21,6 +21,9 @@ export interface StyleInterface {
     /** 省略高度 */
     truncatedHeight: number,
 
+    /** 垂直裁剪 */
+    leadingTrim: "CAP_HEIGHT" | "NONE"
+
     lineHeight?: {
         value: number,
         units: "PERCENT" | "PIXELS"

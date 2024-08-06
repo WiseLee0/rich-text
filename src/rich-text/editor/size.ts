@@ -17,7 +17,11 @@ export const getH = (editor: Editor) => {
         wrapHeight = lastBaseLine.lineHeight
     }
 
-    const height = lastBaseLine.lineY + lastBaseLine.lineHeight + wrapHeight
+    let leadingH = 0
+    if (editor.style.leadingTrim === 'CAP_HEIGHT') {
+        leadingH = -(lastBaseLine.lineHeight - lastBaseLine.lineAscent)
+    }
+    const height = lastBaseLine.lineY + lastBaseLine.lineHeight + wrapHeight + leadingH
 
     return height
 }

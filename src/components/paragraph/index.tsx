@@ -11,6 +11,7 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
     const editor = editorRef.current!
     const [maxLine, setMaxLine] = useState(editor.style.maxLines)
     const [textTruncation, setTextTruncation] = useState(editor.style.textTruncation)
+    const [leadingTrim, setLeadingTrim] = useState(editor.style.leadingTrim)
     const { textAutoResize } = editor.style
     const disableMaxLine = textAutoResize === 'NONE'
 
@@ -30,12 +31,20 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
         })
         editor?.apply()
     }
+    const handleLeadingTrimChange = (e: RadioChangeEvent) => {
+        setLeadingTrim(e.target.value)
+        editor?.setStyle({
+            leadingTrim: e.target.value as StyleInterface['leadingTrim']
+        })
+        editor?.apply()
+    }
 
     useEffect(() => {
         const watchSelection = () => {
             const style = editorRef.current?.getStyleForSelection()
             if (style?.maxLines) setMaxLine(style.maxLines)
             if (style?.textTruncation) setTextTruncation(style.textTruncation)
+            if (style?.leadingTrim) setLeadingTrim(style.leadingTrim)
         }
         editorRef.current?.addEventListener('selection', watchSelection)
         return () => {
@@ -45,6 +54,25 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
 
     return <div className="paragraph-container">
         <span className="title">段落排印</span>
+        <div className="paragraph-row">
+            <span>垂直裁剪</span>
+            <Radio.Group buttonStyle="solid" value={leadingTrim} onChange={handleLeadingTrimChange}>
+                <Radio.Button value="NONE" style={{ height: 24, padding: 0 }} >
+                    <span className="opentype-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24">
+                            <path fill="currentColor" transform="translate(4 4)" fillOpacity=".9" fillRule="nonzero" stroke="none" d="m3.385 10.62.64-1.803H6.6l.64 1.803h.81L5.71 4.253h-.795L2.576 10.62h.808zm.882-2.488 1.02-2.872h.05l1.02 2.873h-2.09zm6.601 4.378c1.144 0 2.065-.522 2.065-1.753V5.845h-.71v.759h-.074c-.161-.25-.46-.822-1.393-.822-1.206 0-2.04.958-2.04 2.425 0 1.493.871 2.339 2.027 2.339.934 0 1.232-.547 1.394-.809h.062v.97c0 .796-.56 1.157-1.33 1.157-.868 0-1.173-.457-1.369-.722l-.584.41c.298.501.886.959 1.952.959v-.001zm-.024-2.624c-.92 0-1.394-.696-1.394-1.691 0-.97.46-1.753 1.394-1.753.895 0 1.367.72 1.367 1.753 0 1.057-.485 1.691-1.367 1.691z"></path>
+                            <path fill="currentColor" transform="translate(4 4)" fillOpacity=".9" fillRule="evenodd" stroke="none" d="M1 1.25h14V2H1v-.75zm0 13h14V15H1v-.75z"></path></svg>
+                    </span>
+                </Radio.Button>
+                <Radio.Button value="CAP_HEIGHT" style={{ height: 24, padding: 0 }} >
+                    <span className="opentype-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24">
+                            <path transform="translate(4 4)" fill="currentColor" fillOpacity=".9" fillRule="nonzero" stroke="none" d="m3.316 11.617.64-1.803h2.575l.64 1.803h.809L5.64 5.25h-.794l-2.339 6.367h.809zM4.2 9.13l1.02-2.872h.05l1.02 2.873H4.2zm6.6 4.378c1.145 0 2.066-.522 2.066-1.752V6.841h-.71V7.6h-.074c-.162-.25-.46-.822-1.393-.822-1.206 0-2.04.958-2.04 2.426 0 1.492.87 2.338 2.027 2.338.933 0 1.232-.547 1.394-.808h.062v.97c0 .795-.56 1.156-1.331 1.156-.868 0-1.173-.457-1.368-.722l-.585.41c.299.501.886.959 1.953.959v-.001zm-.024-2.624c-.92 0-1.393-.696-1.393-1.69 0-.971.46-1.754 1.393-1.754.895 0 1.368.72 1.368 1.753 0 1.057-.485 1.691-1.368 1.691z"></path>
+                            <path transform="translate(4 4)" fill="currentColor" fillOpacity=".9" fillRule="nonzero" stroke="none" d="M.625 3.625h14.75v.75H.625v-.75zm7.25 9.75H.625v-.75h7.25v.75zm5.75-.75h1.75v.75h-1.75v-.75z"></path></svg>
+                    </span>
+                </Radio.Button>
+            </Radio.Group>
+        </div>
         <div className="paragraph-row">
             <span>截断文本</span>
             <Radio.Group buttonStyle="solid" value={textTruncation} onChange={handleTextTruncationChange}>

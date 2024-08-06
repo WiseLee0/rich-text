@@ -12,8 +12,10 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     let lineHeightSum = 0
     const lineHeights = lines.map(line => line.reduce((pre, cur) => Math.max(pre, cur.height), 0))
     const allLineHeight = lineHeights.reduce((pre, cur) => pre + cur, 0)
+    const lineWidths = lines.map(line => line.reduce((pre, cur) => pre + cur.xAdvance, 0))
+    const lineMaxWidth = Math.max(...lineWidths)
 
-    const { textAlignHorizontal, textAlignVertical, textAutoResize } = editor.style
+    const { textAlignHorizontal, textAlignVertical, textAutoResize, leadingTrim } = editor.style
 
     if (textAlignVertical === 'TOP') {
         lineHeightSum = 0
@@ -27,13 +29,13 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     if (textAutoResize !== 'NONE') {
         lineHeightSum = 0
     }
-    let lienMaxWidth = 0
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
         endCharacter = firstCharacter + getMetricesLength(line)
         const lineHeight = lineHeights[i]
-        let lineWidth = line.reduce((pre, cur) => pre + cur.xAdvance, 0)
+        let lineWidth = lineWidths[i]
         const lineAscent = line.reduce((pre, cur) => Math.max(pre, cur.ascent), 0)
+        const capHeight = line.reduce((pre, cur) => Math.max(pre, cur.capHeight), 0)
         let positionX = 0
         if (line.length !== 1 && lineWidth === 0 && line[0].name === '\n') {
             firstCharacter = endCharacter
@@ -55,19 +57,33 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
             if (justifiedLineWidth > -1) lineWidth = justifiedLineWidth
         }
         if (textAutoResize === 'WIDTH_AND_HEIGHT') {
-            lienMaxWidth = Math.max(lienMaxWidth, lineWidth)
+
             if (textAlignHorizontal === 'CENTER') {
-                positionX = (lienMaxWidth - lineWidth) / 2
+                positionX = (lineMaxWidth - lineWidth) / 2
             }
             if (textAlignHorizontal === 'RIGHT') {
-                positionX = lienMaxWidth - lineWidth
+                positionX = lineMaxWidth - lineWidth
+            }
+        }
+
+        let leadingTrimY = 0
+        if (leadingTrim === 'CAP_HEIGHT' && i === 0 && textAutoResize !== 'NONE') {
+            lineHeightSum -= (lineAscent - capHeight)
+        } else if (leadingTrim === 'CAP_HEIGHT' && textAutoResize === 'NONE') {
+            if (textAlignVertical === 'TOP') {
+                leadingTrimY -= (lineAscent - capHeight)
+            } else if (textAlignVertical === 'MIDDLE') {
+                leadingTrimY -= (lineAscent - capHeight) / 2
+                leadingTrimY += (lineHeight - lineAscent) / 2
+            } else if (textAlignVertical === 'BOTTOM') {
+                leadingTrimY += lineHeight - lineAscent
             }
         }
 
         baselines.push({
             position: {
                 x: positionX,
-                y: lineHeightSum + lineAscent
+                y: lineHeightSum + lineAscent + leadingTrimY
             },
             lineY: lineHeightSum,
             width: lineWidth,

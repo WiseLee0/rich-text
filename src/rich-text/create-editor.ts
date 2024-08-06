@@ -8,7 +8,7 @@ export const createEditor = (): Editor => {
         fonMgr: new Map(),
         style: {
             fontSize: 24,
-            textAlignHorizontal: 'LEFT',
+            textAlignHorizontal: 'CENTER',
             textAlignVertical: 'TOP',
             textAutoResize: 'WIDTH_AND_HEIGHT',
             fontName: {
@@ -35,9 +35,10 @@ export const createEditor = (): Editor => {
             fontPosition: "NONE",
             fontNumericFraction: "DISABLE",
             maxLines: 2,
-            textTruncation: "ENABLE",
+            textTruncation: "DISABLE",
             truncationStartIndex: -1,
-            truncatedHeight: -1
+            truncatedHeight: -1,
+            leadingTrim: "CAP_HEIGHT"
         },
         __selection: {
             anchor: -1,

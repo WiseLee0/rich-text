@@ -1,4 +1,4 @@
-import { BaseLineInterface, Editor, EditorInterface, GlyphsInterface, baselineToMetricesRange, calcJustifiedSpaceWidth } from "..";
+import { EditorInterface, GlyphsInterface, baselineToMetricesRange, calcJustifiedSpaceWidth } from "..";
 
 export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
     if (editor.derivedTextData.glyphs) return editor.derivedTextData.glyphs

@@ -38,6 +38,7 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
             let unitsPerPx = fontSize / (font.unitsPerEm || 1000);
             const xAdvance = positions[0].xAdvance * unitsPerPx
             const height = (glyph as any).advanceHeight * unitsPerPx
+            const capHeight = font.capHeight * unitsPerPx
             const ascent = font.ascent * unitsPerPx
             const path = glyph.path.scale(unitsPerPx, -unitsPerPx).toSVG()
             editor.__truncation_metrice.set(styleKey, {
@@ -46,6 +47,7 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
                 path,
                 xAdvance,
                 ascent,
+                capHeight,
                 height,
                 fontSize,
                 name: '...',
@@ -56,6 +58,7 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
 
         const features = setFontFeatures(editor, tokenOffset)
         const { glyphs, positions } = font.layout(token, features)
+        
         const isWrap = token === '\n'
         for (let j = 0; j < glyphs.length; j++) {
             const glyph = glyphs[j]
@@ -65,6 +68,7 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
             const xAdvance = isWrap ? 0 : positions[j].xAdvance * unitsPerPx
             const height = (glyph as any).advanceHeight * unitsPerPx
             const ascent = font.ascent * unitsPerPx
+            const capHeight = font.capHeight * unitsPerPx
             const path = isWrap ? '' : glyph.path.scale(unitsPerPx, -unitsPerPx).toSVG()
 
             editor.__metrices.push({
@@ -75,6 +79,7 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
                 ascent,
                 height,
                 fontSize,
+                capHeight,
                 name: isWrap ? '\n' : glyph.name,
                 firstCharacter
             })
