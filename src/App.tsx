@@ -183,7 +183,7 @@ export default function App() {
         <div className='page-pannel' style={{ maxHeight: CANVAS_H }}>
           {editorRef.current && <AutoResizeComp editorRef={editorRef} updateRender={updateRender} />}
           {editorRef.current && <TypographyComp editorRef={editorRef} />}
-          {editorRef.current && <ParagraphComp editorRef={editorRef} />}
+          {editorRef.current && <ParagraphComp editorRef={editorRef} updateRender={updateRender} />}
           {editorRef.current && <FillsComp editorRef={editorRef} />}
           {editorRef.current && <OpenTypeComp editorRef={editorRef} />}
           {editorRef.current && <DebugComp editorRef={editorRef} updateRender={updateRender} enableRef={enableRef} />}

@@ -5,9 +5,10 @@ import { useEffect, useState } from "react"
 
 type ParagraphCompProps = {
     editorRef: React.MutableRefObject<Editor | undefined>
+    updateRender: () => void
 }
 export const ParagraphComp = (props: ParagraphCompProps) => {
-    const { editorRef } = props
+    const { editorRef, updateRender } = props
     const editor = editorRef.current!
     const [maxLine, setMaxLine] = useState(editor.style.maxLines)
     const [textTruncation, setTextTruncation] = useState(editor.style.textTruncation)
@@ -37,6 +38,7 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
             leadingTrim: e.target.value as StyleInterface['leadingTrim']
         })
         editor?.apply()
+        updateRender()
     }
 
     useEffect(() => {
