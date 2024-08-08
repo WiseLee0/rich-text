@@ -20,7 +20,6 @@ export type Editor = {
     __selection: Selection
     __select_styles: Partial<{ anchor: number, focus: number, styles: StyleInterface }>
     __metrices?: MetricesInterface[]
-    __truncation_metrice?: Map<string, MetricesInterface>
 
     // core
     /** 布局段落中的文本，使其包装到给定的宽度和高度 */

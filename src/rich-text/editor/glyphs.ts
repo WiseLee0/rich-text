@@ -39,9 +39,8 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
         let count = 0
         // 空格宽度
         let spaceWidth = i < baselines.length - 1 ? calcJustifiedSpaceWidth(editor, line, firstCharacter, endCharacter) : -1
-        // 截断文本样式
-        const truncationStyle = editor.getStyle(baseline.endCharacter - 1)
-        const fontKey = `${truncationStyle.fontName.family}#${truncationStyle.fontName.style}`
+        const endStyle = editor.getStyle(baseline.endCharacter - 1)
+        const endFont = editor.getFont(endStyle.fontName.family, endStyle.fontName.style)
 
         for (let j = 0; j < line.length; j++) {
             const metrice = line[j];
@@ -62,10 +61,15 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
 
             // 截断文本处理
             if (!hasTextTruncation && editor.style.textTruncation === 'ENABLE' && editor.style.maxLines - 1 === i) {
-                if (editor.__truncation_metrice?.has(fontKey)) {
-                    const truncationMetrice = editor.__truncation_metrice.get(fontKey)!
+                if (endFont) {
+                    const { glyphs: fontGlyphs, positions } = endFont.layout('.')
+                    const glyph = fontGlyphs[0]
+                    const fontSize = endStyle?.fontSize ?? editor.style.fontSize
+                    let unitsPerPx = fontSize / (endFont.unitsPerEm || 1000);
+                    const xAdvance = positions[0].xAdvance * unitsPerPx
+                    const path = glyph.path.scale(unitsPerPx, -unitsPerPx).toSVG()
                     // 省略号宽度
-                    const truncationLen = truncationMetrice.xAdvance * 3
+                    const truncationLen = xAdvance * 3
                     // Rule1: 文本宽度 - 省略号宽度 < 当前字符x位置；需要遮挡部分字符
                     const isTruncation = textWidth - truncationLen < x
                     // Rule2: 最大截断行数 < 文本行数；到结尾还不符合Rule1，则尝试当前Rule2
@@ -75,13 +79,13 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
                     if (isTruncation) {
                         const temp = glyphs.pop()
                         const truncationGlyph = {
-                            commandsBlob: truncationMetrice.path,
+                            commandsBlob: path,
                             position: {
                                 x: x - metrice.xAdvance,
                                 y: baseline.position.y
                             },
-                            fontSize: truncationMetrice.fontSize,
-                            xAdvance: truncationMetrice.xAdvance
+                            fontSize,
+                            xAdvance
                         }
                         glyphs.push(truncationGlyph)
                         hasTextTruncation = true
@@ -93,13 +97,13 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
                     // 处理Rule2
                     else if (isTruncationMaxLines) {
                         const truncationGlyph = {
-                            commandsBlob: truncationMetrice.path,
+                            commandsBlob: path,
                             position: {
                                 x,
                                 y: baseline.position.y
                             },
-                            fontSize: truncationMetrice.fontSize,
-                            xAdvance: truncationMetrice.xAdvance
+                            fontSize,
+                            xAdvance
                         }
                         glyphs.push(truncationGlyph)
                         hasTextTruncation = true

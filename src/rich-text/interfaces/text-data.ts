@@ -3,10 +3,7 @@ type StyleOverrideTableInterface = {
 }
 export type TextDataLinesInterface = {
     lineType: "ORDERED_LIST" | "UNORDERED_LIST" | "PLAIN",
-    styleId: number,
     indentationLevel: number,
-    sourceDirectionality: "AUTO",
-    listStartOffset: number,
     isFirstLineOfList: boolean
 }
 export interface TextDataInterface {

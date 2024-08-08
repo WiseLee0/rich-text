@@ -1,13 +1,10 @@
-import { clearCache, EditorInterface, fixDefaultData, getH } from ".."
+import { clearCache, EditorInterface, getH, textDataLines } from ".."
 
 export const apply: EditorInterface['apply'] = (editor) => {
     clearCache(editor)
     if (editor.style.textAutoResize === 'WIDTH_AND_HEIGHT') {
         editor.width = Infinity
     }
-
-    // 缺省数据，使用默认值填充
-    fixDefaultData(editor)
 
     const baselines = editor.getBaselines() ?? []
     const glyphs = editor.getGlyphs()

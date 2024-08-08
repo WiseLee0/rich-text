@@ -8,7 +8,7 @@ export const createEditor = (): Editor => {
         fonMgr: new Map(),
         style: {
             fontSize: 24,
-            textAlignHorizontal: 'CENTER',
+            textAlignHorizontal: 'LEFT',
             textAlignVertical: 'TOP',
             textAutoResize: 'WIDTH_AND_HEIGHT',
             fontName: {
@@ -38,7 +38,7 @@ export const createEditor = (): Editor => {
             textTruncation: "DISABLE",
             truncationStartIndex: -1,
             truncatedHeight: -1,
-            leadingTrim: "CAP_HEIGHT"
+            leadingTrim: "NONE"
         },
         __selection: {
             anchor: -1,
@@ -51,6 +51,23 @@ export const createEditor = (): Editor => {
         derivedTextData: {},
         textData: {
             characters: "hello\n123123\n123",
+            lines: [
+                {
+                    "lineType": "ORDERED_LIST",
+                    "indentationLevel": 1,
+                    "isFirstLineOfList": true
+                },
+                {
+                    "lineType": "PLAIN",
+                    "indentationLevel": 0,
+                    "isFirstLineOfList": false
+                },
+                {
+                    "lineType": "PLAIN",
+                    "indentationLevel": 0,
+                    "isFirstLineOfList": false
+                }
+            ]
         },
 
         // Core
@@ -61,7 +78,7 @@ export const createEditor = (): Editor => {
 
         // Editor
         setStyle: (...args) => setStyle(editor, ...args),
-        getStyle:  (...args) => getStyle(editor, ...args),
+        getStyle: (...args) => getStyle(editor, ...args),
         getStyleForSelection: (...args) => getStyleForSelection(editor, ...args),
         insertText: (...args) => insertText(editor, ...args),
         replaceText: (...args) => replaceText(editor, ...args),

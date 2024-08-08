@@ -4,8 +4,9 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     if (editor.derivedTextData.baselines) return editor.derivedTextData.baselines
     const baselines = []
 
+    const textDataLines = editor.textData.lines
     const lines = splitBaseLines(editor, editor.width + 0.1)
-    if (!lines) return;
+    if (!lines || !textDataLines?.length) return;
 
     let firstCharacter = 0;
     let endCharacter = 0;
@@ -79,6 +80,13 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
                 leadingTrimY += lineHeight - lineAscent
             }
         }
+
+        // const textDataLine = textDataLines[i]
+        // if (textDataLine.indentationLevel > 0) {
+        //     const firstStyle = editor.getStyle(firstCharacter)
+        //     positionX += textDataLine.indentationLevel * firstStyle.fontSize * 1.5
+        // }
+
 
         baselines.push({
             position: {

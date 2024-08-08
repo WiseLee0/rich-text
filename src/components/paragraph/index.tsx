@@ -57,6 +57,26 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
     return <div className="paragraph-container">
         <span className="title">段落排印</span>
         <div className="paragraph-row">
+            <span>列表样式</span>
+            <Radio.Group buttonStyle="solid" disabled={true}>
+                <Radio.Button value="PLAIN" style={{ height: 24, padding: 0 }} >
+                    <span className="opentype-icon">
+                        <svg width="24" height="24" viewBox="0 0 16 16"><path fill="currentColor" fillRule="evenodd" stroke="none" d="M10 9H6V8h4v1z"></path></svg>
+                    </span>
+                </Radio.Button>
+                <Radio.Button value="UNORDERED_LIST" style={{ height: 24, padding: 0 }} >
+                    <span className="opentype-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24"><path transform="translate(4 4)" fill="currentColor" fillRule="evenodd" stroke="none" d="M4 2H2v1h2V2zm0 10H2v1h2v-1zM2 7h2v1H2V7zm12-5H6v1h8V2zM6 12h8v1H6v-1zm8-5H6v1h8V7z"></path></svg>
+                    </span>
+                </Radio.Button>
+                <Radio.Button value="ORDERED_LIST" style={{ height: 24, padding: 0 }} >
+                    <span className="opentype-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24"><path transform="translate(4 4)" fill="currentColor" fillRule="nonzero" stroke="none" d="M2.837 1.636h-.752L1 2.333v.724l1.02-.652h.026V6h.79V1.636zM6 2h8v1H6V2zm0 10h8v1H6v-1zm8-5H6v1h8V7zm-9.947 6H1.062v-.571l1.515-1.485c.43-.437.652-.697.652-1.061 0-.412-.31-.665-.725-.665-.434 0-.716.279-.716.724h-.752c0-.829.614-1.365 1.479-1.365.878 0 1.472.534 1.472 1.265 0 .492-.234.889-1.082 1.703l-.752.764v.03h1.9V13z"></path></svg>
+                    </span>
+                </Radio.Button>
+            </Radio.Group>
+        </div>
+        <div className="paragraph-row">
             <span>垂直裁剪</span>
             <Radio.Group buttonStyle="solid" value={leadingTrim} onChange={handleLeadingTrimChange}>
                 <Radio.Button value="NONE" style={{ height: 24, padding: 0 }} >

@@ -16,7 +16,6 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
         }
     }
 
-    editor.__truncation_metrice = new Map()
     editor.__metrices = []
     let tokenOffset = 0
     let firstCharacter = 0
@@ -28,37 +27,9 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
         const font = editor.getFont(family, fontStyle)
         if (!font) continue
 
-        // 省略号字符路径
-        const styleKey = `${family}#${fontStyle}`
-        if (editor.style.textTruncation === 'ENABLE' && !editor.__truncation_metrice.has(styleKey)) {
-            const { glyphs, positions } = font.layout('.')
-            const glyph = glyphs[0]
-            const style = styleMap.get(characterStyleIDs?.[firstCharacter] || -1)
-            const fontSize = style?.fontSize ?? editor.style.fontSize
-            let unitsPerPx = fontSize / (font.unitsPerEm || 1000);
-            const xAdvance = positions[0].xAdvance * unitsPerPx
-            const height = (glyph as any).advanceHeight * unitsPerPx
-            const capHeight = font.capHeight * unitsPerPx
-            const ascent = font.ascent * unitsPerPx
-            const path = glyph.path.scale(unitsPerPx, -unitsPerPx).toSVG()
-            editor.__truncation_metrice.set(styleKey, {
-                isLigature: false,
-                codePoints: glyph.codePoints,
-                path,
-                xAdvance,
-                ascent,
-                capHeight,
-                height,
-                fontSize,
-                name: '...',
-                firstCharacter: -1
-            })
-        }
-
-
         const features = setFontFeatures(editor, tokenOffset)
         const { glyphs, positions } = font.layout(token, features)
-        
+
         const isWrap = token === '\n'
         for (let j = 0; j < glyphs.length; j++) {
             const glyph = glyphs[j]
