@@ -58,6 +58,10 @@ export type Editor = {
     getFillPaintsForGlyph: OmitFirstArg<EditorInterface['getFillPaintsForGlyph']>
     /** 获取文本修饰矩形，用于绘制 */
     getTextDecorationRects: OmitFirstArg<EditorInterface['getTextDecorationRects']>
+    /** 获取字符所在行数 */
+    getLineIndexForCharacterOffset: OmitFirstArg<EditorInterface['getLineIndexForCharacterOffset']>
+    /** 获取每行的第一个字符偏移值 */
+    getLinesFirstCharacter: OmitFirstArg<EditorInterface['getLinesFirstCharacter']>
     /** 添加事件监听 */
     addEventListener: OmitFirstArg<EditorInterface['addEventListener']>
     /** 移除事件监听 */
@@ -120,6 +124,8 @@ export type EditorInterface = {
     removeEventListener: EventListenerType
     execEvent: (editor: Editor, type: keyof EventType) => void
     handleTextTruncation: (editor: Editor) => void
+    getLineIndexForCharacterOffset: (editor: Editor, firstCharacter: number) => number
+    getLinesFirstCharacter: (editor: Editor) => number[]
 }
 
 export type Rect = [number, number, number, number]

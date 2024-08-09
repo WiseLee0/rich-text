@@ -8,7 +8,7 @@ export const splitBaseLines = (editor: Editor, maxWidth: number) => {
     const lines: MetricesInterface[][] = [];
     const words = splitWordGroup(editor);
     if (!words) return;
-    return wordGroupLines(lines, words, maxWidth)
+    return wordGroupLines(editor, lines, words, maxWidth)
 }
 // 处理空格，空格切回到上一行，没有的话创建新行
 const spaceLine = (metrice: MetricesInterface, lines: MetricesInterface[][]) => {
@@ -21,13 +21,30 @@ const spaceLine = (metrice: MetricesInterface, lines: MetricesInterface[][]) => 
     }
 }
 // 对词组进行分行
-const wordGroupLines = (lines: MetricesInterface[][], wordGroup: MetricesInterface[][], maxWidth: number) => {
+const wordGroupLines = (editor: Editor, lines: MetricesInterface[][], wordGroup: MetricesInterface[][], textMaxWidth: number) => {
     let currentLine: MetricesInterface[] = [];
     let currentWidth = 0
+    let maxWidth = textMaxWidth
+    let linesFirstCharacter = editor.getLinesFirstCharacter()
+    let firstStyle = editor.getStyle(0)
+    const textDataLines = editor.textData.lines
+    if (!textDataLines?.length) {
+        console.warn('wordGroupLines exception')
+        return
+    }
     for (let i = 0; i < wordGroup.length; i++) {
         const word = wordGroup[i]
         const wordWidth = word.reduce((pre, cur) => pre + cur.xAdvance, 0)
         const isSpace = word.length === 1 && word[0].name === 'space'
+
+        // 处理缩进层级
+        const lineFirstCharacter = word[0].firstCharacter
+        const lineIdx = editor.getLineIndexForCharacterOffset(lineFirstCharacter)
+        if (linesFirstCharacter.includes(lineFirstCharacter)) {
+            firstStyle = editor.getStyle(lineFirstCharacter)
+        }
+        maxWidth = textMaxWidth - textDataLines[lineIdx]?.indentationLevel * firstStyle.fontSize * 1.5
+
         // 换行符
         if (word.length === 1 && word[0].name === '\n') {
             // 如果上一行已经存在换行符，则需要新开一行

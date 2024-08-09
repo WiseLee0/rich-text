@@ -1,23 +1,21 @@
-import { clearCache, EditorInterface } from "..";
+import { EditorInterface, handleInsertTextOfTextDataLine } from "..";
 
 export const insertText: EditorInterface['insertText'] = (editor, content) => {
     if (!editor.hasSelection()) return;
     if (!editor.isCollapse()) {
         editor.deleteText()
     }
-    const selection = editor.getSelection()
+    const selectCharacterOffset = editor.getSelectCharacterOffset()
     const baselines = editor.getBaselines()
-    if (!baselines?.length) return
-    let { anchor, anchorOffset } = selection
+    if (!baselines?.length || !selectCharacterOffset) return
     const text = editor.getText()
-
-    let characterIdx = 0
-    if (anchor === baselines.length) {
-        characterIdx = text.length
-    } else {
-        characterIdx = baselines[anchor].firstCharacter + anchorOffset
+    const characterIdx = selectCharacterOffset.anchor
+    
+    const stopInsert = handleInsertTextOfTextDataLine(editor, content)
+    if (stopInsert) {
+        editor.apply()
+        return
     }
-
     const newText = text.substring(0, characterIdx) + content + text.substring(characterIdx)
     editor.replaceText(newText)
 

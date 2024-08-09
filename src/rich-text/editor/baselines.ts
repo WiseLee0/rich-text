@@ -8,6 +8,8 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     const lines = splitBaseLines(editor, editor.width + 0.1)
     if (!lines || !textDataLines?.length) return;
 
+    let linesFirstCharacter = editor.getLinesFirstCharacter()
+    let firstStyle = editor.getStyle(0)
     let firstCharacter = 0;
     let endCharacter = 0;
     let lineHeightSum = 0
@@ -81,12 +83,16 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
             }
         }
 
-        // const textDataLine = textDataLines[i]
-        // if (textDataLine.indentationLevel > 0) {
-        //     const firstStyle = editor.getStyle(firstCharacter)
-        //     positionX += textDataLine.indentationLevel * firstStyle.fontSize * 1.5
-        // }
-
+        // 处理缩进层级
+        const lineFirstCharacter = line[0].firstCharacter
+        const lineIdx = editor.getLineIndexForCharacterOffset(lineFirstCharacter)
+        if (linesFirstCharacter.includes(lineFirstCharacter)) {
+            firstStyle = editor.getStyle(lineFirstCharacter)
+        }
+        const textDataLine = textDataLines[lineIdx]
+        if (textDataLine?.indentationLevel > 0) {
+            positionX += textDataLine.indentationLevel * firstStyle.fontSize * 1.5
+        }
 
         baselines.push({
             position: {

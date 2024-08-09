@@ -1,4 +1,4 @@
-import { clearCache, EditorInterface, getH, textDataLines } from ".."
+import { clearCache, EditorInterface, getH } from ".."
 
 export const apply: EditorInterface['apply'] = (editor) => {
     clearCache(editor)

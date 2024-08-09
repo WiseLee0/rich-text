@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyph, addEventListener, removeEventListener, layoutW, layoutH, getStyle } from './'
+import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyph, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getLineIndexForCharacterOffset, getLinesFirstCharacter } from './'
 
 export const createEditor = (): Editor => {
 
@@ -50,22 +50,27 @@ export const createEditor = (): Editor => {
         __events: {},
         derivedTextData: {},
         textData: {
-            characters: "hello\n123123\n123",
+            characters: "hello\n123456\n789\n123123",
             lines: [
                 {
-                    "lineType": "ORDERED_LIST",
-                    "indentationLevel": 1,
+                    "lineType": "PLAIN",
+                    "indentationLevel": 0,
                     "isFirstLineOfList": true
                 },
                 {
                     "lineType": "PLAIN",
                     "indentationLevel": 0,
-                    "isFirstLineOfList": false
+                    "isFirstLineOfList": true
                 },
                 {
                     "lineType": "PLAIN",
                     "indentationLevel": 0,
-                    "isFirstLineOfList": false
+                    "isFirstLineOfList": true
+                },
+                {
+                    "lineType": "PLAIN",
+                    "indentationLevel": 0,
+                    "isFirstLineOfList": true
                 }
             ]
         },
@@ -93,6 +98,8 @@ export const createEditor = (): Editor => {
         getFillPaintsForGlyph: (...args) => getFillPaintsForGlyph(editor, ...args),
         addEventListener: (...args) => addEventListener(editor, ...args),
         removeEventListener: (...args) => removeEventListener(editor, ...args),
+        getLineIndexForCharacterOffset: (...args) => getLineIndexForCharacterOffset(editor, ...args),
+        getLinesFirstCharacter: (...args) => getLinesFirstCharacter(editor, ...args),
 
         // Font
         fontMgrFromData: (...args) => fontMgrFromData(editor, ...args),

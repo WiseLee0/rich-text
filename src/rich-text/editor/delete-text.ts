@@ -1,4 +1,4 @@
-import { clearCache, EditorInterface, mergeStyleOverride } from "..";
+import { EditorInterface, handleDeleteTextOfTextDataLine, mergeStyleOverride } from "..";
 
 export const deleteText: EditorInterface['deleteText'] = (editor) => {
     if (!editor.hasSelection()) return;
@@ -28,9 +28,15 @@ export const deleteText: EditorInterface['deleteText'] = (editor) => {
     } else {
         focusCharacterIdx = baselines[focus].firstCharacter + focusOffset
     }
+
+    const stopDelete = handleDeleteTextOfTextDataLine(editor)
+    if (stopDelete) {
+        editor.apply()
+        return
+    }
     const newText = text.substring(0, anchorCharacterIdx) + text.substring(focusCharacterIdx)
     editor.replaceText(newText)
-   
+
     // 更新局部样式表
     const { characterStyleIDs, styleOverrideTable } = editor.textData
     if (characterStyleIDs?.length && styleOverrideTable?.length) {
