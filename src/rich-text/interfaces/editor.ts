@@ -1,5 +1,5 @@
 import * as fontkit from 'fontkit'
-import { OmitFirstArg, SelectionInterface, StyleInterface, Selection, DerivedTextDataInterface, TextDataInterface, Font, MetricesInterface, BaseLineInterface, GlyphsInterface, FillPaintType, EventType, EventListenerType } from "."
+import { OmitFirstArg, SelectionInterface, StyleInterface, Selection, DerivedTextDataInterface, TextDataInterface, Font, MetricesInterface, BaseLineInterface, GlyphsInterface, FillPaintType, EventType, EventListenerType, TextDataLinesInterface } from "."
 
 export type Editor = {
     /** 文本宽度 */
@@ -44,6 +44,10 @@ export type Editor = {
     deleteText: OmitFirstArg<EditorInterface['deleteText']>
     /** 替换文本 */
     replaceText: OmitFirstArg<EditorInterface['replaceText']>
+    /** 设置文本列表 */
+    setTextList: OmitFirstArg<EditorInterface['setTextList']>
+    /** 获取选区文本列表类型 */
+    getTextListTypeForSelection: OmitFirstArg<EditorInterface['getTextListTypeForSelection']>
     /** 获取所有行的逻辑字符的偏移值（逻辑字符指的是输入的文本字符） */
     getLogicalCharacterOffset: OmitFirstArg<EditorInterface['getLogicalCharacterOffset']>
     /** 获取当前行逻辑字符的偏移值（逻辑字符指的是输入的文本字符 */
@@ -126,6 +130,8 @@ export type EditorInterface = {
     handleTextTruncation: (editor: Editor) => void
     getLineIndexForCharacterOffset: (editor: Editor, firstCharacter: number) => number
     getLinesFirstCharacter: (editor: Editor) => number[]
+    setTextList: (editor: Editor, lineType: TextDataLinesInterface['lineType']) => void
+    getTextListTypeForSelection: (editor: Editor) => TextDataLinesInterface['lineType'] | 'mix' | ''
 }
 
 export type Rect = [number, number, number, number]

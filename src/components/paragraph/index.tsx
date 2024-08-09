@@ -13,6 +13,7 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
     const [maxLine, setMaxLine] = useState(editor.style.maxLines)
     const [textTruncation, setTextTruncation] = useState(editor.style.textTruncation)
     const [leadingTrim, setLeadingTrim] = useState(editor.style.leadingTrim)
+    const [listType, setTextListType] = useState(editor.getTextListTypeForSelection())
     const { textAutoResize } = editor.style
     const disableMaxLine = textAutoResize === 'NONE'
 
@@ -40,6 +41,11 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
         editor?.apply()
         updateRender()
     }
+    const handleTextListTypeChange = (e: RadioChangeEvent) => {
+        setTextListType(e.target.value)
+        editor.setTextList(e.target.value)
+        editor?.apply()
+    }
 
     useEffect(() => {
         const watchSelection = () => {
@@ -58,7 +64,7 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
         <span className="title">段落排印</span>
         <div className="paragraph-row">
             <span>列表样式</span>
-            <Radio.Group buttonStyle="solid" disabled={true}>
+            <Radio.Group value={listType} buttonStyle="solid" onChange={handleTextListTypeChange}>
                 <Radio.Button value="PLAIN" style={{ height: 24, padding: 0 }} >
                     <span className="opentype-icon">
                         <svg width="24" height="24" viewBox="0 0 16 16"><path fill="currentColor" fillRule="evenodd" stroke="none" d="M10 9H6V8h4v1z"></path></svg>
