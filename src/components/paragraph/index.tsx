@@ -53,6 +53,8 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
             if (style?.maxLines) setMaxLine(style.maxLines)
             if (style?.textTruncation) setTextTruncation(style.textTruncation)
             if (style?.leadingTrim) setLeadingTrim(style.leadingTrim)
+            const listType = editor.getTextListTypeForSelection()
+            if (listType) setTextListType(listType)
         }
         editorRef.current?.addEventListener('selection', watchSelection)
         return () => {
