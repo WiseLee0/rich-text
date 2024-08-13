@@ -7,5 +7,5 @@ export const getStyle: EditorInterface['getStyle'] = (editor, firstCharacter) =>
     const { characterStyleIDs, styleOverrideTable } = editor.textData
     const styleID = characterStyleIDs?.[firstCharacter]
     const style = styleOverrideTable?.find(item => item.styleID === styleID)
-    return deepClone(style ?? editor.style) as StyleInterface;
+    return deepClone({ ...editor.style, ...style }) as StyleInterface;
 }
