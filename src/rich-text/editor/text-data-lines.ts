@@ -1,4 +1,4 @@
-import { Editor, TextDataLinesInterface } from "..";
+import { Editor, mergeStyleOverride, TextDataLinesInterface } from "..";
 
 export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) => {
     const plainData = {
@@ -7,7 +7,7 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
         isFirstLineOfList: true,
         listStartOffset: 0
     } as TextDataLinesInterface
-    const { lines, characters } = editor.textData
+    const { lines, characters, characterStyleIDs, styleOverrideTable } = editor.textData
     let wrapNum = getWrapNum(content)
     if (!lines?.length) {
         wrapNum += 1
@@ -21,7 +21,6 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
     const selectCharacterOffset = editor.getSelectCharacterOffset()
     if (!selectCharacterOffset) return false;
     const { anchor } = selectCharacterOffset
-    const selection = editor.getSelection()
 
     if (content === ' ') {
         // 看前面是否符合激活列表条件
@@ -33,16 +32,20 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
         }
         // 有序列表限制 99.
         if (symbolStr.length < 4) {
-            // 无序列表
-            if (symbolStr === '-' || symbolStr === '*') {
+            const modifyText = () => {
                 const newStr = characters.substring(0, anchor - symbolStr.length) + characters.slice(anchor)
                 editor.replaceText(newStr)
+                editor.selectForCharacterOffset(anchor - symbolStr.length)
+                if (characterStyleIDs?.[anchor - symbolStr.length] && styleOverrideTable?.length) {
+                    characterStyleIDs?.splice(anchor - symbolStr.length, symbolStr.length)
+                    mergeStyleOverride(editor, characterStyleIDs, styleOverrideTable)
+                }
+            }
+
+            // 无序列表
+            if (symbolStr === '-' || symbolStr === '*') {
+                modifyText()
                 editor.setTextList("UNORDERED_LIST")
-                editor.setSelection({
-                    ...selection,
-                    anchorOffset: selection.anchorOffset - symbolStr.length,
-                    focusOffset: selection.focusOffset - symbolStr.length
-                })
                 return true
             }
             // 有序列表
@@ -50,18 +53,11 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
                 const num = symbolStr.slice(0, -1)
                 const symbol = symbolStr[symbolStr.length - 1]
                 if ((/^[0-9]+$/.test(num) || /^[a-zA-Z]+$/.test(num)) && (symbol === '.' || symbol === ')')) {
-                    const newStr = characters.substring(0, anchor - symbolStr.length) + characters.slice(anchor)
-                    editor.replaceText(newStr)
+                    modifyText()
                     editor.setTextList("ORDERED_LIST")
-                    editor.setSelection({
-                        ...selection,
-                        anchorOffset: selection.anchorOffset - symbolStr.length,
-                        focusOffset: selection.focusOffset - symbolStr.length
-                    })
                     return true
                 }
             }
-
         }
     }
     const lineIdx = editor.getLineIndexForCharacterOffset(selectCharacterOffset.anchor) - 1
@@ -74,12 +70,6 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
 
 
 export const handleDeleteTextOfTextDataLine = (editor: Editor) => {
-    const plainData = {
-        lineType: "PLAIN",
-        indentationLevel: 0,
-        isFirstLineOfList: true,
-        listStartOffset: 0
-    } as TextDataLinesInterface
     const selectCharacterOffset = editor.getSelectCharacterOffset()
     const range = editor.getSelection()
     const { lines } = editor.textData
@@ -94,7 +84,7 @@ export const handleDeleteTextOfTextDataLine = (editor: Editor) => {
         if (range.anchorOffset === 0 && range.focusOffset === 0) {
             // 存在层级，先移除层级
             if (lines[anchorLineIdx].indentationLevel > 0) {
-                lines[anchorLineIdx] = plainData
+                editor.setTextList("PLAIN")
                 return true
             }
             // 删除当前行

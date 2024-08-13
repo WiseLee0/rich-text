@@ -111,7 +111,7 @@ export function fontTokenize(textData: Record<string, any>, characters: string) 
             if (str.length) token.push(str)
             str = char
             let idx = i
-            while (characterStyleIDs[i + 1] === characterStyleIDs[idx]) {
+            while (characters[i + 1] && characterStyleIDs[i + 1] === characterStyleIDs[idx] && characters[i + 1] !== '\n') {
                 str += characters[i + 1]
                 i++
             }

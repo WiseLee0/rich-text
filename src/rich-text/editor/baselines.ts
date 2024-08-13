@@ -87,7 +87,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         const lineFirstCharacter = line[0].firstCharacter
         const lineIdx = editor.getLineIndexForCharacterOffset(lineFirstCharacter)
         if (linesFirstCharacter.includes(lineFirstCharacter)) {
-            firstStyle = editor.getStyle(lineFirstCharacter)
+            firstStyle = editor.getLineStyleForCharacterOffset(lineFirstCharacter)
         }
         const textDataLine = textDataLines[lineIdx]
         if (textDataLine?.indentationLevel > 0) {

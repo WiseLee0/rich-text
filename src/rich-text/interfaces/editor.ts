@@ -58,7 +58,9 @@ export type Editor = {
     getBaselines: OmitFirstArg<EditorInterface['getBaselines']>
     /** 获取字符信息 */
     getGlyphs: OmitFirstArg<EditorInterface['getGlyphs']>
-    /** 获取字符填充样式 */
+    /** 获取所有字符填充样式 */
+    getFillPaintsForGlyphs: OmitFirstArg<EditorInterface['getFillPaintsForGlyphs']>
+    /** 获取指定字符填充样式 */
     getFillPaintsForGlyph: OmitFirstArg<EditorInterface['getFillPaintsForGlyph']>
     /** 获取文本修饰矩形，用于绘制 */
     getTextDecorationRects: OmitFirstArg<EditorInterface['getTextDecorationRects']>
@@ -66,6 +68,8 @@ export type Editor = {
     getLineIndexForCharacterOffset: OmitFirstArg<EditorInterface['getLineIndexForCharacterOffset']>
     /** 获取每行的第一个字符偏移值 */
     getLinesFirstCharacter: OmitFirstArg<EditorInterface['getLinesFirstCharacter']>
+    /** 获取当前行的列表样式 */
+    getLineStyleForCharacterOffset: OmitFirstArg<EditorInterface['getLineStyleForCharacterOffset']>
     /** 添加事件监听 */
     addEventListener: OmitFirstArg<EditorInterface['addEventListener']>
     /** 移除事件监听 */
@@ -123,6 +127,7 @@ export type EditorInterface = {
     getBaseLineCharacterOffset: (editor: Editor, baselineIdx: number) => number[] | undefined
     getLogicalCharacterOffset: (editor: Editor) => number[]
     getTextDecorationRects: (editor: Editor) => Rect[]
+    getFillPaintsForGlyphs: (editor: Editor) => FillPaintType[][]
     getFillPaintsForGlyph: (editor: Editor, firstCharacter?: number) => FillPaintType[]
     addEventListener: EventListenerType
     removeEventListener: EventListenerType
@@ -132,6 +137,7 @@ export type EditorInterface = {
     getLinesFirstCharacter: (editor: Editor) => number[]
     setTextList: (editor: Editor, lineType: TextDataLinesInterface['lineType']) => void
     getTextListTypeForSelection: (editor: Editor) => TextDataLinesInterface['lineType'] | 'mix' | ''
+    getLineStyleForCharacterOffset: (editor: Editor, firstCharacter: number) => StyleInterface
 }
 
 export type Rect = [number, number, number, number]

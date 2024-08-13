@@ -137,7 +137,7 @@ const addListSymbol = (editor: Editor, glyphs: GlyphsInterface[], lineIdx: numbe
     const line = editor.textData.lines?.[lineIdx]
     if (!line || !lines?.length) return;
 
-    const firstStyle = editor.getStyle(baseline.firstCharacter)
+    const firstStyle = editor.getLineStyleForCharacterOffset(baseline.firstCharacter)
     const font = editor.getFont(firstStyle.fontName.family, firstStyle.fontName.style)
     if (!font) return;
 

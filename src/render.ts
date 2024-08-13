@@ -101,10 +101,10 @@ export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.Mut
     if (!glyphs?.length || !baselines?.length) return;
     const paint = new Skia.Paint()
     paint.setAntiAlias(true)
+    const fillPaintsArr = editor.getFillPaintsForGlyphs()
 
     // 编辑态文本渲染
     if (editor.hasSelection()) {
-        // 渲染文字
         for (let i = 0; i < glyphs?.length; i++) {
             const glyph = glyphs[i];
             // 渲染省略内容
@@ -121,20 +121,13 @@ export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.Mut
                 path.delete()
                 continue
             }
-            let firstCharacter = glyph.firstCharacter
-            if (glyph.firstCharacter === undefined) {
-                for (let j = i + 1; j < glyphs?.length; j++) {
-                    firstCharacter = glyphs[j].firstCharacter
-                    if (firstCharacter) break;
-                }
-            }
-            const fillPaints = editor.getFillPaintsForGlyph(firstCharacter)
+
             const path = Skia.Path.MakeFromSVGString(glyph.commandsBlob)!
             canvas.save()
             canvas.translate(glyph.position.x, glyph.position.y)
             canvas.clipPath(path, Skia.ClipOp.Intersect, true)
-            for (let i = 0; i < fillPaints.length; i++) {
-                const fillPaint = fillPaints[i];
+            for (let j = 0; j < fillPaintsArr[i].length; j++) {
+                const fillPaint = fillPaintsArr[i][j];
                 if (!fillPaint.visible) continue
                 // 注意：这里alpha取opacity
                 paint.setColor([fillPaint.color.r, fillPaint.color.g, fillPaint.color.b, fillPaint.opacity])
@@ -143,9 +136,7 @@ export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.Mut
             canvas.restore()
             path.delete()
         }
-    }
-    // 非编辑态渲染
-    else {
+    } else {
         let len = glyphs?.length
 
         // 渲染省略号
@@ -178,20 +169,13 @@ export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.Mut
 
         for (let i = 0; i < len; i++) {
             const glyph = glyphs[i];
-            let firstCharacter = glyph.firstCharacter
-            if (glyph.firstCharacter === undefined) {
-                for (let j = i + 1; j < len; j++) {
-                    firstCharacter = glyphs[j].firstCharacter
-                    if (firstCharacter) break;
-                }
-            }
-            const fillPaints = editor.getFillPaintsForGlyph(firstCharacter)
+
             const path = Skia.Path.MakeFromSVGString(glyph.commandsBlob)!
             canvas.save()
             canvas.translate(glyph.position.x, glyph.position.y)
             canvas.clipPath(path, Skia.ClipOp.Intersect, true)
-            for (let i = 0; i < fillPaints.length; i++) {
-                const fillPaint = fillPaints[i];
+            for (let j = 0; j < fillPaintsArr[i].length; j++) {
+                const fillPaint = fillPaintsArr[i][j];
                 if (!fillPaint.visible) continue
                 // 注意：这里alpha取opacity
                 paint.setColor([fillPaint.color.r, fillPaint.color.g, fillPaint.color.b, fillPaint.opacity])

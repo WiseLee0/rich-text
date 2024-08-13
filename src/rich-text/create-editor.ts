@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyph, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getLineIndexForCharacterOffset, getLinesFirstCharacter, getTextListTypeForSelection, setTextList, loadDefaultFont } from './'
+import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyphs, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getLineIndexForCharacterOffset, getLinesFirstCharacter, getTextListTypeForSelection, setTextList, loadDefaultFont, getLineStyleForCharacterOffset, getFillPaintsForGlyph } from './'
 
 export const createEditor = async (): Promise<Editor> => {
 
@@ -50,7 +50,27 @@ export const createEditor = async (): Promise<Editor> => {
         __events: {},
         derivedTextData: {},
         textData: {
-            characters: "he\n123123\n456",
+            characters: "h\ne\no",
+            characterStyleIDs: [0, 0, 1, 1],
+            styleOverrideTable: [
+                {
+                    "styleID": 1,
+                    "fillPaints": [
+                        {
+                            "type": "SOLID",
+                            "color": {
+                                "r": 0.8823529411764706,
+                                "g": 0.8470588235294118,
+                                "b": 0.8470588235294118,
+                                "a": 1
+                            },
+                            "opacity": 0.7019607843137254,
+                            "visible": true,
+                            "blendMode": "NORMAL"
+                        }
+                    ]
+                }
+            ],
             lines: [
                 {
                     "lineType": "ORDERED_LIST",
@@ -59,15 +79,15 @@ export const createEditor = async (): Promise<Editor> => {
                     "listStartOffset": 0
                 },
                 {
-                    "lineType": "ORDERED_LIST",
-                    "indentationLevel": 1,
-                    "isFirstLineOfList": false,
+                    "lineType": "PLAIN",
+                    "indentationLevel": 0,
+                    "isFirstLineOfList": true,
                     "listStartOffset": 0
                 },
                 {
                     "lineType": "ORDERED_LIST",
                     "indentationLevel": 1,
-                    "isFirstLineOfList": false,
+                    "isFirstLineOfList": true,
                     "listStartOffset": 0
                 }
             ]
@@ -93,6 +113,7 @@ export const createEditor = async (): Promise<Editor> => {
         getBaseLineCharacterOffset: (...args) => getBaseLineCharacterOffset(editor, ...args),
         deleteText: (...args) => deleteText(editor, ...args),
         getTextDecorationRects: (...args) => getTextDecorationRects(editor, ...args),
+        getFillPaintsForGlyphs: (...args) => getFillPaintsForGlyphs(editor, ...args),
         getFillPaintsForGlyph: (...args) => getFillPaintsForGlyph(editor, ...args),
         addEventListener: (...args) => addEventListener(editor, ...args),
         removeEventListener: (...args) => removeEventListener(editor, ...args),
@@ -100,6 +121,7 @@ export const createEditor = async (): Promise<Editor> => {
         getLinesFirstCharacter: (...args) => getLinesFirstCharacter(editor, ...args),
         getTextListTypeForSelection: (...args) => getTextListTypeForSelection(editor, ...args),
         setTextList: (...args) => setTextList(editor, ...args),
+        getLineStyleForCharacterOffset: (...args) => getLineStyleForCharacterOffset(editor, ...args),
 
         // Font
         fontMgrFromData: (...args) => fontMgrFromData(editor, ...args),
