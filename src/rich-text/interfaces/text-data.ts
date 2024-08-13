@@ -4,6 +4,7 @@ type StyleOverrideTableInterface = {
 export type TextDataLinesInterface = {
     lineType: "ORDERED_LIST" | "UNORDERED_LIST" | "PLAIN",
     indentationLevel: number,
+    listStartOffset: number,
     isFirstLineOfList: boolean
 }
 export interface TextDataInterface {

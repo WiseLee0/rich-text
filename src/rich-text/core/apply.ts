@@ -11,7 +11,7 @@ export const apply: EditorInterface['apply'] = (editor) => {
     const logicalCharacterOffset = editor.getLogicalCharacterOffset()
 
     if (editor.style.textAutoResize === 'WIDTH_AND_HEIGHT') {
-        editor.width = Math.max(...baselines.map(item => item.width), 0)
+        editor.width = Math.max(...baselines.map(item => item.position.x + item.width), 0)
         editor.height = getH(editor)
     }
 

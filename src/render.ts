@@ -121,7 +121,14 @@ export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.Mut
                 path.delete()
                 continue
             }
-            const fillPaints = editor.getFillPaintsForGlyph(glyph.firstCharacter)
+            let firstCharacter = glyph.firstCharacter
+            if (glyph.firstCharacter === undefined) {
+                for (let j = i + 1; j < glyphs?.length; j++) {
+                    firstCharacter = glyphs[j].firstCharacter
+                    if (firstCharacter) break;
+                }
+            }
+            const fillPaints = editor.getFillPaintsForGlyph(firstCharacter)
             const path = Skia.Path.MakeFromSVGString(glyph.commandsBlob)!
             canvas.save()
             canvas.translate(glyph.position.x, glyph.position.y)
@@ -149,9 +156,9 @@ export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.Mut
                 console.warn('renderText exception')
                 return
             }
-            
+
             const xAdvance = glyph.xAdvance ?? 0
-            const fillPaints = editor.getFillPaintsForGlyph(glyphs[len - 2]?.firstCharacter)            
+            const fillPaints = editor.getFillPaintsForGlyph(glyphs[len - 2]?.firstCharacter)
             const path = Skia.Path.MakeFromSVGString(glyph.commandsBlob)!
             for (let i = 0; i < 3; i++) {
                 canvas.save()
@@ -171,7 +178,14 @@ export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.Mut
 
         for (let i = 0; i < len; i++) {
             const glyph = glyphs[i];
-            const fillPaints = editor.getFillPaintsForGlyph(glyph.firstCharacter)
+            let firstCharacter = glyph.firstCharacter
+            if (glyph.firstCharacter === undefined) {
+                for (let j = i + 1; j < len; j++) {
+                    firstCharacter = glyphs[j].firstCharacter
+                    if (firstCharacter) break;
+                }
+            }
+            const fillPaints = editor.getFillPaintsForGlyph(firstCharacter)
             const path = Skia.Path.MakeFromSVGString(glyph.commandsBlob)!
             canvas.save()
             canvas.translate(glyph.position.x, glyph.position.y)

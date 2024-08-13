@@ -4,7 +4,8 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
     const plainData = {
         lineType: "PLAIN",
         indentationLevel: 0,
-        isFirstLineOfList: true
+        isFirstLineOfList: true,
+        listStartOffset: 0
     } as TextDataLinesInterface
     const { lines, characters } = editor.textData
     let wrapNum = getWrapNum(content)
@@ -20,6 +21,7 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
     const selectCharacterOffset = editor.getSelectCharacterOffset()
     if (!selectCharacterOffset) return false;
     const { anchor } = selectCharacterOffset
+    const selection = editor.getSelection()
 
     if (content === ' ') {
         // 看前面是否符合激活列表条件
@@ -33,8 +35,14 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
         if (symbolStr.length < 4) {
             // 无序列表
             if (symbolStr === '-' || symbolStr === '*') {
-                console.log('无序列表');
-                
+                const newStr = characters.substring(0, anchor - symbolStr.length) + characters.slice(anchor)
+                editor.replaceText(newStr)
+                editor.setTextList("UNORDERED_LIST")
+                editor.setSelection({
+                    ...selection,
+                    anchorOffset: selection.anchorOffset - symbolStr.length,
+                    focusOffset: selection.focusOffset - symbolStr.length
+                })
                 return true
             }
             // 有序列表
@@ -42,8 +50,14 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
                 const num = symbolStr.slice(0, -1)
                 const symbol = symbolStr[symbolStr.length - 1]
                 if ((/^[0-9]+$/.test(num) || /^[a-zA-Z]+$/.test(num)) && (symbol === '.' || symbol === ')')) {
-                    console.log('有序列表');
-
+                    const newStr = characters.substring(0, anchor - symbolStr.length) + characters.slice(anchor)
+                    editor.replaceText(newStr)
+                    editor.setTextList("ORDERED_LIST")
+                    editor.setSelection({
+                        ...selection,
+                        anchorOffset: selection.anchorOffset - symbolStr.length,
+                        focusOffset: selection.focusOffset - symbolStr.length
+                    })
                     return true
                 }
             }
@@ -63,7 +77,8 @@ export const handleDeleteTextOfTextDataLine = (editor: Editor) => {
     const plainData = {
         lineType: "PLAIN",
         indentationLevel: 0,
-        isFirstLineOfList: true
+        isFirstLineOfList: true,
+        listStartOffset: 0
     } as TextDataLinesInterface
     const selectCharacterOffset = editor.getSelectCharacterOffset()
     const range = editor.getSelection()
@@ -99,4 +114,65 @@ const getWrapNum = (str: string) => {
         if (str[i] === '\n') count++
     }
     return count
+}
+
+export const getLineSymbolContent = (lineType: TextDataLinesInterface['lineType'], indentationLevel: number, listStartOffset: number, lineListOffset: number) => {
+    const num = (listStartOffset ?? 0) + lineListOffset + 1
+    if (lineType === 'ORDERED_LIST') {
+        if (indentationLevel === 1 || indentationLevel === 4) {
+            return `${num}.`
+        }
+        if (indentationLevel === 2 || indentationLevel === 5) {
+            return `${convertToLetter(num)}.`
+        }
+        if (indentationLevel === 3 || indentationLevel === 6) {
+            return `${convertToRoman(num)}.`
+        }
+    }
+    if (lineType === 'UNORDERED_LIST') {
+        return "•"
+    }
+    return ''
+}
+
+function convertToLetter(num: number) {
+    if (num < 1) {
+        return 'Invalid number';
+    }
+    let result = '';
+    while (num > 0) {
+        const remainder = (num - 1) % 26;
+        result = String.fromCharCode(97 + remainder) + result;
+        num = Math.floor((num - 1) / 26);
+    }
+    return result;
+}
+
+function convertToRoman(num: number) {
+    const romanNumerals = [
+        { value: 1000, numeral: 'm' },
+        { value: 900, numeral: 'cm' },
+        { value: 500, numeral: 'd' },
+        { value: 400, numeral: 'cd' },
+        { value: 100, numeral: 'c' },
+        { value: 90, numeral: 'xc' },
+        { value: 50, numeral: 'l' },
+        { value: 40, numeral: 'xl' },
+        { value: 10, numeral: 'x' },
+        { value: 9, numeral: 'ix' },
+        { value: 5, numeral: 'v' },
+        { value: 4, numeral: 'iv' },
+        { value: 1, numeral: 'i' },
+    ];
+
+    let roman = '';
+
+    for (let i = 0; i < romanNumerals.length; i++) {
+        while (num >= romanNumerals[i].value) {
+            roman += romanNumerals[i].numeral;
+            num -= romanNumerals[i].value;
+        }
+    }
+
+    return roman;
 }

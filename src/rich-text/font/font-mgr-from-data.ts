@@ -1,10 +1,15 @@
 import * as fontkit from 'fontkit'
 import type { FontCollection, Font } from "fontkit";
 import { Editor, EditorInterface } from '..';
+import InterSub from './inter-sub.ttf'
 
 const addFont = (editor: Editor, font: Font) => {
     const { fonMgr } = editor
     const familyName = font.familyName
+    if (!familyName) {
+        console.warn('addFont exception')
+        return
+    }
     const fontInfo = fonMgr.get(familyName)
     if (fontInfo) {
         const hasFont = fontInfo.find(item => item.constructor.name === font.constructor.name)
@@ -18,7 +23,6 @@ const addFont = (editor: Editor, font: Font) => {
 
 export const fontMgrFromData: EditorInterface['fontMgrFromData'] = (editor, buffers) => {
     if (!buffers) return;
-    const { fonMgr } = editor
     for (let i = 0; i < buffers.length; i++) {
         const buffer = buffers[i];
         // fontkit类型错误，这里设置Any类型
@@ -32,4 +36,15 @@ export const fontMgrFromData: EditorInterface['fontMgrFromData'] = (editor, buff
             addFont(editor, font as Font)
         }
     }
+}
+
+const DefaultFontGlyphs = '•.0123456789abcdefghijklmnopqrstuvwxyz'
+export const loadDefaultFont = async (editor: Editor) => {
+    const data = await (await fetch(InterSub)).arrayBuffer()
+    const font = fontkit.create(new Uint8Array(data) as any) as fontkit.Font
+    editor.fonMgr.set('__default', [font])
+}
+export const getDefaultFontIdx = (char: string) => {
+    const result = DefaultFontGlyphs.indexOf(char)
+    return result > -1 ? result + 1 : -1
 }

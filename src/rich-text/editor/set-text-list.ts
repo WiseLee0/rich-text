@@ -19,16 +19,13 @@ const setTextDataLine = (lines: TextDataLinesInterface[], idx: number, lineType:
     const line = lines[idx]
     if (!line) return;
     line.lineType = lineType
-    const oldIsFirstLineOfList = line.isFirstLineOfList
 
     // 如果当前isFirstLineOfList状态发生改变，则递归查看下一级isFirstLineOfList是否需要发生变化
     const changeIsFirstLineOfList = () => {
-        if (line.isFirstLineOfList !== oldIsFirstLineOfList) {
-            const nextId = idx + 1
-            const nextLine = lines[nextId]
-            if (nextLine) {
-                setTextDataLine(lines, nextId, nextLine.lineType)
-            }
+        const nextId = idx + 1
+        const nextLine = lines[nextId]
+        if (nextLine) {
+            setTextDataLine(lines, nextId, nextLine.lineType)
         }
     }
 

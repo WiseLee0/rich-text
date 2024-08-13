@@ -1,6 +1,6 @@
-import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyph, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getLineIndexForCharacterOffset, getLinesFirstCharacter, getTextListTypeForSelection, setTextList } from './'
+import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyph, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getLineIndexForCharacterOffset, getLinesFirstCharacter, getTextListTypeForSelection, setTextList, loadDefaultFont } from './'
 
-export const createEditor = (): Editor => {
+export const createEditor = async (): Promise<Editor> => {
 
     const editor: Editor = {
         width: 0,
@@ -50,27 +50,25 @@ export const createEditor = (): Editor => {
         __events: {},
         derivedTextData: {},
         textData: {
-            characters: "hello\n123456\n789\n123123",
+            characters: "he\n123123\n456",
             lines: [
                 {
-                    "lineType": "PLAIN",
-                    "indentationLevel": 0,
-                    "isFirstLineOfList": true
+                    "lineType": "ORDERED_LIST",
+                    "indentationLevel": 1,
+                    "isFirstLineOfList": true,
+                    "listStartOffset": 0
                 },
                 {
-                    "lineType": "PLAIN",
-                    "indentationLevel": 0,
-                    "isFirstLineOfList": true
+                    "lineType": "ORDERED_LIST",
+                    "indentationLevel": 1,
+                    "isFirstLineOfList": false,
+                    "listStartOffset": 0
                 },
                 {
-                    "lineType": "PLAIN",
-                    "indentationLevel": 0,
-                    "isFirstLineOfList": true
-                },
-                {
-                    "lineType": "PLAIN",
-                    "indentationLevel": 0,
-                    "isFirstLineOfList": true
+                    "lineType": "ORDERED_LIST",
+                    "indentationLevel": 1,
+                    "isFirstLineOfList": false,
+                    "listStartOffset": 0
                 }
             ]
         },
@@ -119,6 +117,8 @@ export const createEditor = (): Editor => {
         deselection: (...args) => deselection(editor, ...args),
         getSelectionRects: (...args) => getSelectionRects(editor, ...args),
     }
+
+    await loadDefaultFont(editor)
 
     return editor
 }

@@ -1,4 +1,5 @@
-import { EditorInterface, GlyphsInterface, baselineToMetricesRange, calcJustifiedSpaceWidth } from "..";
+import type { Font } from "fontkit";
+import { BaseLineInterface, Editor, EditorInterface, GlyphsInterface, StyleInterface, baselineToMetricesRange, calcJustifiedSpaceWidth, getDefaultFontIdx, getLineSymbolContent } from "..";
 
 export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
     if (editor.derivedTextData.glyphs) return editor.derivedTextData.glyphs
@@ -30,6 +31,7 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
         })
     }
 
+    const lineSymbolVisit = new Array(editor.textData.lines?.length ?? 0).fill(0)
     for (let i = 0; i < baselines.length; i++) {
         const baseline = baselines[i];
         const { firstCharacter, endCharacter } = baseline
@@ -41,6 +43,13 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
         let spaceWidth = i < baselines.length - 1 ? calcJustifiedSpaceWidth(editor, line, firstCharacter, endCharacter) : -1
         const endStyle = editor.getStyle(baseline.endCharacter - 1)
         const endFont = editor.getFont(endStyle.fontName.family, endStyle.fontName.style)
+
+        // 添加列表符号
+        const lineIdx = editor.getLineIndexForCharacterOffset(firstCharacter)
+        if (lineSymbolVisit[lineIdx] === 0) {
+            addListSymbol(editor, glyphs, lineIdx, baseline)
+            lineSymbolVisit[lineIdx] = 1
+        }
 
         for (let j = 0; j < line.length; j++) {
             const metrice = line[j];
@@ -121,4 +130,100 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
     }
     editor.derivedTextData.glyphs = glyphs
     return glyphs
+}
+
+const addListSymbol = (editor: Editor, glyphs: GlyphsInterface[], lineIdx: number, baseline: BaseLineInterface) => {
+    const lines = editor.textData.lines;
+    const line = editor.textData.lines?.[lineIdx]
+    if (!line || !lines?.length) return;
+
+    const firstStyle = editor.getStyle(baseline.firstCharacter)
+    const font = editor.getFont(firstStyle.fontName.family, firstStyle.fontName.style)
+    if (!font) return;
+
+    let lineListOffset = 0
+    let listStartOffset = line.listStartOffset
+    if (line.isFirstLineOfList === false) {
+        for (let i = lineIdx; i >= 0; i--) {
+            if (lines[i].isFirstLineOfList === true) {
+                listStartOffset = lines[i].listStartOffset
+                break
+            }
+            lineListOffset++
+        }
+    }
+
+    const content = getLineSymbolContent(line.lineType, line.indentationLevel, listStartOffset, lineListOffset)
+    if (content.length) {
+        const fontGlyphs = font.glyphsForString(content)
+        const textWidth = fontGlyphs.reduce((pre, cur) => cur.advanceWidth + pre, 0)
+        let x = baseline.position.x
+        if (!hasGlyph(font, fontGlyphs)) {
+            useDefaultFont(editor, glyphs, content, firstStyle, baseline)
+            return
+        }
+
+
+        for (let i = 0; i < fontGlyphs.length; i++) {
+            let fontGlyph = fontGlyphs[i];
+            const fontSize = firstStyle?.fontSize ?? editor.style.fontSize
+            let unitsPerPx = fontSize / (font.unitsPerEm || 1000);
+            const xAdvance = fontGlyph.advanceWidth * unitsPerPx
+            const path = fontGlyph.path.scale(unitsPerPx, -unitsPerPx).toSVG()
+            const symbolGlyph = {
+                commandsBlob: path,
+                position: {
+                    x: x - fontSize * 1.5 / 2 - (textWidth * unitsPerPx) / 2,
+                    y: baseline.position.y
+                },
+                fontSize,
+            }
+            x += xAdvance
+            glyphs.push(symbolGlyph)
+        }
+    }
+
+}
+
+const hasGlyph = (font: Font, fontGlyphs: ReturnType<Font['getGlyph']>[]) => {
+    for (let i = 0; i < fontGlyphs.length; i++) {
+        if (!font.hasGlyphForCodePoint(fontGlyphs[i].codePoints[0])) return false
+    }
+    return true
+}
+
+const useDefaultFont = (editor: Editor, glyphs: GlyphsInterface[], content: string, firstStyle: StyleInterface, baseline: BaseLineInterface) => {
+    const font = editor.getFonts('__default')?.[0]
+    if (!font) return
+
+    let textWidth = 0
+    for (let i = 0; i < content.length; i++) {
+        const char = content[i];
+        const glyphIdx = getDefaultFontIdx(char)
+        if (glyphIdx === -1) continue
+        const fontGlyph = font.getGlyph(glyphIdx)
+        textWidth += fontGlyph.advanceWidth
+    }
+
+    let x = baseline.position.x
+    for (let i = 0; i < content.length; i++) {
+        const char = content[i];
+        const glyphIdx = getDefaultFontIdx(char)
+        if (glyphIdx === -1) continue
+        const fontGlyph = font.getGlyph(glyphIdx)
+        const fontSize = firstStyle?.fontSize ?? editor.style.fontSize
+        let unitsPerPx = fontSize / (font.unitsPerEm || 1000);
+        const xAdvance = fontGlyph.advanceWidth * unitsPerPx
+        const path = fontGlyph.path.scale(unitsPerPx, -unitsPerPx).toSVG()
+        const symbolGlyph = {
+            commandsBlob: path,
+            position: {
+                x: x - fontSize * 1.5 / 2 - (textWidth * unitsPerPx) / 2,
+                y: baseline.position.y
+            },
+            fontSize,
+        }
+        x += xAdvance
+        glyphs.push(symbolGlyph)
+    }
 }
