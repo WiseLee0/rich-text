@@ -50,27 +50,7 @@ export const createEditor = async (): Promise<Editor> => {
         __events: {},
         derivedTextData: {},
         textData: {
-            characters: "h\n\ne\no",
-            characterStyleIDs: [0, 0, 1, 1],
-            styleOverrideTable: [
-                {
-                    "styleID": 1,
-                    "fillPaints": [
-                        {
-                            "type": "SOLID",
-                            "color": {
-                                "r": 0.8823529411764706,
-                                "g": 0.8470588235294118,
-                                "b": 0.8470588235294118,
-                                "a": 1
-                            },
-                            "opacity": 0.7019607843137254,
-                            "visible": true,
-                            "blendMode": "NORMAL"
-                        }
-                    ]
-                }
-            ],
+            characters: "hello\n\n123",
             lines: [
                 {
                     "lineType": "ORDERED_LIST",
@@ -79,14 +59,8 @@ export const createEditor = async (): Promise<Editor> => {
                     "listStartOffset": 0
                 },
                 {
-                    "lineType": "ORDERED_LIST",
+                    "lineType": "UNORDERED_LIST",
                     "indentationLevel": 1,
-                    "isFirstLineOfList": false,
-                    "listStartOffset": 0
-                },
-                {
-                    "lineType": "PLAIN",
-                    "indentationLevel": 0,
                     "isFirstLineOfList": true,
                     "listStartOffset": 0
                 },
@@ -95,7 +69,7 @@ export const createEditor = async (): Promise<Editor> => {
                     "indentationLevel": 1,
                     "isFirstLineOfList": true,
                     "listStartOffset": 0
-                }
+                },
             ]
         },
 

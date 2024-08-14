@@ -102,6 +102,7 @@ export const handleDeleteTextOfTextDataLine = (editor: Editor) => {
             }
             // 删除当前行
             lines?.splice(anchorLineIdx, 1)
+            fixTextDataLines(lines)
         }
         return false
     }
@@ -193,4 +194,14 @@ export const getLineStyleID = (editor: Editor, firstCharacter: number) => {
     }
     const offsets = editor.getLineFirstCharacterList()
     return characterStyleIDs?.[offsets[lineIdx]] ?? 0
+}
+
+const fixTextDataLines = (lines: TextDataLinesInterface[]) => {
+    if (!lines.length) return;
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (line.isFirstLineOfList && lines[i - 1]?.indentationLevel === line.indentationLevel && lines[i - 1]?.lineType === line.lineType) {
+            line.isFirstLineOfList = false
+        }
+    }
 }

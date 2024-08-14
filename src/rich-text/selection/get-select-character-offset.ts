@@ -24,9 +24,9 @@ export const getSelectCharacterOffset: SelectionInterface['getSelectCharacterOff
         r_focus = baselines[focus].firstCharacter + focusOffset
     }
 
-    if (text[r_focus] === '\n') {
-        r_focus++
-    }
+    // if (text[r_focus] === '\n') {
+    //     r_focus++
+    // }
 
     return {
         anchor: r_anchor,

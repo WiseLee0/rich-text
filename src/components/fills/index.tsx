@@ -10,7 +10,7 @@ type FillsCompProps = {
 export const FillsComp = (props: FillsCompProps) => {
     const { editorRef } = props
     const editor = editorRef.current!;
-    
+
     const [, updateRender] = useReducer(i => i + 1, 0)
     const [fillPaints, setFillPaints] = useState<FillPaintType[]>(deepClone(editor.style.fillPaints))
     const [isFillMix, setIsFillMix] = useState(false)
@@ -51,6 +51,10 @@ export const FillsComp = (props: FillsCompProps) => {
     }
 
     useEffect(() => {
+        const watchStyle = () => {
+            watchSelection()
+            editorRef.current?.apply()
+        }
         const watchSelection = () => {
             const style = editorRef.current?.getStyleForSelection() as any
             if (style?.fillPaints) {
@@ -65,10 +69,10 @@ export const FillsComp = (props: FillsCompProps) => {
             }
         }
         editorRef.current?.addEventListener('selection', watchSelection)
-        editorRef.current?.addEventListener('setStyle', watchSelection)
+        editorRef.current?.addEventListener('setStyle', watchStyle)
         return () => {
             editorRef.current?.removeEventListener('selection', watchSelection)
-            editorRef.current?.removeEventListener('setStyle', watchSelection)
+            editorRef.current?.removeEventListener('setStyle', watchStyle)
         }
     }, [fillPaints])
 
