@@ -1,5 +1,5 @@
 import type { Font } from "fontkit";
-import { BaseLineInterface, Editor, EditorInterface, GlyphsInterface, StyleInterface, baselineToMetricesRange, calcJustifiedSpaceWidth, getDefaultFontIdx, getLineSymbolContent } from "..";
+import { BaseLineInterface, Editor, EditorInterface, GlyphsInterface, StyleInterface, baselineToMetricesRange, calcJustifiedSpaceWidth, getDefaultFontIdx, getLineStyleID, getLineSymbolContent } from "..";
 
 export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
     if (editor.derivedTextData.glyphs) return editor.derivedTextData.glyphs
@@ -137,7 +137,8 @@ const addListSymbol = (editor: Editor, glyphs: GlyphsInterface[], lineIdx: numbe
     const line = editor.textData.lines?.[lineIdx]
     if (!line || !lines?.length) return;
 
-    const firstStyle = editor.getLineStyleForCharacterOffset(baseline.firstCharacter)
+    const styleID = getLineStyleID(editor, baseline.firstCharacter)
+    const firstStyle = editor.getStyleForStyleID(styleID)
     const font = editor.getFont(firstStyle.fontName.family, firstStyle.fontName.style)
     if (!font) return;
 
@@ -154,12 +155,13 @@ const addListSymbol = (editor: Editor, glyphs: GlyphsInterface[], lineIdx: numbe
     }
 
     const content = getLineSymbolContent(line.lineType, line.indentationLevel, listStartOffset, lineListOffset)
+
     if (content.length) {
         const fontGlyphs = font.glyphsForString(content)
         const textWidth = fontGlyphs.reduce((pre, cur) => cur.advanceWidth + pre, 0)
         let x = baseline.position.x
         if (!hasGlyph(font, fontGlyphs)) {
-            useDefaultFont(editor, glyphs, content, firstStyle, baseline)
+            useDefaultFont(editor, glyphs, content, firstStyle, styleID, baseline)
             return
         }
 
@@ -177,6 +179,7 @@ const addListSymbol = (editor: Editor, glyphs: GlyphsInterface[], lineIdx: numbe
                     y: baseline.position.y
                 },
                 fontSize,
+                styleID
             }
             x += xAdvance
             glyphs.push(symbolGlyph)
@@ -192,7 +195,7 @@ const hasGlyph = (font: Font, fontGlyphs: ReturnType<Font['getGlyph']>[]) => {
     return true
 }
 
-const useDefaultFont = (editor: Editor, glyphs: GlyphsInterface[], content: string, firstStyle: StyleInterface, baseline: BaseLineInterface) => {
+const useDefaultFont = (editor: Editor, glyphs: GlyphsInterface[], content: string, firstStyle: StyleInterface, styleID: number, baseline: BaseLineInterface) => {
     const font = editor.getFonts('__default')?.[0]
     if (!font) return
 
@@ -222,6 +225,7 @@ const useDefaultFont = (editor: Editor, glyphs: GlyphsInterface[], content: stri
                 y: baseline.position.y
             },
             fontSize,
+            styleID
         }
         x += xAdvance
         glyphs.push(symbolGlyph)

@@ -34,6 +34,8 @@ export type Editor = {
     setStyle: OmitFirstArg<EditorInterface['setStyle']>
     /** 获取样式 */
     getStyle: OmitFirstArg<EditorInterface['getStyle']>
+    /** 根据styleID获取样式 */
+    getStyleForStyleID: OmitFirstArg<EditorInterface['getStyleForStyleID']>
     /** 获取选区样式 */
     getStyleForSelection: OmitFirstArg<EditorInterface['getStyleForSelection']>
     /** 获取文本内容 */
@@ -67,9 +69,7 @@ export type Editor = {
     /** 获取字符所在行数 */
     getLineIndexForCharacterOffset: OmitFirstArg<EditorInterface['getLineIndexForCharacterOffset']>
     /** 获取每行的第一个字符偏移值 */
-    getLinesFirstCharacter: OmitFirstArg<EditorInterface['getLinesFirstCharacter']>
-    /** 获取当前行的列表样式 */
-    getLineStyleForCharacterOffset: OmitFirstArg<EditorInterface['getLineStyleForCharacterOffset']>
+    getLineFirstCharacterList: OmitFirstArg<EditorInterface['getLineFirstCharacterList']>
     /** 添加事件监听 */
     addEventListener: OmitFirstArg<EditorInterface['addEventListener']>
     /** 移除事件监听 */
@@ -134,10 +134,10 @@ export type EditorInterface = {
     execEvent: (editor: Editor, type: keyof EventType) => void
     handleTextTruncation: (editor: Editor) => void
     getLineIndexForCharacterOffset: (editor: Editor, firstCharacter: number) => number
-    getLinesFirstCharacter: (editor: Editor) => number[]
+    getLineFirstCharacterList: (editor: Editor) => number[]
     setTextList: (editor: Editor, lineType: TextDataLinesInterface['lineType']) => void
     getTextListTypeForSelection: (editor: Editor) => TextDataLinesInterface['lineType'] | 'mix' | ''
-    getLineStyleForCharacterOffset: (editor: Editor, firstCharacter: number) => StyleInterface
+    getStyleForStyleID: (editor: Editor, styleID: number) => StyleInterface
 }
 
 export type Rect = [number, number, number, number]

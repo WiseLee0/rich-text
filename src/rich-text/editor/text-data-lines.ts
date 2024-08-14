@@ -9,6 +9,7 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
     } as TextDataLinesInterface
     const { lines, characters, characterStyleIDs, styleOverrideTable } = editor.textData
     let wrapNum = getWrapNum(content)
+    const result: TextDataLinesInterface[] = []
     if (!lines?.length) {
         wrapNum += 1
         const result: TextDataLinesInterface[] = []
@@ -60,12 +61,24 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
             }
         }
     }
-    const lineIdx = editor.getLineIndexForCharacterOffset(selectCharacterOffset.anchor) - 1
-    const result: TextDataLinesInterface[] = []
+
+    // 换行
+    if (content[0] === '\n') {
+        const lineIdx = editor.getLineIndexForCharacterOffset(anchor)
+        let isFirstLineOfList = lines[lineIdx].isFirstLineOfList
+        if (lines[lineIdx].lineType !== 'PLAIN') isFirstLineOfList = false
+        for (let i = 0; i < wrapNum; i++) {
+            result.push({ ...lines[lineIdx], isFirstLineOfList })
+        }
+        if (result.length) editor.textData.lines?.splice(lineIdx + 1, 0, ...result)
+        return
+    }
+
+    const lineIdx = editor.getLineIndexForCharacterOffset(anchor) - 1
     for (let i = 0; i < wrapNum; i++) {
         result.push({ ...lines[lineIdx], isFirstLineOfList: false })
     }
-    editor.textData.lines?.splice(lineIdx, 0, ...result)
+    if (result.length) editor.textData.lines?.splice(lineIdx, 0, ...result)
 }
 
 
@@ -165,4 +178,19 @@ function convertToRoman(num: number) {
     }
 
     return roman;
+}
+
+export const getLineStyleID = (editor: Editor, firstCharacter: number) => {
+    const { lines, characterStyleIDs } = editor.textData
+    if (!lines?.length) return 0
+    let lineIdx = editor.getLineIndexForCharacterOffset(firstCharacter)
+    while (!lines[lineIdx].isFirstLineOfList && lineIdx >= 0) {
+        lineIdx--
+    }
+    if (lineIdx < 0) {
+        console.warn('getLineStyleID exception');
+        return 0
+    }
+    const offsets = editor.getLineFirstCharacterList()
+    return characterStyleIDs?.[offsets[lineIdx]] ?? 0
 }

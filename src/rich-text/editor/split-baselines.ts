@@ -25,7 +25,7 @@ const wordGroupLines = (editor: Editor, lines: MetricesInterface[][], wordGroup:
     let currentLine: MetricesInterface[] = [];
     let currentWidth = 0
     let maxWidth = textMaxWidth
-    let linesFirstCharacter = editor.getLinesFirstCharacter()
+    let lineFirstCharacterList = editor.getLineFirstCharacterList()
     let firstStyle = editor.getStyle(0)
     const textDataLines = editor.textData.lines
     if (!textDataLines?.length) {
@@ -40,7 +40,7 @@ const wordGroupLines = (editor: Editor, lines: MetricesInterface[][], wordGroup:
         // 处理缩进层级
         const lineFirstCharacter = word[0].firstCharacter
         const lineIdx = editor.getLineIndexForCharacterOffset(lineFirstCharacter)
-        if (linesFirstCharacter.includes(lineFirstCharacter)) {
+        if (lineFirstCharacterList.includes(lineFirstCharacter)) {
             firstStyle = editor.getStyle(lineFirstCharacter)
         }
         maxWidth = textMaxWidth - textDataLines[lineIdx]?.indentationLevel * firstStyle.fontSize * 1.5

@@ -7,4 +7,5 @@ export interface GlyphsInterface {
     fontSize: number,
     firstCharacter?: number
     xAdvance?: number
+    styleID?: number
 }

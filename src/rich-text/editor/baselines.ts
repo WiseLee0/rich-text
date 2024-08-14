@@ -1,4 +1,4 @@
-import { calcJustifiedBaseLineWidth, EditorInterface, MetricesInterface, splitBaseLines } from "..";
+import { calcJustifiedBaseLineWidth, EditorInterface, getLineStyleID, MetricesInterface, splitBaseLines } from "..";
 
 export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     if (editor.derivedTextData.baselines) return editor.derivedTextData.baselines
@@ -8,7 +8,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     const lines = splitBaseLines(editor, editor.width + 0.1)
     if (!lines || !textDataLines?.length) return;
 
-    let linesFirstCharacter = editor.getLinesFirstCharacter()
+    let linesFirstCharacter = editor.getLineFirstCharacterList()
     let firstStyle = editor.getStyle(0)
     let firstCharacter = 0;
     let endCharacter = 0;
@@ -87,7 +87,8 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         const lineFirstCharacter = line[0].firstCharacter
         const lineIdx = editor.getLineIndexForCharacterOffset(lineFirstCharacter)
         if (linesFirstCharacter.includes(lineFirstCharacter)) {
-            firstStyle = editor.getLineStyleForCharacterOffset(lineFirstCharacter)
+            const styleID = getLineStyleID(editor, lineFirstCharacter)
+            firstStyle = editor.getStyleForStyleID(styleID)
         }
         const textDataLine = textDataLines[lineIdx]
         if (textDataLine?.indentationLevel > 0) {

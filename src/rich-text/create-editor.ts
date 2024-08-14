@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyphs, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getLineIndexForCharacterOffset, getLinesFirstCharacter, getTextListTypeForSelection, setTextList, loadDefaultFont, getLineStyleForCharacterOffset, getFillPaintsForGlyph } from './'
+import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyphs, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getLineIndexForCharacterOffset, getLineFirstCharacterList, getTextListTypeForSelection, setTextList, loadDefaultFont, getFillPaintsForGlyph, getStyleForStyleID } from './'
 
 export const createEditor = async (): Promise<Editor> => {
 
@@ -50,7 +50,7 @@ export const createEditor = async (): Promise<Editor> => {
         __events: {},
         derivedTextData: {},
         textData: {
-            characters: "h\ne\no",
+            characters: "h\n\ne\no",
             characterStyleIDs: [0, 0, 1, 1],
             styleOverrideTable: [
                 {
@@ -76,6 +76,12 @@ export const createEditor = async (): Promise<Editor> => {
                     "lineType": "ORDERED_LIST",
                     "indentationLevel": 1,
                     "isFirstLineOfList": true,
+                    "listStartOffset": 0
+                },
+                {
+                    "lineType": "ORDERED_LIST",
+                    "indentationLevel": 1,
+                    "isFirstLineOfList": false,
                     "listStartOffset": 0
                 },
                 {
@@ -118,10 +124,10 @@ export const createEditor = async (): Promise<Editor> => {
         addEventListener: (...args) => addEventListener(editor, ...args),
         removeEventListener: (...args) => removeEventListener(editor, ...args),
         getLineIndexForCharacterOffset: (...args) => getLineIndexForCharacterOffset(editor, ...args),
-        getLinesFirstCharacter: (...args) => getLinesFirstCharacter(editor, ...args),
+        getLineFirstCharacterList: (...args) => getLineFirstCharacterList(editor, ...args),
         getTextListTypeForSelection: (...args) => getTextListTypeForSelection(editor, ...args),
         setTextList: (...args) => setTextList(editor, ...args),
-        getLineStyleForCharacterOffset: (...args) => getLineStyleForCharacterOffset(editor, ...args),
+        getStyleForStyleID: (...args) => getStyleForStyleID(editor, ...args),
 
         // Font
         fontMgrFromData: (...args) => fontMgrFromData(editor, ...args),
