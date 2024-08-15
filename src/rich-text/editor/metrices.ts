@@ -25,6 +25,7 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
         let family = style?.fontName?.family ?? editor.style.fontName?.family
         let fontStyle = style?.fontName?.style ?? editor.style.fontName?.style
         const font = editor.getFont(family, fontStyle)
+
         if (!font) continue
 
         const features = setFontFeatures(editor, tokenOffset)

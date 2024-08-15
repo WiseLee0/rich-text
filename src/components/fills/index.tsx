@@ -53,7 +53,7 @@ export const FillsComp = (props: FillsCompProps) => {
     useEffect(() => {
         const watchStyle = () => {
             watchSelection()
-            editorRef.current?.apply()
+            // editorRef.current?.apply()
         }
         const watchSelection = () => {
             const style = editorRef.current?.getStyleForSelection() as any

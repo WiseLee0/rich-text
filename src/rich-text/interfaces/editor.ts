@@ -24,9 +24,11 @@ export type Editor = {
     // core
     /** 布局段落中的文本，使其包装到给定的宽度和高度 */
     layout: OmitFirstArg<EditorInterface['layout']>
+    /** 布局段落中的文本，使其包装到给定的宽度 */
     layoutW: OmitFirstArg<EditorInterface['layoutW']>
+    /** 布局段落中的文本，使其包装到给定的高度 */
     layoutH: OmitFirstArg<EditorInterface['layoutH']>
-    /** 计算文本布局 */
+    /** 执行文本布局 */
     apply: OmitFirstArg<EditorInterface['apply']>
 
     // editor
@@ -64,6 +66,8 @@ export type Editor = {
     getFillPaintsForGlyphs: OmitFirstArg<EditorInterface['getFillPaintsForGlyphs']>
     /** 获取指定字符填充样式 */
     getFillPaintsForGlyph: OmitFirstArg<EditorInterface['getFillPaintsForGlyph']>
+    /** 获取行高的像素值 */
+    getLineHeightOfPixels: OmitFirstArg<EditorInterface['getLineHeightOfPixels']>
     /** 获取文本修饰矩形，用于绘制 */
     getTextDecorationRects: OmitFirstArg<EditorInterface['getTextDecorationRects']>
     /** 获取字符所在行数 */
@@ -138,6 +142,7 @@ export type EditorInterface = {
     setTextList: (editor: Editor, lineType: TextDataLinesInterface['lineType']) => void
     getTextListTypeForSelection: (editor: Editor) => TextDataLinesInterface['lineType'] | 'mix' | ''
     getStyleForStyleID: (editor: Editor, styleID: number) => StyleInterface
+    getLineHeightOfPixels: (editor: Editor, firstCharacter?: number) => number
 }
 
 export type Rect = [number, number, number, number]

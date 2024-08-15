@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyphs, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getLineIndexForCharacterOffset, getLineFirstCharacterList, getTextListTypeForSelection, setTextList, loadDefaultFont, getFillPaintsForGlyph, getStyleForStyleID } from './'
+import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyphs, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getLineIndexForCharacterOffset, getLineFirstCharacterList, getTextListTypeForSelection, setTextList, loadDefaultFont, getFillPaintsForGlyph, getStyleForStyleID, getLineHeightOfPixels } from './'
 
 export const createEditor = async (): Promise<Editor> => {
 
@@ -28,6 +28,10 @@ export const createEditor = async (): Promise<Editor> => {
                     "blendMode": "NORMAL"
                 },
             ],
+            lineHeight: {
+                "units": "PERCENT",
+                "value": 100
+            },
             fontVariations: [],
             fontLigatures: "ENABLE",
             textDecoration: "NONE",
@@ -50,7 +54,7 @@ export const createEditor = async (): Promise<Editor> => {
         __events: {},
         derivedTextData: {},
         textData: {
-            characters: "hello\n\n123",
+            characters: "hello\n\n123\n",
             lines: [
                 {
                     "lineType": "ORDERED_LIST",
@@ -67,6 +71,12 @@ export const createEditor = async (): Promise<Editor> => {
                 {
                     "lineType": "ORDERED_LIST",
                     "indentationLevel": 1,
+                    "isFirstLineOfList": true,
+                    "listStartOffset": 0
+                },
+                {
+                    "lineType": "PLAIN",
+                    "indentationLevel": 0,
                     "isFirstLineOfList": true,
                     "listStartOffset": 0
                 },
@@ -102,6 +112,7 @@ export const createEditor = async (): Promise<Editor> => {
         getTextListTypeForSelection: (...args) => getTextListTypeForSelection(editor, ...args),
         setTextList: (...args) => setTextList(editor, ...args),
         getStyleForStyleID: (...args) => getStyleForStyleID(editor, ...args),
+        getLineHeightOfPixels: (...args) => getLineHeightOfPixels(editor, ...args),
 
         // Font
         fontMgrFromData: (...args) => fontMgrFromData(editor, ...args),

@@ -1,3 +1,5 @@
 export * from './find'
 export * from './deep-equal'
 export * from './deep-clone'
+export * from './debounce'
+export * from './throttle'

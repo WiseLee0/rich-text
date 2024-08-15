@@ -123,6 +123,30 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
             }
         }
     }
+
+    // 最后一个字符是换行，存在列表符号时
+    if (editor.textData.characters[editor.textData.characters.length - 1] === '\n') {
+        const lastLen = editor.textData.characters.length
+        const lineIdx = editor.getLineIndexForCharacterOffset(lastLen)
+        if (lineSymbolVisit[lineIdx] === 0) {
+            const endBaseLine = baselines[baselines.length - 1];
+            const lineY = endBaseLine.lineY + endBaseLine.lineHeight
+            const endLine = {
+                position: {
+                    x: endBaseLine.position.x,
+                    y: lineY + endBaseLine.lineAscent
+                },
+                width: 0,
+                lineY,
+                lineHeight: endBaseLine.lineHeight,
+                lineAscent: endBaseLine.lineAscent,
+                firstCharacter: lastLen - 1,
+                endCharacter: lastLen
+            }
+            addListSymbol(editor, glyphs, lineIdx, endLine)
+            lineSymbolVisit[lineIdx] = 1
+        }
+    }
     // 不需要应用截断文本
     if (!hasTextTruncation) {
         editor.style.truncatedHeight = -1

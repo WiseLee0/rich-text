@@ -1,4 +1,4 @@
-import { Editor, lineTokenize, MetricesInterface } from "..";
+import { Editor, getLineIndentationLevelPixels, lineTokenize, MetricesInterface } from "..";
 
 // Rule1: 空白词组遇到段行会放置在当前行末尾，即使它已经超出元素外
 // Rule2: 尽可能不切断词组，让其完整在一行展示，除非当前词组的宽度大于文本元素的宽度
@@ -25,8 +25,6 @@ const wordGroupLines = (editor: Editor, lines: MetricesInterface[][], wordGroup:
     let currentLine: MetricesInterface[] = [];
     let currentWidth = 0
     let maxWidth = textMaxWidth
-    let lineFirstCharacterList = editor.getLineFirstCharacterList()
-    let firstStyle = editor.getStyle(0)
     const textDataLines = editor.textData.lines
     if (!textDataLines?.length) {
         console.warn('wordGroupLines exception')
@@ -38,12 +36,7 @@ const wordGroupLines = (editor: Editor, lines: MetricesInterface[][], wordGroup:
         const isSpace = word.length === 1 && word[0].name === 'space'
 
         // 处理缩进层级
-        const lineFirstCharacter = word[0].firstCharacter
-        const lineIdx = editor.getLineIndexForCharacterOffset(lineFirstCharacter)
-        if (lineFirstCharacterList.includes(lineFirstCharacter)) {
-            firstStyle = editor.getStyle(lineFirstCharacter)
-        }
-        maxWidth = textMaxWidth - textDataLines[lineIdx]?.indentationLevel * firstStyle.fontSize * 1.5
+        maxWidth = textMaxWidth - getLineIndentationLevelPixels(editor, word[0].firstCharacter)
 
         // 换行符
         if (word.length === 1 && word[0].name === '\n') {
@@ -148,7 +141,7 @@ const wordLines = (lines: MetricesInterface[][], metrices: MetricesInterface[], 
 }
 
 const splitWordGroup = (editor: Editor) => {
-    const metrices = editor.__metrices ?? editor.getMetrices()
+    const metrices = editor.getMetrices()
     if (!metrices) return;
 
     const text = editor.getText()
@@ -160,10 +153,11 @@ const splitWordGroup = (editor: Editor) => {
         const temp: MetricesInterface[] = []
         while (len > 0) {
             const metrice = metrices[mIdx++];
+            if (!metrice) break;
             len -= metrice.codePoints.length
             temp.push(metrice)
         }
-        words.push(temp)
+        if (temp.length) words.push(temp)
     }
     if (mIdx !== metrices.length) {
         console.warn('数据异常')
