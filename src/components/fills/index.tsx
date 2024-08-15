@@ -28,10 +28,10 @@ export const FillsComp = (props: FillsCompProps) => {
             "visible": true,
             "blendMode": "NORMAL"
         } as FillPaintType
-
+        
         if (!fillPaints.length || isFillMix) {
             editor.setStyle({
-                fillPaints: deepClone(editor.style.fillPaints)
+                fillPaints: [fill]
             })
         } else {
             fillPaints.push(fill)
