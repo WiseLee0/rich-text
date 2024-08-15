@@ -143,6 +143,14 @@ export default function App() {
       updateRender()
     }
     const handleTextareaKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Tab' && e.shiftKey) {
+        editorRef.current?.reduceIndent()
+        e.preventDefault()
+      }
+      if (e.key === 'Tab' && !e.shiftKey) {
+        editorRef.current?.addIndent()
+        e.preventDefault()
+      }
       if (e.key === 'ArrowRight') {
         e.preventDefault()
       }

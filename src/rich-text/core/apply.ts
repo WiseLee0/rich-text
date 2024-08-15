@@ -1,4 +1,4 @@
-import { clearCache, EditorInterface, getH } from ".."
+import { clearCache, EditorInterface, getH, getLineIndentationLevelPixels } from ".."
 
 export const apply: EditorInterface['apply'] = (editor) => {
     clearCache(editor)
@@ -11,7 +11,11 @@ export const apply: EditorInterface['apply'] = (editor) => {
     const logicalCharacterOffset = editor.getLogicalCharacterOffset()
 
     if (editor.style.textAutoResize === 'WIDTH_AND_HEIGHT') {
-        editor.width = Math.max(...baselines.map(item => item.position.x + item.width), 0)
+        let lastW = 0
+        if (editor.textData.characters[editor.textData.characters.length - 1] === '\n') {
+            lastW = getLineIndentationLevelPixels(editor, baselines[baselines.length - 1].endCharacter)
+        }
+        editor.width = Math.max(...baselines.map(item => item.position.x + item.width), lastW)
         editor.height = getH(editor)
     }
 

@@ -1,5 +1,5 @@
 import type { Font } from "fontkit";
-import { BaseLineInterface, Editor, EditorInterface, GlyphsInterface, StyleInterface, baselineToMetricesRange, calcJustifiedSpaceWidth, getDefaultFontIdx, getLineStyleID, getLineSymbolContent } from "..";
+import { BaseLineInterface, Editor, EditorInterface, GlyphsInterface, StyleInterface, baselineToMetricesRange, calcJustifiedSpaceWidth, getDefaultFontIdx, getLineIndentationLevelPixels, getLineStyleID, getLineSymbolContent } from "..";
 
 export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
     if (editor.derivedTextData.glyphs) return editor.derivedTextData.glyphs
@@ -133,7 +133,7 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
             const lineY = endBaseLine.lineY + endBaseLine.lineHeight
             const endLine = {
                 position: {
-                    x: endBaseLine.position.x,
+                    x: getLineIndentationLevelPixels(editor, endBaseLine.endCharacter),
                     y: lineY + endBaseLine.lineAscent
                 },
                 width: 0,
@@ -170,11 +170,17 @@ const addListSymbol = (editor: Editor, glyphs: GlyphsInterface[], lineIdx: numbe
     let listStartOffset = line.listStartOffset
     if (line.isFirstLineOfList === false) {
         for (let i = lineIdx; i >= 0; i--) {
-            if (lines[i].isFirstLineOfList === true) {
-                listStartOffset = lines[i].listStartOffset
-                break
+            if (lines[i].lineType !== line.lineType) {
+                lineListOffset--;
+                break;
             }
-            lineListOffset++
+            if (lines[i].indentationLevel === line.indentationLevel) {
+                if (lines[i].isFirstLineOfList === true) {
+                    listStartOffset = lines[i].listStartOffset
+                    break
+                }
+                lineListOffset++
+            }
         }
     }
 

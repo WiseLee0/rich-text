@@ -50,6 +50,10 @@ export type Editor = {
     replaceText: OmitFirstArg<EditorInterface['replaceText']>
     /** 设置文本列表 */
     setTextList: OmitFirstArg<EditorInterface['setTextList']>
+    /** 增加缩进 */
+    addIndent: OmitFirstArg<EditorInterface['addIndent']>
+    /** 减少缩进 */
+    reduceIndent: OmitFirstArg<EditorInterface['reduceIndent']>
     /** 获取选区文本列表类型 */
     getTextListTypeForSelection: OmitFirstArg<EditorInterface['getTextListTypeForSelection']>
     /** 获取所有行的逻辑字符的偏移值（逻辑字符指的是输入的文本字符） */
@@ -143,6 +147,8 @@ export type EditorInterface = {
     getTextListTypeForSelection: (editor: Editor) => TextDataLinesInterface['lineType'] | 'mix' | ''
     getStyleForStyleID: (editor: Editor, styleID: number) => StyleInterface
     getLineHeightOfPixels: (editor: Editor, firstCharacter?: number) => number
+    addIndent: (editor: Editor) => void
+    reduceIndent: (editor: Editor) => void
 }
 
 export type Rect = [number, number, number, number]

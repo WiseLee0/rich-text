@@ -44,6 +44,6 @@ export const deleteText: EditorInterface['deleteText'] = (editor) => {
         mergeStyleOverride(editor, characterStyleIDs, styleOverrideTable)
     }
 
-    editor.apply()
     editor.selectForCharacterOffset(anchorCharacterIdx)
+    editor.apply()
 }
