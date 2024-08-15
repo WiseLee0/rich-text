@@ -23,7 +23,6 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
         editor.setStyle({
             maxLines: value
         })
-        editor?.apply()
     }
 
     const handleTextTruncationChange = (e: RadioChangeEvent) => {
@@ -31,20 +30,17 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
         editor?.setStyle({
             textTruncation: e.target.value as StyleInterface['textTruncation']
         })
-        editor?.apply()
     }
     const handleLeadingTrimChange = (e: RadioChangeEvent) => {
         setLeadingTrim(e.target.value)
         editor?.setStyle({
             leadingTrim: e.target.value as StyleInterface['leadingTrim']
         })
-        editor?.apply()
         updateRender()
     }
     const handleTextListTypeChange = (e: RadioChangeEvent) => {
         setTextListType(e.target.value)
         editor.setTextList(e.target.value)
-        editor?.apply()
     }
 
     useEffect(() => {

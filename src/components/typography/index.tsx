@@ -27,10 +27,6 @@ export const TypographyComp = (props: TypographyCompProps) => {
     const fontSizeOptions = [12, 16, 20, 24, 32, 36, 40, 48].map(item => ({ label: item, value: item.toString() }))
     const variationAxes = fontListData.variationAxesList[`${family}#${style}`]
 
-    const update = () => {
-        editor?.apply()
-        updateRender()
-    }
 
     const loadFontAsset = async (family: string, style: string) => {
         const asset = fontListData.assetList[`${family}#${style}`]
@@ -57,7 +53,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
                 postscript
             },
         })
-        update()
+        updateRender()
         setFamily(family)
         setStyle(style)
     }
@@ -78,7 +74,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
                 postscript
             },
         })
-        update()
+        updateRender()
         setFamily(family)
         setStyle(style)
     }
@@ -89,21 +85,21 @@ export const TypographyComp = (props: TypographyCompProps) => {
         editor?.setStyle({
             fontSize: parseInt(size, 10)
         })
-        update()
+        updateRender()
     }
 
     const handleTextAlignHorizontalChange = (e: RadioChangeEvent) => {
         editor?.setStyle({
             textAlignHorizontal: e.target.value as StyleInterface['textAlignHorizontal']
         })
-        update()
+        updateRender()
     }
 
     const handleTextAlignVerticalChange = (e: RadioChangeEvent) => {
         editor?.setStyle({
             textAlignVertical: e.target.value as StyleInterface['textAlignVertical']
         })
-        update()
+        updateRender()
     }
 
     const handleTextDecorationChange = (e: RadioChangeEvent) => {
@@ -111,14 +107,14 @@ export const TypographyComp = (props: TypographyCompProps) => {
         editor?.setStyle({
             textDecoration: e.target.value
         })
-        update()
+        updateRender()
     }
 
     const handleTextCaseChange = (e: RadioChangeEvent) => {
         editor?.setStyle({
             textCase: e.target.value
         })
-        update()
+        updateRender()
     }
 
     const changeVariationAxes = (val: number | null, name: string) => {
@@ -138,7 +134,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
             editor?.setStyle({
                 fontVariations: variations
             })
-            update()
+            updateRender()
             return
         }
         const variation = fontVariations.find(item => item.axisName === name)
@@ -150,7 +146,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
         editor?.setStyle({
             fontVariations
         })
-        update()
+        updateRender()
     }
 
     const showVariationAxes = () => {

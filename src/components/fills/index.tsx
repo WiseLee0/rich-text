@@ -51,10 +51,6 @@ export const FillsComp = (props: FillsCompProps) => {
     }
 
     useEffect(() => {
-        const watchStyle = () => {
-            watchSelection()
-            // editorRef.current?.apply()
-        }
         const watchSelection = () => {
             const style = editorRef.current?.getStyleForSelection() as any
             if (style?.fillPaints) {
@@ -69,10 +65,10 @@ export const FillsComp = (props: FillsCompProps) => {
             }
         }
         editorRef.current?.addEventListener('selection', watchSelection)
-        editorRef.current?.addEventListener('setStyle', watchStyle)
+        editorRef.current?.addEventListener('setStyle', watchSelection)
         return () => {
             editorRef.current?.removeEventListener('selection', watchSelection)
-            editorRef.current?.removeEventListener('setStyle', watchStyle)
+            editorRef.current?.removeEventListener('setStyle', watchSelection)
         }
     }, [fillPaints])
 

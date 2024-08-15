@@ -26,9 +26,7 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
         }
         // 如果在最后一行，则省略文本不生效
         if (maxLines === baselines.length) maxLines = baselines.length + 1
-        editor.setStyle({
-            maxLines
-        })
+        editor.style.maxLines = maxLines
     }
 
     const lineSymbolVisit = new Array(editor.textData.lines?.length ?? 0).fill(0)

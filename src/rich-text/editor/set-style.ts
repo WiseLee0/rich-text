@@ -1,6 +1,11 @@
 import { clearGetStyleCache, deepEqual, Editor, EditorInterface, execEvent, StyleInterface } from "..";
 
-
+/**
+ * 修改样式
+ * 
+ * 禁止在内部修改样式使用此API（容易产生内部循环）🙅
+ * 使用editor.style.xxx的方式直接修改即可
+ */
 export const setStyle: EditorInterface['setStyle'] = (editor, styles) => {
 
     clearGetStyleCache(editor)  // 清除获取样式缓存
@@ -15,6 +20,9 @@ export const setStyle: EditorInterface['setStyle'] = (editor, styles) => {
         ...editor.style,
         ...styles
     }
+
+
+    editor.apply()
 
     execEvent(editor, 'setStyle')
 }

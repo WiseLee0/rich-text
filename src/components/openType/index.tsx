@@ -25,7 +25,6 @@ export const OpenTypeComp = (props: OpenTypeCompProps) => {
         editor?.setStyle({
             fontLigatures: e.target.value
         })
-        editor.apply()
         setFontLigatures(e.target.value)
     }
 
@@ -33,7 +32,6 @@ export const OpenTypeComp = (props: OpenTypeCompProps) => {
         editor?.setStyle({
             fontPosition: e.target.value
         })
-        editor.apply()
         setFontPosition(e.target.value)
     }
 
@@ -41,7 +39,6 @@ export const OpenTypeComp = (props: OpenTypeCompProps) => {
         editor?.setStyle({
             fontNumericFraction: e.target.value
         })
-        editor.apply()
         setFontNumericFraction(e.target.value)
     }
 

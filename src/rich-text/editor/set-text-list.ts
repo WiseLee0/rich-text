@@ -23,4 +23,5 @@ export const setTextList: EditorInterface['setTextList'] = (editor, lineType) =>
 
     fixIsFirstLineOfList(lines)
 
+    editor.apply()
 }
