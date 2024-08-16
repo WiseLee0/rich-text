@@ -67,7 +67,7 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
     if (content[0] === '\n') {
         const lineIdx = getLineIndexForCharacterOffset(editor, anchor)
         // 空行列表再次换行，需要缩减层级
-        if (lines[lineIdx].lineType !== 'PLAIN' && characters[anchor] === '\n' && (characters[anchor - 1] === undefined || characters[anchor - 1] === '\n')) {
+        if (lines[lineIdx].lineType !== 'PLAIN' && (characters[anchor] === undefined || characters[anchor] === '\n') && (characters[anchor - 1] === undefined || characters[anchor - 1] === '\n')) {
             if (lines[lineIdx].indentationLevel > 1) {
                 lines[lineIdx].indentationLevel--
             } else {
