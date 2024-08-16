@@ -4,7 +4,6 @@ import { CANVAS_W, CANVAS_H, loadSkia, CANVAS_MARING } from './utils';
 import { Canvas } from 'canvaskit-wasm';
 import { Spin } from 'antd';
 import PlayRegular from './assets/Play-Regular.ttf'
-import InterSub from './assets/inter-sub.ttf'
 import { createEditor, Editor } from './rich-text';
 import { AutoResizeComp } from './components/autoResize/index';
 import { renderBaseLine, renderBorder, renderCursor, renderGlyphBorder, renderText, renderTextDecoration } from './render';
@@ -54,7 +53,7 @@ export default function App() {
     const editor = await createEditor()
     editor.fontMgrFromData([data1])
     editorRef.current = editor;
-    editor.layout();
+    editor.layout(300);
 
     (window as any).getEditor = () => {
       return editorRef.current

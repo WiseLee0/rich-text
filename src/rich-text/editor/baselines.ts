@@ -38,6 +38,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         const lineAscent = line.reduce((pre, cur) => Math.max(pre, cur.ascent), 0)
         const capHeight = line.reduce((pre, cur) => Math.max(pre, cur.capHeight), 0)
         let positionX = 0
+        const lineIndentationLevel = getLineIndentationLevelPixels(editor, line[0].firstCharacter)
         if (line.length !== 1 && lineWidth === 0 && line[0].name === '\n') {
             firstCharacter = endCharacter
             continue
@@ -47,10 +48,10 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
             positionX = 0
         }
         if (textAlignHorizontal === 'CENTER') {
-            positionX = (editor.width - lineWidth) / 2
+            positionX = (editor.width - lineIndentationLevel - lineWidth) / 2
         }
         if (textAlignHorizontal === 'RIGHT') {
-            positionX = editor.width - lineWidth
+            positionX = editor.width - lineIndentationLevel - lineWidth
         }
         if (textAlignHorizontal === 'JUSTIFIED') {
             positionX = 0
@@ -82,7 +83,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         }
 
         // 处理缩进层级
-        positionX += getLineIndentationLevelPixels(editor, line[0].firstCharacter)
+        positionX += lineIndentationLevel
 
         baselines.push({
             position: {
