@@ -68,7 +68,7 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
         let isFirstLineOfList = lines[lineIdx].isFirstLineOfList
         if (lines[lineIdx].lineType !== 'PLAIN') isFirstLineOfList = false
         for (let i = 0; i < wrapNum; i++) {
-            result.push({ ...lines[lineIdx], isFirstLineOfList })
+            result.push({ ...lines[lineIdx], listStartOffset: 0, isFirstLineOfList })
         }
         if (result.length) {
             lines.splice(lineIdx + 1, 0, ...result)
@@ -110,6 +110,8 @@ export const handleDeleteTextOfTextDataLine = (editor: Editor) => {
                 editor.setTextList("PLAIN")
                 return true
             }
+            // 第一行第一个
+            if (range.anchor === 0) return true;
             // 删除当前行
             lines?.splice(anchorLineIdx, 1)
             fixIsFirstLineOfList(lines)
