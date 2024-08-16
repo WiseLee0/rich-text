@@ -1,4 +1,4 @@
-import { EditorInterface, fixIsFirstLineOfList, getLineIndexForCharacterOffset } from "..";
+import { EditorInterface, fixTextDataLines, getLineIndexForCharacterOffset } from "..";
 
 export const reduceIndent: EditorInterface['reduceIndent'] = (editor) => {
     const { lines, characters } = editor.textData
@@ -16,6 +16,6 @@ export const reduceIndent: EditorInterface['reduceIndent'] = (editor) => {
             lines[i].indentationLevel = Math.max(lines[i].indentationLevel, 1)
         }
     }
-    fixIsFirstLineOfList(lines)
+    fixTextDataLines(lines)
     editor.apply()
 }

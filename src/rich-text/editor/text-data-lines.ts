@@ -53,9 +53,10 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
             if (symbolStr.length > 1) {
                 const num = symbolStr.slice(0, -1)
                 const symbol = symbolStr[symbolStr.length - 1]
-                if ((/^[0-9]+$/.test(num) || /^[a-zA-Z]+$/.test(num)) && (symbol === '.' || symbol === ')')) {
+                const isNum = /^[0-9]+$/.test(num)
+                if ((isNum || /^[a-zA-Z]+$/.test(num)) && (symbol === '.' || symbol === ')')) {
                     modifyText()
-                    editor.setTextList("ORDERED_LIST")
+                    editor.setTextList("ORDERED_LIST", isNum ? parseInt(num) - 1 : 0)
                     return true
                 }
             }
@@ -72,7 +73,7 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
         }
         if (result.length) {
             lines.splice(lineIdx + 1, 0, ...result)
-            fixIsFirstLineOfList(lines)
+            fixTextDataLines(lines)
         }
         return
     }
@@ -83,7 +84,7 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
     }
     if (result.length) {
         lines.splice(lineIdx, 0, ...result)
-        fixIsFirstLineOfList(lines)
+        fixTextDataLines(lines)
     }
 }
 
@@ -114,7 +115,7 @@ export const handleDeleteTextOfTextDataLine = (editor: Editor) => {
             if (range.anchor === 0) return true;
             // 删除当前行
             lines?.splice(anchorLineIdx, 1)
-            fixIsFirstLineOfList(lines)
+            fixTextDataLines(lines)
         }
         return false
     }
@@ -208,8 +209,8 @@ export const getLineStyleID = (editor: Editor, firstCharacter: number) => {
     return characterStyleIDs?.[offsets[lineIdx]] ?? 0
 }
 
-// 整理行之间的isFirstLineOfList关系
-export const fixIsFirstLineOfList = (lines: TextDataLinesInterface[]) => {
+// 整理textDataLines关系
+export const fixTextDataLines = (lines: TextDataLinesInterface[]) => {
     if (!lines.length) return;
 
     for (let i = 0; i < lines.length; i++) {
@@ -230,8 +231,12 @@ export const fixIsFirstLineOfList = (lines: TextDataLinesInterface[]) => {
             // 上一层级等于当前层级
             if (preLine.indentationLevel === line.indentationLevel) {
                 // 类型不一致，当前行只能是第一个; 类型一致，当前行必然不是第一个
-                if (preLine.lineType !== line.lineType) line.isFirstLineOfList = true;
-                else line.isFirstLineOfList = false;
+                if (preLine.lineType !== line.lineType) {
+                    line.isFirstLineOfList = true;
+                } else {
+                    line.isFirstLineOfList = false;
+                    line.listStartOffset = 0
+                }
                 break;
             }
             // 还没有找着，当前行必然是第一个

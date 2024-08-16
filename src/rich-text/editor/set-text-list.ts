@@ -1,6 +1,6 @@
-import { EditorInterface, fixIsFirstLineOfList, getLineIndexForCharacterOffset } from "..";
+import { EditorInterface, fixTextDataLines, getLineIndexForCharacterOffset } from "..";
 
-export const setTextList: EditorInterface['setTextList'] = (editor, lineType) => {
+export const setTextList: EditorInterface['setTextList'] = (editor, lineType, listStartOffset) => {
     const { lines, characters } = editor.textData
     const selectCharacterOffset = editor.getSelectCharacterOffset()
     const anchor = selectCharacterOffset?.anchor ?? 0
@@ -12,6 +12,7 @@ export const setTextList: EditorInterface['setTextList'] = (editor, lineType) =>
     for (let i = anchorLineIdx; i < focusLineIdx + 1; i++) {
         const line = lines[i];
         line.lineType = lineType
+        line.listStartOffset = listStartOffset ?? 0
         if (lineType === 'PLAIN') {
             line.indentationLevel = 0
             continue;
@@ -21,7 +22,7 @@ export const setTextList: EditorInterface['setTextList'] = (editor, lineType) =>
         }
     }
 
-    fixIsFirstLineOfList(lines)
+    fixTextDataLines(lines)
 
     editor.apply()
 }
