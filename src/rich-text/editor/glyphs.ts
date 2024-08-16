@@ -203,7 +203,7 @@ const addListSymbol = (editor: Editor, glyphs: GlyphsInterface[], lineIdx: numbe
             const symbolGlyph = {
                 commandsBlob: path,
                 position: {
-                    x: x - fontSize * 1.5 / 2 - (textWidth * unitsPerPx) / 2,
+                    x: x - (textWidth * unitsPerPx) - (fontSize * 1.5) / 4,
                     y: baseline.position.y
                 },
                 fontSize,
