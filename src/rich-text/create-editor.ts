@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getLogicalCharacterOffset, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyphs, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getLineIndexForCharacterOffset, getLineFirstCharacterList, getTextListTypeForSelection, setTextList, loadDefaultFont, getFillPaintsForGlyph, getStyleForStyleID, getLineHeightOfPixels, addIndent, reduceIndent } from './'
+import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyphs, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getTextListTypeForSelection, setTextList, loadDefaultFont, getStyleForStyleID, addIndent, reduceIndent } from './'
 
 export const createEditor = async (): Promise<Editor> => {
 
@@ -111,20 +111,15 @@ export const createEditor = async (): Promise<Editor> => {
         getMetrices: (...args) => getMetrices(editor, ...args),
         getBaselines: (...args) => getBaselines(editor, ...args),
         getGlyphs: (...args) => getGlyphs(editor, ...args),
-        getLogicalCharacterOffset: (...args) => getLogicalCharacterOffset(editor, ...args),
         getBaseLineCharacterOffset: (...args) => getBaseLineCharacterOffset(editor, ...args),
         deleteText: (...args) => deleteText(editor, ...args),
         getTextDecorationRects: (...args) => getTextDecorationRects(editor, ...args),
         getFillPaintsForGlyphs: (...args) => getFillPaintsForGlyphs(editor, ...args),
-        getFillPaintsForGlyph: (...args) => getFillPaintsForGlyph(editor, ...args),
         addEventListener: (...args) => addEventListener(editor, ...args),
         removeEventListener: (...args) => removeEventListener(editor, ...args),
-        getLineIndexForCharacterOffset: (...args) => getLineIndexForCharacterOffset(editor, ...args),
-        getLineFirstCharacterList: (...args) => getLineFirstCharacterList(editor, ...args),
         getTextListTypeForSelection: (...args) => getTextListTypeForSelection(editor, ...args),
         setTextList: (...args) => setTextList(editor, ...args),
         getStyleForStyleID: (...args) => getStyleForStyleID(editor, ...args),
-        getLineHeightOfPixels: (...args) => getLineHeightOfPixels(editor, ...args),
         addIndent: (...args) => addIndent(editor, ...args),
         reduceIndent: (...args) => reduceIndent(editor, ...args),
 

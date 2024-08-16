@@ -1,5 +1,5 @@
 import type { Font } from "fontkit";
-import { BaseLineInterface, Editor, EditorInterface, GlyphsInterface, StyleInterface, baselineToMetricesRange, calcJustifiedSpaceWidth, getDefaultFontIdx, getLineIndentationLevelPixels, getLineStyleID, getLineSymbolContent } from "..";
+import { BaseLineInterface, Editor, EditorInterface, GlyphsInterface, StyleInterface, baselineToMetricesRange, calcJustifiedSpaceWidth, getDefaultFontIdx, getLineIndentationLevelPixels, getLineIndexForCharacterOffset, getLineStyleID, getLineSymbolContent } from "..";
 
 export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
     if (editor.derivedTextData.glyphs) return editor.derivedTextData.glyphs
@@ -43,7 +43,7 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
         const endFont = editor.getFont(endStyle.fontName.family, endStyle.fontName.style)
 
         // 添加列表符号
-        const lineIdx = editor.getLineIndexForCharacterOffset(firstCharacter)
+        const lineIdx = getLineIndexForCharacterOffset(editor, firstCharacter)
         if (lineSymbolVisit[lineIdx] === 0) {
             addListSymbol(editor, glyphs, lineIdx, baseline)
             lineSymbolVisit[lineIdx] = 1
@@ -125,7 +125,7 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
     // 最后一个字符是换行，存在列表符号时
     if (editor.textData.characters[editor.textData.characters.length - 1] === '\n') {
         const lastLen = editor.textData.characters.length
-        const lineIdx = editor.getLineIndexForCharacterOffset(lastLen)
+        const lineIdx = getLineIndexForCharacterOffset(editor, lastLen)
         if (lineSymbolVisit[lineIdx] === 0) {
             const endBaseLine = baselines[baselines.length - 1];
             const lineY = endBaseLine.lineY + endBaseLine.lineHeight

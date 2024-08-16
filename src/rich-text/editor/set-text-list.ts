@@ -1,4 +1,4 @@
-import { EditorInterface, fixIsFirstLineOfList, TextDataLinesInterface } from "..";
+import { EditorInterface, fixIsFirstLineOfList, getLineIndexForCharacterOffset } from "..";
 
 export const setTextList: EditorInterface['setTextList'] = (editor, lineType) => {
     const { lines, characters } = editor.textData
@@ -6,8 +6,8 @@ export const setTextList: EditorInterface['setTextList'] = (editor, lineType) =>
     const anchor = selectCharacterOffset?.anchor ?? 0
     const focus = selectCharacterOffset?.focus ?? characters.length
     if (!lines) return false;
-    const anchorLineIdx = editor.getLineIndexForCharacterOffset(anchor)
-    const focusLineIdx = editor.getLineIndexForCharacterOffset(focus)
+    const anchorLineIdx = getLineIndexForCharacterOffset(editor, anchor)
+    const focusLineIdx = getLineIndexForCharacterOffset(editor, focus)
 
     for (let i = anchorLineIdx; i < focusLineIdx + 1; i++) {
         const line = lines[i];

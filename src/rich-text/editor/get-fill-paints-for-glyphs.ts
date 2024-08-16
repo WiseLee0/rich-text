@@ -1,4 +1,4 @@
-import { EditorInterface, FillPaintType, getLineStyleID } from "..";
+import { EditorInterface, FillPaintType } from "..";
 
 
 export const getFillPaintsForGlyphs: EditorInterface['getFillPaintsForGlyphs'] = (editor) => {
@@ -12,14 +12,14 @@ export const getFillPaintsForGlyphs: EditorInterface['getFillPaintsForGlyphs'] =
         if (glyph.styleID !== undefined) {
             fillPaints = editor.getStyleForStyleID(glyph.styleID).fillPaints
         } else {
-            fillPaints = editor.getFillPaintsForGlyph(firstCharacter)
+            fillPaints = getFillPaintsForGlyph(editor, firstCharacter)
         }
         result.push(fillPaints)
     }
     return result
 }
 
-export const getFillPaintsForGlyph: EditorInterface['getFillPaintsForGlyph'] = (editor, firstCharacter) => {
+const getFillPaintsForGlyph: EditorInterface['getFillPaintsForGlyph'] = (editor, firstCharacter) => {
     const { fillPaints } = editor.style
     if (!fillPaints.length || firstCharacter === undefined) return []
     const { characterStyleIDs, styleOverrideTable } = editor.textData

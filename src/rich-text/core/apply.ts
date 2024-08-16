@@ -1,4 +1,4 @@
-import { clearCache, EditorInterface, getH, getLineIndentationLevelPixels } from ".."
+import { clearCache, EditorInterface, getH, getLineIndentationLevelPixels, getLogicalCharacterOffset } from ".."
 
 export const apply: EditorInterface['apply'] = (editor) => {
     clearCache(editor)
@@ -8,7 +8,7 @@ export const apply: EditorInterface['apply'] = (editor) => {
 
     const baselines = editor.getBaselines() ?? []
     const glyphs = editor.getGlyphs()
-    const logicalCharacterOffset = editor.getLogicalCharacterOffset()
+    const logicalCharacterOffset = getLogicalCharacterOffset(editor)
 
     if (editor.style.textAutoResize === 'WIDTH_AND_HEIGHT') {
         let lastW = 0

@@ -56,9 +56,7 @@ export type Editor = {
     reduceIndent: OmitFirstArg<EditorInterface['reduceIndent']>
     /** 获取选区文本列表类型 */
     getTextListTypeForSelection: OmitFirstArg<EditorInterface['getTextListTypeForSelection']>
-    /** 获取所有行的逻辑字符的偏移值（逻辑字符指的是输入的文本字符） */
-    getLogicalCharacterOffset: OmitFirstArg<EditorInterface['getLogicalCharacterOffset']>
-    /** 获取当前行逻辑字符的偏移值（逻辑字符指的是输入的文本字符 */
+    /** 获取当前行逻辑字符的偏移值（逻辑字符指的是输入的文本字符） */
     getBaseLineCharacterOffset: OmitFirstArg<EditorInterface['getBaseLineCharacterOffset']>
     /** 获取字符的度量信息 */
     getMetrices: OmitFirstArg<EditorInterface['getMetrices']>
@@ -68,16 +66,8 @@ export type Editor = {
     getGlyphs: OmitFirstArg<EditorInterface['getGlyphs']>
     /** 获取所有字符填充样式 */
     getFillPaintsForGlyphs: OmitFirstArg<EditorInterface['getFillPaintsForGlyphs']>
-    /** 获取指定字符填充样式 */
-    getFillPaintsForGlyph: OmitFirstArg<EditorInterface['getFillPaintsForGlyph']>
-    /** 获取行高的像素值 */
-    getLineHeightOfPixels: OmitFirstArg<EditorInterface['getLineHeightOfPixels']>
     /** 获取文本修饰矩形，用于绘制 */
     getTextDecorationRects: OmitFirstArg<EditorInterface['getTextDecorationRects']>
-    /** 获取字符所在行数 */
-    getLineIndexForCharacterOffset: OmitFirstArg<EditorInterface['getLineIndexForCharacterOffset']>
-    /** 获取每行的第一个字符偏移值 */
-    getLineFirstCharacterList: OmitFirstArg<EditorInterface['getLineFirstCharacterList']>
     /** 添加事件监听 */
     addEventListener: OmitFirstArg<EditorInterface['addEventListener']>
     /** 移除事件监听 */

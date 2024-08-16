@@ -1,4 +1,4 @@
-import { EditorInterface, TextDataLinesInterface } from "..";
+import { EditorInterface, getLineIndexForCharacterOffset, TextDataLinesInterface } from "..";
 
 export const getTextListTypeForSelection: EditorInterface['getTextListTypeForSelection'] = (editor) => {
     const { lines } = editor.textData
@@ -15,9 +15,9 @@ export const getTextListTypeForSelection: EditorInterface['getTextListTypeForSel
 
         return type!
     }
-    
-    const anchorLineIdx = editor.getLineIndexForCharacterOffset(selectCharacterOffset.anchor)
-    const focusLineIdx = editor.getLineIndexForCharacterOffset(selectCharacterOffset.focus)
+
+    const anchorLineIdx = getLineIndexForCharacterOffset(editor, selectCharacterOffset.anchor)
+    const focusLineIdx = getLineIndexForCharacterOffset(editor, selectCharacterOffset.focus)
     let type: TextDataLinesInterface['lineType'] | undefined
     for (let i = anchorLineIdx; i < focusLineIdx + 1; i++) {
         if (type && type !== lines[i].lineType) {

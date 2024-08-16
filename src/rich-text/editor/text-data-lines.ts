@@ -1,4 +1,4 @@
-import { Editor, mergeStyleOverride, TextDataLinesInterface } from "..";
+import { Editor, getLineFirstCharacterList, getLineIndexForCharacterOffset, mergeStyleOverride, TextDataLinesInterface } from "..";
 
 export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) => {
     const plainData = {
@@ -64,7 +64,7 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
 
     // 换行
     if (content[0] === '\n') {
-        const lineIdx = editor.getLineIndexForCharacterOffset(anchor)
+        const lineIdx = getLineIndexForCharacterOffset(editor, anchor)
         let isFirstLineOfList = lines[lineIdx].isFirstLineOfList
         if (lines[lineIdx].lineType !== 'PLAIN') isFirstLineOfList = false
         for (let i = 0; i < wrapNum; i++) {
@@ -77,7 +77,7 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
         return
     }
 
-    const lineIdx = editor.getLineIndexForCharacterOffset(anchor) - 1
+    const lineIdx = getLineIndexForCharacterOffset(editor, anchor) - 1
     for (let i = 0; i < wrapNum; i++) {
         result.push({ ...lines[lineIdx], isFirstLineOfList: false })
     }
@@ -93,8 +93,8 @@ export const handleDeleteTextOfTextDataLine = (editor: Editor) => {
     const range = editor.getSelection()
     const { lines } = editor.textData
     if (!selectCharacterOffset || !lines) return false;
-    const anchorLineIdx = editor.getLineIndexForCharacterOffset(selectCharacterOffset.anchor)
-    const focusLineIdx = editor.getLineIndexForCharacterOffset(selectCharacterOffset.focus)
+    const anchorLineIdx = getLineIndexForCharacterOffset(editor, selectCharacterOffset.anchor)
+    const focusLineIdx = getLineIndexForCharacterOffset(editor, selectCharacterOffset.focus)
     const deleteCount = focusLineIdx - anchorLineIdx
 
     // 在一行内删除
@@ -194,7 +194,7 @@ function convertToRoman(num: number) {
 export const getLineStyleID = (editor: Editor, firstCharacter: number) => {
     const { lines, characterStyleIDs } = editor.textData
     if (!lines?.length) return 0
-    let lineIdx = editor.getLineIndexForCharacterOffset(firstCharacter)
+    let lineIdx = getLineIndexForCharacterOffset(editor, firstCharacter)
     while (!lines[lineIdx].isFirstLineOfList && lineIdx >= 0) {
         lineIdx--
     }
@@ -202,7 +202,7 @@ export const getLineStyleID = (editor: Editor, firstCharacter: number) => {
         console.warn('getLineStyleID exception');
         return 0
     }
-    const offsets = editor.getLineFirstCharacterList()
+    const offsets = getLineFirstCharacterList(editor)
     return characterStyleIDs?.[offsets[lineIdx]] ?? 0
 }
 

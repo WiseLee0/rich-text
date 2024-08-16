@@ -149,7 +149,7 @@ export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.Mut
             }
 
             const xAdvance = glyph.xAdvance ?? 0
-            const fillPaints = editor.getFillPaintsForGlyph(glyphs[len - 2]?.firstCharacter)
+            const fillPaints = fillPaintsArr[len - 2]
             const path = Skia.Path.MakeFromSVGString(glyph.commandsBlob)!
             for (let i = 0; i < 3; i++) {
                 canvas.save()

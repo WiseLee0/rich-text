@@ -38,7 +38,7 @@ export const getLogicalCharacterOffset: EditorInterface['getLogicalCharacterOffs
 
 // 获取当前基线行的宽度列表
 export const getBaseLineCharacterOffset: EditorInterface['getBaseLineCharacterOffset'] = (editor, baselineIdx) => {
-    const characterOffset = editor.getLogicalCharacterOffset()
+    const characterOffset = getLogicalCharacterOffset(editor)
     const offset: number[] = []
     let idx = -1
     for (let i = 0; i < characterOffset.length; i++) {

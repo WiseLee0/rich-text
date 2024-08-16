@@ -1,7 +1,7 @@
-import { Editor, getLineStyleID } from "..";
+import { Editor, getLineIndexForCharacterOffset, getLineStyleID } from "..";
 
 export const getLineIndentationLevelPixels = (editor: Editor, firstCharacter: number) => {
-    const lineIdx = editor.getLineIndexForCharacterOffset(firstCharacter)
+    const lineIdx = getLineIndexForCharacterOffset(editor, firstCharacter)
     const styleID = getLineStyleID(editor, firstCharacter)
     const firstStyle = editor.getStyleForStyleID(styleID)
     const textDataLine = editor.textData.lines?.[lineIdx]
