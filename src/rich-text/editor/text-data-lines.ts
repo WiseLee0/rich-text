@@ -66,6 +66,18 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
     // 换行
     if (content[0] === '\n') {
         const lineIdx = getLineIndexForCharacterOffset(editor, anchor)
+        // 空行列表再次换行，需要缩减层级
+        if (lines[lineIdx].lineType !== 'PLAIN' && characters[anchor] === '\n' && (characters[anchor - 1] === undefined || characters[anchor - 1] === '\n')) {
+            if (lines[lineIdx].indentationLevel > 1) {
+                lines[lineIdx].indentationLevel--
+            } else {
+                lines[lineIdx].lineType = 'PLAIN'
+                lines[lineIdx].isFirstLineOfList = true
+                lines[lineIdx].indentationLevel = 0
+            }
+            fixTextDataLines(lines)
+            return true
+        }
         let isFirstLineOfList = lines[lineIdx].isFirstLineOfList
         if (lines[lineIdx].lineType !== 'PLAIN') isFirstLineOfList = false
         for (let i = 0; i < wrapNum; i++) {
