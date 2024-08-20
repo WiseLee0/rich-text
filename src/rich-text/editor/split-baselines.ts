@@ -33,10 +33,13 @@ const wordGroupLines = (editor: Editor, lines: MetricesInterface[][], wordGroup:
     for (let i = 0; i < wordGroup.length; i++) {
         const word = wordGroup[i]
         const wordWidth = word.reduce((pre, cur) => pre + cur.xAdvance, 0)
+
         const isSpace = word.length === 1 && word[0].name === 'space'
 
         // 处理缩进层级
         maxWidth = textMaxWidth - getLineIndentationLevelPixels(editor, word[0].firstCharacter)
+        maxWidth += word[word.length - 1].letterSpacing
+
 
         // 换行符
         if (word.length === 1 && word[0].name === '\n') {

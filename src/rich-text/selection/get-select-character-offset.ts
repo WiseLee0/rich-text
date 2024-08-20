@@ -24,9 +24,10 @@ export const getSelectCharacterOffset: SelectionInterface['getSelectCharacterOff
         r_focus = baselines[focus].firstCharacter + focusOffset
     }
 
-    // if (text[r_focus] === '\n') {
-    //     r_focus++
-    // }
+    // 比如：hello\nworld , 选中第一行应该是 hello\n
+    if (text[r_anchor] !== '\n' && text[r_focus] === '\n') {
+        r_focus++
+    }
 
     return {
         anchor: r_anchor,

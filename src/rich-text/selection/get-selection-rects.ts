@@ -1,11 +1,9 @@
-import { getLineHeightOfPixels, getLineIndentationLevelPixels, Rect, SelectionInterface } from "..";
+import { getLineIndentationLevelPixels, Rect, SelectionInterface } from "..";
 
 export const getSelectionRects: SelectionInterface['getSelectionRects'] = (editor) => {
     const { anchor, focus, anchorOffset, focusOffset } = editor.getSelection()
     const baselines = editor.getBaselines()
     if (!editor.hasSelection()) return [];
-
-    const lineHeight = getLineHeightOfPixels(editor)
 
     if (!baselines?.length) {
         return [[0, 0, 1, editor.style.fontSize]]
@@ -13,13 +11,6 @@ export const getSelectionRects: SelectionInterface['getSelectionRects'] = (edito
 
     const result: Rect[] = []
 
-    // if (text === '\n') {
-    //     const lastBaseLine = baselines[0]
-    //     const { lineY, lineHeight } = lastBaseLine
-    //     const startX = lastBaseLine.position.x
-    //     result.push([startX, lineY, 1, lineHeight])
-    //     return result
-    // }
     if (anchor === baselines.length && anchorOffset === 0) {
         const lastBaseLine = baselines[baselines.length - 1]
         const { lineY, lineHeight } = lastBaseLine
@@ -40,11 +31,11 @@ export const getSelectionRects: SelectionInterface['getSelectionRects'] = (edito
         const xArr = editor.getBaseLineCharacterOffset(anchor)?.map(item => startX + item)
         if (!xArr?.length) return result;
         const width = xArr[focusOffset] - xArr[anchorOffset]
-        const diffY = (lineHeight - baseLine.lineHeight) / 2
         if (anchorOffset === focusOffset) {
-            result.push([xArr[anchorOffset], baseLine.lineY - diffY + 2, width || 1, lineHeight])
+            const minY = baseLine.position.y - baseLine.lineAscent + 2
+            result.push([xArr[anchorOffset], minY, width || 1, baseLine.lineAscent])
         } else {
-            result.push([xArr[anchorOffset], baseLine.lineY - diffY, width || 1, lineHeight])
+            result.push([xArr[anchorOffset], baseLine.lineY, width || 1, Math.max(baseLine.lineHeight, baseLine.defaultLineHeight)])
         }
     }
 
@@ -54,14 +45,15 @@ export const getSelectionRects: SelectionInterface['getSelectionRects'] = (edito
         const anchorStartX = anchorBaseLine.position.x
         const anchorXArr = editor.getBaseLineCharacterOffset(anchor)?.map(item => anchorStartX + item)
         if (!anchorXArr?.length) return result;
-        result.push([anchorXArr[anchorOffset], anchorBaseLine.lineY, editor.width - anchorXArr[anchorOffset], anchorBaseLine.lineHeight])
+
+        result.push([anchorXArr[anchorOffset], anchorBaseLine.lineY, editor.width - anchorXArr[anchorOffset], Math.max(anchorBaseLine.lineHeight, anchorBaseLine.defaultLineHeight)])
 
         const focusBaseLine = baselines[focus]
         if (focusBaseLine) {
             const focusXArr = editor.getBaseLineCharacterOffset(focus)
             if (!focusXArr?.length) return result;
             const startX = getLineIndentationLevelPixels(editor, focusBaseLine.firstCharacter)
-            result.push([startX, focusBaseLine.lineY, focusXArr[focusOffset] + focusBaseLine.position.x - startX, focusBaseLine.lineHeight])
+            result.push([startX, focusBaseLine.lineY, focusXArr[focusOffset] + focusBaseLine.position.x - startX, Math.max(focusBaseLine.lineHeight, focusBaseLine.defaultLineHeight)])
         }
     }
 

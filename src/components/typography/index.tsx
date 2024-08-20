@@ -1,4 +1,4 @@
-import { InputNumber, Radio, RadioChangeEvent, Select, Slider, Tooltip } from "antd"
+import { Input, InputNumber, Radio, RadioChangeEvent, Select, Slider, Tooltip } from "antd"
 import { Editor, StyleInterface } from "../../rich-text"
 import './index.css'
 import { useEffect, useReducer, useState } from "react"
@@ -9,7 +9,24 @@ type TypographyCompProps = {
     editorRef: React.MutableRefObject<Editor | undefined>
 }
 
+const getLineHeight = (editor: Editor) => {
+    const style = editor.getStyleForSelection()
+    if ((style as any).lineHeight === 'mix') return 'mix'
+    if (style.lineHeight?.units === 'PERCENT') {
+        if (style.lineHeight.value === 100) return 'Auto';
+        return `${style.lineHeight.value}%`
+    }
+    return style.lineHeight.value.toString()
+}
 
+const getLetterSpacing = (editor: Editor) => {
+    const style = editor.getStyleForSelection()
+    if ((style as any).letterSpacing === 'mix') return 'mix'
+    if (style.letterSpacing?.units === 'PERCENT') {
+        return `${style.letterSpacing.value}%`
+    }
+    return `${style.letterSpacing.value}px`
+}
 
 export const TypographyComp = (props: TypographyCompProps) => {
     const { editorRef } = props
@@ -20,7 +37,9 @@ export const TypographyComp = (props: TypographyCompProps) => {
     const [family, setFamily] = useState(editorStyle.fontName!.family)
     const [style, setStyle] = useState(editorStyle.fontName!.style)
     const [fontSize, setFontSize] = useState(editorStyle.fontSize)
-    const [textDecoration, setTextDecoration] = useState(editor.style.textDecoration)
+    const [textDecoration, setTextDecoration] = useState(editorStyle.textDecoration)
+    const [lineHeight, setLineHeight] = useState(getLineHeight(editor))
+    const [letterSpacing, setLetterSpacing] = useState(getLetterSpacing(editor))
 
     const fontOptions = fontListData.familyList.map(item => ({ label: item, value: item }))
     const styleOptions = fontListData.styleList[family]?.map(item => ({ label: item, value: item }))
@@ -34,6 +53,55 @@ export const TypographyComp = (props: TypographyCompProps) => {
             const fontData = await (await fetch(asset)).arrayBuffer()
             editor?.fontMgrFromData([fontData])
         }
+    }
+
+    const handleLineHeightChange = () => {
+        if (/^[0-9]+%?$/.test(lineHeight)) {
+            const hasPercent = lineHeight.includes('%')
+            if (hasPercent) {
+                editor.setStyle({
+                    lineHeight: {
+                        units: "PERCENT",
+                        value: parseInt(lineHeight.slice(0, -1))
+                    }
+                })
+            } else {
+                editor.setStyle({
+                    lineHeight: {
+                        units: "PIXELS",
+                        value: parseInt(lineHeight)
+                    }
+                })
+            }
+            return;
+        }
+        setLineHeight(getLineHeight(editor))
+    }
+
+    const handleLetterSpaceingChange = () => {
+        if (/^[0-9]+(%|px)?$/.test(letterSpacing)) {
+            const hasPercent = letterSpacing.includes('%')
+            if (hasPercent) {
+                editor.setStyle({
+                    letterSpacing: {
+                        units: "PERCENT",
+                        value: parseInt(letterSpacing.slice(0, -1))
+                    }
+                })
+                return;
+            }
+            const hasPixels = letterSpacing.includes('px')
+            if (hasPixels) {
+                editor.setStyle({
+                    letterSpacing: {
+                        units: "PIXELS",
+                        value: parseInt(letterSpacing.slice(0, -2))
+                    }
+                })
+                return;
+            }
+        }
+        setLetterSpacing(getLetterSpacing(editor))
     }
 
     const handleFamilyChange = async (family: string) => {
@@ -183,6 +251,8 @@ export const TypographyComp = (props: TypographyCompProps) => {
             if (style?.fontSize) setFontSize(style.fontSize)
             if (style?.textDecoration) setTextDecoration(style.textDecoration)
             else setTextDecoration("NONE")
+            if (style?.lineHeight) setLineHeight(getLineHeight(editor))
+            if (style?.letterSpacing) setLetterSpacing(getLetterSpacing(editor))
         }
         editorRef.current?.addEventListener('selection', watchSelection)
         return () => {
@@ -212,6 +282,10 @@ export const TypographyComp = (props: TypographyCompProps) => {
                 onChange={handleFontSizeChange}
                 options={fontSizeOptions}
             />
+        </div>
+        <div className="typography-row" style={{ marginBottom: '8px' }}>
+            <Input onInput={(e: any) => setLineHeight(e.target.value)} onPressEnter={handleLineHeightChange} onBlur={handleLineHeightChange} value={lineHeight} style={{ width: 110 }} prefix={<svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="currentColor" fillRule="evenodd" d="M5.5 5a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1h-13Zm0 13a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1h-13Z" clipRule="evenodd"></path><path fill="currentColor" d="M9.58 16H8.564l2.938-8h1l2.938 8h-1.016l-2.39-6.734h-.063L9.58 16Zm.375-3.125h4.094v.86H9.955v-.86Z"></path></svg>} />
+            <Input onInput={(e: any) => setLetterSpacing(e.target.value)} onPressEnter={handleLetterSpaceingChange} onBlur={handleLetterSpaceingChange} value={letterSpacing} style={{ width: 110 }} prefix={<svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="currentColor" fillRule="evenodd" d="M4.5 6a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-1 0v-11a.5.5 0 0 1 .5-.5Zm15 0a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-1 0v-11a.5.5 0 0 1 .5-.5ZM8.564 16H9.58l.804-2.266h3.236L14.424 16h1.016l-2.938-8h-1l-2.938 8Zm4.75-3.125-1.28-3.61h-.063l-1.282 3.61h2.626Z" clipRule="evenodd"></path></svg>} />
         </div>
         {showVariationAxes()}
         <div className="typography-row">

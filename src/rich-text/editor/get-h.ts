@@ -18,7 +18,7 @@ export const getH = (editor: Editor) => {
     if (editor.style.leadingTrim === 'CAP_HEIGHT') {
         leadingH = -(lastBaseLine.lineHeight - lastBaseLine.lineAscent)
     }
-    const height = lastBaseLine.lineY + lastBaseLine.lineHeight + wrapHeight + leadingH
+    const height = lastBaseLine.lineY + Math.max(lastBaseLine.lineHeight, lastBaseLine.defaultLineHeight) + wrapHeight + leadingH
 
     // 省略文本
     if (editor.style.textTruncation === 'ENABLE' && editor.style.truncatedHeight > -1) {

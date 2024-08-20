@@ -8,10 +8,11 @@ export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y, isA
     };
 
     // 找到最近的Y
-    let yIdx = baselines.findIndex(item => item.lineY > y)
+    let yIdx = baselines.findIndex(item => item.lineY < y && y < item.lineY + Math.max(item.lineHeight, item.defaultLineHeight))
+
     if (yIdx === -1) yIdx = baselines.length - 1
     else if (yIdx === 0) yIdx = 0
-    else yIdx -= 1
+
 
     // 获取最近Y的行
     const baseline = baselines[yIdx]

@@ -9,4 +9,5 @@ export interface MetricesInterface {
     fontSize: number;
     name: string
     firstCharacter: number
+    letterSpacing: number
 }

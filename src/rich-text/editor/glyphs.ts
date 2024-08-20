@@ -137,6 +137,7 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
                 width: 0,
                 lineY,
                 lineHeight: endBaseLine.lineHeight,
+                defaultLineHeight: endBaseLine.defaultLineHeight,
                 lineAscent: endBaseLine.lineAscent,
                 firstCharacter: lastLen - 1,
                 endCharacter: lastLen

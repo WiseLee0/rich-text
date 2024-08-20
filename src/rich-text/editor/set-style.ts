@@ -65,6 +65,14 @@ const getChangeStyles = (styles: Partial<StyleInterface>, isAllSelectModify: boo
         changeStyles['fontNumericFraction'] = styles['fontNumericFraction']
         if (!isAllSelectModify) delete styles['fontNumericFraction']
     }
+    if (styles['lineHeight']) {
+        changeStyles['lineHeight'] = styles['lineHeight']
+        if (!isAllSelectModify) delete styles['lineHeight']
+    }
+    if (styles['letterSpacing']) {
+        changeStyles['letterSpacing'] = styles['letterSpacing']
+        if (!isAllSelectModify) delete styles['letterSpacing']
+    }
     return changeStyles
 }
 

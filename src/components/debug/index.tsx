@@ -34,7 +34,7 @@ export const DebugComp = (props: DebugCompProps) => {
                 onClick={() => {
                     const info = (window as any).getData()
                     console.log(info);
-                    console.log("textDataLines:", info.textData.lines);
+                    // console.log("textDataLines:", info.textData.lines);
                 }}
             >
                 Click me!

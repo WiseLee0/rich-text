@@ -5,7 +5,8 @@ export interface BaseLineInterface {
     },
     width: number,
     lineY: number,
-    lineHeight: number,
+    defaultLineHeight: number,      // 字体默认的行高
+    lineHeight: number,             // 样式设置的行高
     lineAscent: number,
     firstCharacter: number,
     endCharacter: number

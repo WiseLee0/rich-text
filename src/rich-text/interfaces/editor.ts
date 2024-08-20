@@ -135,8 +135,7 @@ export type EditorInterface = {
     getLineFirstCharacterList: (editor: Editor) => number[]
     setTextList: (editor: Editor, lineType: TextDataLinesInterface['lineType'], listStartOffset?: TextDataLinesInterface['listStartOffset']) => void
     getTextListTypeForSelection: (editor: Editor) => TextDataLinesInterface['lineType'] | 'mix' | ''
-    getStyleForStyleID: (editor: Editor, styleID: number) => StyleInterface
-    getLineHeightOfPixels: (editor: Editor, firstCharacter?: number) => number
+    getStyleForStyleID: (editor: Editor, styleID?: number, needClone?: boolean) => StyleInterface
     addIndent: (editor: Editor) => void
     reduceIndent: (editor: Editor) => void
 }

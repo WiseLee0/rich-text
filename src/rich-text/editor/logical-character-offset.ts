@@ -27,8 +27,12 @@ export const getLogicalCharacterOffset: EditorInterface['getLogicalCharacterOffs
             } else {
                 logicalCharacterOffset.push(offset)
             }
+            let letterSpacing = 0
+            if (!metrices[j + 1] || metrices[j + 1]?.name === '\n') {
+                letterSpacing = metrice.letterSpacing
+            }
             if (metrice.name === 'space' && j <= spaceIdx && spaceWidth > -1) offset += spaceWidth
-            else offset += metrice.xAdvance
+            else offset += (metrice.xAdvance - letterSpacing)
         }
         if (width !== 0) logicalCharacterOffset.push(offset)
     }

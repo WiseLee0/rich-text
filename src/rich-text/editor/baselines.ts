@@ -1,4 +1,4 @@
-import { calcJustifiedBaseLineWidth, EditorInterface, getLineIndentationLevelPixels, getLineStyleID, MetricesInterface, splitBaseLines } from "..";
+import { calcJustifiedBaseLineWidth, Editor, EditorInterface, getLineIndentationLevelPixels, getLineStyleID, MetricesInterface, splitBaseLines } from "..";
 
 export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     if (editor.derivedTextData.baselines) return editor.derivedTextData.baselines
@@ -11,7 +11,8 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     let firstCharacter = 0;
     let endCharacter = 0;
     let lineHeightSum = 0
-    const lineHeights = lines.map(line => line.reduce((pre, cur) => Math.max(pre, cur.height), 0))
+    const defaultLineHeights = lines.map(line => line.reduce((pre, cur) => Math.max(pre, cur.height), 0))
+    const lineHeights = lines.map(line => line.reduce((pre, cur) => Math.max(pre, getLineHeight(editor, cur)), 0))
     const allLineHeight = lineHeights.reduce((pre, cur) => pre + cur, 0)
     const lineWidths = lines.map(line => line.reduce((pre, cur) => pre + cur.xAdvance, 0))
     const lineMaxWidth = Math.max(...lineWidths)
@@ -34,6 +35,9 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         const line = lines[i];
         endCharacter = firstCharacter + getMetricesLength(line)
         const lineHeight = lineHeights[i]
+        const defaultLineHeight = defaultLineHeights[i]
+        const lineHeightY = (lineHeight - defaultLineHeight) / 2
+
         let lineWidth = lineWidths[i]
         const lineAscent = line.reduce((pre, cur) => Math.max(pre, cur.ascent), 0)
         const capHeight = line.reduce((pre, cur) => Math.max(pre, cur.capHeight), 0)
@@ -44,6 +48,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
             continue
         }
 
+        // 处理对齐方式
         if (textAlignHorizontal === 'LEFT') {
             positionX = 0
         }
@@ -59,7 +64,6 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
             if (justifiedLineWidth > -1) lineWidth = justifiedLineWidth
         }
         if (textAutoResize === 'WIDTH_AND_HEIGHT') {
-
             if (textAlignHorizontal === 'CENTER') {
                 positionX = (lineMaxWidth - lineWidth) / 2
             }
@@ -68,6 +72,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
             }
         }
 
+        // 处理垂直裁剪
         let leadingTrimY = 0
         if (leadingTrim === 'CAP_HEIGHT' && i === 0 && textAutoResize !== 'NONE') {
             lineHeightSum -= (lineAscent - capHeight)
@@ -85,15 +90,29 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         // 处理缩进层级
         positionX += lineIndentationLevel
 
+        // 处理lineY
+        let lineY = lineHeightSum
+        if (lineHeightY < 0) {
+            lineY += lineHeightY
+        }
+
+        // 处理字间距
+        if (line[line.length - 1].name === '\n') {
+            lineWidth -= line[line.length - 2]?.letterSpacing ?? 0
+        } else {
+            lineWidth -= line[line.length - 1]?.letterSpacing ?? 0
+        }
+
         baselines.push({
             position: {
                 x: positionX,
-                y: lineHeightSum + lineAscent + leadingTrimY
+                y: lineHeightSum + lineAscent + leadingTrimY + lineHeightY
             },
-            lineY: lineHeightSum,
+            lineY,
             width: lineWidth,
             firstCharacter,
             endCharacter,
+            defaultLineHeight,
             lineHeight,
             lineAscent
         })
@@ -112,4 +131,16 @@ const getMetricesLength = (metrices: MetricesInterface[]) => {
         len += metrice.codePoints.length
     }
     return len
+}
+
+const getLineHeight = (editor: Editor, metrice: MetricesInterface) => {
+    const { characterStyleIDs, styleOverrideTable } = editor.textData
+    const styleID = characterStyleIDs?.[metrice.firstCharacter]
+    const style = styleOverrideTable?.find(item => item.styleID === styleID);
+    const lineHeight = style?.lineHeight ?? editor.style.lineHeight
+    if (lineHeight.units === "PERCENT") {
+        return (lineHeight.value / 100) * metrice.height
+    }
+
+    return lineHeight.value
 }

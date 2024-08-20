@@ -29,6 +29,10 @@ export const createEditor = async (): Promise<Editor> => {
                 },
             ],
             lineHeight: {
+                units: "PERCENT",
+                value: 100
+            },
+            letterSpacing: {
                 "units": "PERCENT",
                 "value": 100
             },
@@ -54,42 +58,12 @@ export const createEditor = async (): Promise<Editor> => {
         __events: {},
         derivedTextData: {},
         textData: {
-            characters: "hello\n123\n\n123\n567\n789",
+            characters: "hello",
             lines: [
-                {
-                    "lineType": "ORDERED_LIST",
-                    "indentationLevel": 1,
-                    "isFirstLineOfList": true,
-                    "listStartOffset": 5
-                },
-                {
-                    "lineType": "ORDERED_LIST",
-                    "indentationLevel": 2,
-                    "isFirstLineOfList": true,
-                    "listStartOffset": 0
-                },
                 {
                     "lineType": "PLAIN",
                     "indentationLevel": 0,
                     "isFirstLineOfList": true,
-                    "listStartOffset": 0
-                },
-                {
-                    "lineType": "ORDERED_LIST",
-                    "indentationLevel": 1,
-                    "isFirstLineOfList": true,
-                    "listStartOffset": 0
-                },
-                {
-                    "lineType": "ORDERED_LIST",
-                    "indentationLevel": 2,
-                    "isFirstLineOfList": true,
-                    "listStartOffset": 0
-                },
-                {
-                    "lineType": "ORDERED_LIST",
-                    "indentationLevel": 1,
-                    "isFirstLineOfList": false,
                     "listStartOffset": 0
                 },
             ]

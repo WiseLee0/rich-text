@@ -38,7 +38,7 @@ export interface StyleInterface {
         postscript: string
     },
     /** 词间距 */
-    letterSpacing?: {
+    letterSpacing: {
         value: number,
         units: "PERCENT" | "PIXELS"
     },
