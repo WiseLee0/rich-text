@@ -17,7 +17,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     const lineWidths = lines.map(line => line.reduce((pre, cur) => pre + cur.xAdvance, 0))
     const lineMaxWidth = Math.max(...lineWidths)
 
-    const { textAlignHorizontal, textAlignVertical, textAutoResize, leadingTrim } = editor.style
+    const { textAlignHorizontal, textAlignVertical, textAutoResize, leadingTrim, paragraphSpacing } = editor.style
 
     if (textAlignVertical === 'TOP') {
         lineHeightSum = 0
@@ -118,7 +118,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         })
 
         firstCharacter = endCharacter
-        lineHeightSum += lineHeight
+        lineHeightSum += lineHeight + paragraphSpacing
     }
     editor.derivedTextData.baselines = baselines
     return baselines

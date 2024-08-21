@@ -13,15 +13,14 @@ export const getSelectionRects: SelectionInterface['getSelectionRects'] = (edito
 
     if (anchor === baselines.length && anchorOffset === 0) {
         const lastBaseLine = baselines[baselines.length - 1]
-        const { lineY, lineHeight } = lastBaseLine
         const indentationLevel = editor.textData.lines?.[editor.textData.lines?.length - 1].indentationLevel ?? 0
         let startX = 0
+        const style = editor.getStyle()
         if (indentationLevel > 0) {
-            const style = editor.getStyle()
             startX = indentationLevel * style.fontSize * 1.5
         }
-        const diffY = (lineHeight - lastBaseLine.lineHeight) / 2
-        result.push([startX, (lineY + lastBaseLine.lineHeight) - diffY, 1, lineHeight])
+        const minY = lastBaseLine.position.y - lastBaseLine.lineAscent + lastBaseLine.lineHeight + style.paragraphSpacing
+        result.push([startX, minY, 1, lastBaseLine.lineAscent])
         return result
     }
 

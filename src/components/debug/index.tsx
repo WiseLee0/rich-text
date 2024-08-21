@@ -20,13 +20,6 @@ export const DebugComp = (props: DebugCompProps) => {
             }} />
         </div>
         <div className="debug-row" style={{ marginTop: 10 }}>
-            <span>字符边框显示</span>
-            <Switch size="small" checked={enableRef.current?.glyphBorder} onChange={val => {
-                enableRef.current.glyphBorder = val
-                updateRender()
-            }} />
-        </div>
-        <div className="debug-row" style={{ marginTop: 10 }}>
             <span>打印文本数据</span>
             <Button
                 type="primary"

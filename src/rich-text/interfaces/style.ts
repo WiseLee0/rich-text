@@ -11,6 +11,8 @@ export interface StyleInterface {
     textCase: "NONE" | "LOWER" | "UPPER" | "TITLE",
     /** 文本修饰 */
     textDecoration: "STRIKETHROUGH" | "UNDERLINE" | "NONE",
+    /** 段落间距 */
+    paragraphSpacing: number,
     
     /** 文本省略 */
     textTruncation: SwitchType,
@@ -20,10 +22,10 @@ export interface StyleInterface {
     truncationStartIndex: number,
     /** 省略高度 */
     truncatedHeight: number,
-
+    
     /** 垂直裁剪 */
     leadingTrim: "CAP_HEIGHT" | "NONE"
-
+    /** 行高 */
     lineHeight: {
         value: number,
         units: "PERCENT" | "PIXELS"

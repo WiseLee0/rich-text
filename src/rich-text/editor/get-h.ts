@@ -11,7 +11,7 @@ export const getH = (editor: Editor) => {
     const characters = editor.getText()
     let wrapHeight = 0
     if (characters.length > 1 && characters[characters.length - 1] === '\n') {
-        wrapHeight = lastBaseLine.lineHeight
+        wrapHeight = lastBaseLine.lineHeight + editor.style.paragraphSpacing
     }
 
     let leadingH = 0

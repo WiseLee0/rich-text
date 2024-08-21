@@ -3,31 +3,6 @@ import { Editor } from "./rich-text"
 
 const theme_color = [11, 153, 255, 1] as [number, number, number, number]
 
-export const renderGlyphBorder = (Skia: CanvasKit, canvas: Canvas, editorRef: React.MutableRefObject<Editor | undefined>) => {
-    const editor = editorRef.current!
-    const metrices = editor.getMetrices()
-    const glyphs = editor.getGlyphs()
-    const baselines = editor.getBaselines()
-    if (!metrices?.length || !glyphs?.length || !baselines?.length) return;
-    const paint = new Skia.Paint()
-    paint.setColor(Skia.Color(255, 0, 0, 1))
-    paint.setStyle(Skia.PaintStyle.Stroke)
-
-    for (let i = 0; i < baselines.length; i++) {
-        const baseline = baselines[i];
-        const offsets = editor.getBaseLineCharacterOffset(i)
-        if (!offsets) continue
-        canvas.save()
-        canvas.translate(baseline.position.x, baseline.lineY)
-        for (let j = 0; j < offsets.length - 1; j++) {
-            const offset = offsets[j];
-            canvas.drawRect([offset, 0, offsets[j + 1], baseline.lineHeight], paint)
-        }
-        canvas.restore()
-    }
-    paint.delete()
-}
-
 export const renderBaseLine = (Skia: CanvasKit, canvas: Canvas, editorRef: React.MutableRefObject<Editor | undefined>, enableRef: React.MutableRefObject<any>) => {
     const editor = editorRef.current
     if (!editor || !editor.derivedTextData) return;

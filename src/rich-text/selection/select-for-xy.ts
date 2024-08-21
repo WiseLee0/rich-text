@@ -7,11 +7,16 @@ export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y, isA
         return
     };
 
-    // 找到最近的Y
+    // 找到最近的Y, 优先找元素行高范围内的
     let yIdx = baselines.findIndex(item => item.lineY < y && y < item.lineY + Math.max(item.lineHeight, item.defaultLineHeight))
 
-    if (yIdx === -1) yIdx = baselines.length - 1
-    else if (yIdx === 0) yIdx = 0
+    if (yIdx === -1) {
+        // 找不到，再去根据y值找最近的
+        yIdx = baselines.findIndex(item => item.lineY > y)
+        if (yIdx === -1) yIdx = baselines.length - 1
+        else if (yIdx === 0) yIdx = 0
+        else yIdx -= 1
+    }
 
 
     // 获取最近Y的行

@@ -6,7 +6,7 @@ import { Spin } from 'antd';
 import PlayRegular from './assets/Play-Regular.ttf'
 import { createEditor, Editor } from './rich-text';
 import { AutoResizeComp } from './components/autoResize/index';
-import { renderBaseLine, renderBorder, renderCursor, renderGlyphBorder, renderText, renderTextDecoration } from './render';
+import { renderBaseLine, renderBorder, renderCursor, renderText, renderTextDecoration } from './render';
 import { TypographyComp } from './components/typography';
 import { DebugComp } from './components/debug';
 import { FillsComp } from './components/fills';
@@ -40,7 +40,6 @@ export default function App() {
       renderTextDecoration(Skia, canvas, editorRef)
       renderBorder(Skia, canvas, editorRef)
       renderBaseLine(Skia, canvas, editorRef, enableRef)
-      enableRef.current.glyphBorder && renderGlyphBorder(Skia, canvas, editorRef)
       renderCursor(Skia, canvas, editorRef)
       canvas.restore()
       surface.requestAnimationFrame(drawFrame)

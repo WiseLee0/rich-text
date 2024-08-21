@@ -14,8 +14,17 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
     const [textTruncation, setTextTruncation] = useState(editor.style.textTruncation)
     const [leadingTrim, setLeadingTrim] = useState(editor.style.leadingTrim)
     const [listType, setTextListType] = useState(editor.getTextListTypeForSelection())
+    const [paragraphSpacing, setParagraphSpacing] = useState(editor.style.paragraphSpacing)
     const { textAutoResize } = editor.style
     const disableMaxLine = textAutoResize === 'NONE'
+
+    const handleParagraphSpacingChange = (value: number | null) => {
+        if (!value) return
+        setParagraphSpacing(value)
+        editor.setStyle({
+            paragraphSpacing: value
+        })
+    }
 
     const handleMaxLineChange = (value: number | null) => {
         if (!value) return
@@ -45,10 +54,6 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
 
     useEffect(() => {
         const watchSelection = () => {
-            const style = editorRef.current?.getStyleForSelection()
-            if (style?.maxLines) setMaxLine(style.maxLines)
-            if (style?.textTruncation) setTextTruncation(style.textTruncation)
-            if (style?.leadingTrim) setLeadingTrim(style.leadingTrim)
             const listType = editor.getTextListTypeForSelection()
             if (listType) setTextListType(listType)
         }
@@ -79,6 +84,16 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
                     </span>
                 </Radio.Button>
             </Radio.Group>
+        </div>
+        <div className="paragraph-row">
+            <span>段落间距</span>
+            <InputNumber
+                style={{ width: 70 }}
+                min={0}
+                onChange={handleParagraphSpacingChange}
+                size="small"
+                value={paragraphSpacing}
+            />
         </div>
         <div className="paragraph-row">
             <span>垂直裁剪</span>

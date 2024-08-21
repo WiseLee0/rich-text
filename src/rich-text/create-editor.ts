@@ -28,13 +28,14 @@ export const createEditor = async (): Promise<Editor> => {
                     "blendMode": "NORMAL"
                 },
             ],
+            paragraphSpacing: 20,
             lineHeight: {
                 units: "PERCENT",
                 value: 100
             },
             letterSpacing: {
                 "units": "PERCENT",
-                "value": 100
+                "value": 0
             },
             fontVariations: [],
             fontLigatures: "ENABLE",
@@ -58,8 +59,20 @@ export const createEditor = async (): Promise<Editor> => {
         __events: {},
         derivedTextData: {},
         textData: {
-            characters: "hello",
+            characters: "hello\nworld\nmotowo",
             lines: [
+                {
+                    "lineType": "PLAIN",
+                    "indentationLevel": 0,
+                    "isFirstLineOfList": true,
+                    "listStartOffset": 0
+                },
+                {
+                    "lineType": "PLAIN",
+                    "indentationLevel": 0,
+                    "isFirstLineOfList": true,
+                    "listStartOffset": 0
+                },
                 {
                     "lineType": "PLAIN",
                     "indentationLevel": 0,
