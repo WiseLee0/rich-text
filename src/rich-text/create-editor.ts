@@ -28,7 +28,7 @@ export const createEditor = async (): Promise<Editor> => {
                     "blendMode": "NORMAL"
                 },
             ],
-            paragraphSpacing: 20,
+            paragraphSpacing: 0,
             lineHeight: {
                 units: "PERCENT",
                 value: 100

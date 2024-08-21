@@ -19,7 +19,7 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
     const disableMaxLine = textAutoResize === 'NONE'
 
     const handleParagraphSpacingChange = (value: number | null) => {
-        if (!value) return
+        if (value === null) return
         setParagraphSpacing(value)
         editor.setStyle({
             paragraphSpacing: value
