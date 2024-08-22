@@ -1,4 +1,4 @@
-import { calcJustifiedBaseLineWidth, Editor, EditorInterface, getLineIndentationLevelPixels, getLineStyleID, MetricesInterface, splitBaseLines } from "..";
+import { calcJustifiedBaseLineWidth, Editor, EditorInterface, getLineFirstCharacterList, getLineIndentationLevelPixels, getLineStyleID, MetricesInterface, splitBaseLines } from "..";
 
 export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     if (editor.derivedTextData.baselines) return editor.derivedTextData.baselines
@@ -13,11 +13,19 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     let lineHeightSum = 0
     const defaultLineHeights = lines.map(line => line.reduce((pre, cur) => Math.max(pre, cur.height), 0))
     const lineHeights = lines.map(line => line.reduce((pre, cur) => Math.max(pre, getLineHeight(editor, cur)), 0))
-    const allLineHeight = lineHeights.reduce((pre, cur) => pre + cur, 0)
+    let allLineHeight = lineHeights.reduce((pre, cur) => pre + cur, 0)
     const lineWidths = lines.map(line => line.reduce((pre, cur) => pre + cur.xAdvance, 0))
     const lineMaxWidth = Math.max(...lineWidths)
 
-    const { textAlignHorizontal, textAlignVertical, textAutoResize, leadingTrim, paragraphSpacing } = editor.style
+    const { textAlignHorizontal, textAlignVertical, textAutoResize, leadingTrim, paragraphSpacing, paragraphIndent } = editor.style
+
+    // 如果最后一个字符是换行
+    if (editor.textData.characters[editor.textData.characters.length - 1] === '\n') {
+        allLineHeight += defaultLineHeights[defaultLineHeights.length - 1] ?? editor.getStyle().fontSize
+    }
+    if (paragraphSpacing > 0) {
+        allLineHeight += (textDataLines.length - 1) * paragraphSpacing
+    }
 
     if (textAlignVertical === 'TOP') {
         lineHeightSum = 0
@@ -31,6 +39,8 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     if (textAutoResize !== 'NONE') {
         lineHeightSum = 0
     }
+    const lineFirstCharacterList = getLineFirstCharacterList(editor)
+
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
         endCharacter = firstCharacter + getMetricesLength(line)
@@ -53,10 +63,10 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
             positionX = 0
         }
         if (textAlignHorizontal === 'CENTER') {
-            positionX = (editor.width - lineIndentationLevel - lineWidth) / 2
+            positionX = (editor.width - lineIndentationLevel - lineWidth - paragraphIndent) / 2
         }
         if (textAlignHorizontal === 'RIGHT') {
-            positionX = editor.width - lineIndentationLevel - lineWidth
+            positionX = editor.width - lineIndentationLevel - lineWidth - paragraphIndent
         }
         if (textAlignHorizontal === 'JUSTIFIED') {
             positionX = 0
@@ -90,6 +100,20 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         // 处理缩进层级
         positionX += lineIndentationLevel
 
+        // 处理段落缩进
+        if (lineFirstCharacterList.includes(firstCharacter)) {
+            if (paragraphIndent >= lineMaxWidth) {
+                lineHeightSum += lineHeight
+            } else {
+                positionX += paragraphIndent
+            }
+        }
+
+        // 处理段落间距
+        if (lineFirstCharacterList.includes(firstCharacter) && lineFirstCharacterList[0] !== firstCharacter) {
+            lineHeightSum += paragraphSpacing
+        }
+
         // 处理lineY
         let lineY = lineHeightSum
         if (lineHeightY < 0) {
@@ -118,7 +142,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         })
 
         firstCharacter = endCharacter
-        lineHeightSum += lineHeight + paragraphSpacing
+        lineHeightSum += lineHeight
     }
     editor.derivedTextData.baselines = baselines
     return baselines

@@ -13,6 +13,8 @@ export interface StyleInterface {
     textDecoration: "STRIKETHROUGH" | "UNDERLINE" | "NONE",
     /** 段落间距 */
     paragraphSpacing: number,
+    /** 段落缩进 */
+    paragraphIndent: number,
     
     /** 文本省略 */
     textTruncation: SwitchType,

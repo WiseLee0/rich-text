@@ -15,8 +15,17 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
     const [leadingTrim, setLeadingTrim] = useState(editor.style.leadingTrim)
     const [listType, setTextListType] = useState(editor.getTextListTypeForSelection())
     const [paragraphSpacing, setParagraphSpacing] = useState(editor.style.paragraphSpacing)
+    const [paragraphIndent, setParagraphIndent] = useState(editor.style.paragraphIndent)
     const { textAutoResize } = editor.style
     const disableMaxLine = textAutoResize === 'NONE'
+
+    const handleParagraphIndentChange = (value: number | null) => {
+        if (value === null) return
+        setParagraphIndent(value)
+        editor.setStyle({
+            paragraphIndent: value
+        })
+    }
 
     const handleParagraphSpacingChange = (value: number | null) => {
         if (value === null) return
@@ -93,6 +102,16 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
                 onChange={handleParagraphSpacingChange}
                 size="small"
                 value={paragraphSpacing}
+            />
+        </div>
+        <div className="paragraph-row">
+            <span>段落缩进</span>
+            <InputNumber
+                style={{ width: 70 }}
+                min={0}
+                onChange={handleParagraphIndentChange}
+                size="small"
+                value={paragraphIndent}
             />
         </div>
         <div className="paragraph-row">

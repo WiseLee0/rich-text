@@ -8,8 +8,8 @@ export const createEditor = async (): Promise<Editor> => {
         fonMgr: new Map(),
         style: {
             fontSize: 24,
-            textAlignHorizontal: 'LEFT',
-            textAlignVertical: 'TOP',
+            textAlignHorizontal: "LEFT",
+            textAlignVertical: "TOP",
             textAutoResize: 'WIDTH_AND_HEIGHT',
             fontName: {
                 family: "Play", style: "Regular", postscript: "Play"
@@ -28,6 +28,7 @@ export const createEditor = async (): Promise<Editor> => {
                     "blendMode": "NORMAL"
                 },
             ],
+            paragraphIndent: 0,
             paragraphSpacing: 0,
             lineHeight: {
                 units: "PERCENT",
@@ -59,24 +60,24 @@ export const createEditor = async (): Promise<Editor> => {
         __events: {},
         derivedTextData: {},
         textData: {
-            characters: "hello\nworld\nmotowo",
+            characters: "helloworld\nhelloworldmotowo\n",
             lines: [
                 {
-                    "lineType": "PLAIN",
-                    "indentationLevel": 0,
+                    "lineType": "ORDERED_LIST",
+                    "indentationLevel": 1,
                     "isFirstLineOfList": true,
                     "listStartOffset": 0
                 },
                 {
-                    "lineType": "PLAIN",
-                    "indentationLevel": 0,
-                    "isFirstLineOfList": true,
+                    "lineType": "ORDERED_LIST",
+                    "indentationLevel": 1,
+                    "isFirstLineOfList": false,
                     "listStartOffset": 0
                 },
                 {
-                    "lineType": "PLAIN",
-                    "indentationLevel": 0,
-                    "isFirstLineOfList": true,
+                    "lineType": "ORDERED_LIST",
+                    "indentationLevel": 1,
+                    "isFirstLineOfList": false,
                     "listStartOffset": 0
                 },
             ]

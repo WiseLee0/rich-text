@@ -1,9 +1,10 @@
-import { getLineIndentationLevelPixels, Rect, SelectionInterface } from "..";
+import { getLineFirstCharacterList, getLineIndentationLevelPixels, Rect, SelectionInterface } from "..";
 
 export const getSelectionRects: SelectionInterface['getSelectionRects'] = (editor) => {
     const { anchor, focus, anchorOffset, focusOffset } = editor.getSelection()
     const baselines = editor.getBaselines()
     if (!editor.hasSelection()) return [];
+    const lineFirstCharacterList = getLineFirstCharacterList(editor)
 
     if (!baselines?.length) {
         return [[0, 0, 1, editor.style.fontSize]]
@@ -17,7 +18,16 @@ export const getSelectionRects: SelectionInterface['getSelectionRects'] = (edito
         let startX = 0
         const style = editor.getStyle()
         if (indentationLevel > 0) {
-            startX = indentationLevel * style.fontSize * 1.5
+            startX += indentationLevel * style.fontSize * 1.5
+        }
+        if (style.paragraphIndent > 0) {
+            startX += style.paragraphIndent
+        }
+        if (style.textAlignHorizontal === 'CENTER') {
+            startX = (startX + editor.width) / 2
+        }
+        if (style.textAlignHorizontal === 'RIGHT') {
+            startX = editor.width
         }
         const minY = lastBaseLine.position.y - lastBaseLine.lineAscent + lastBaseLine.lineHeight + style.paragraphSpacing
         result.push([startX, minY, 1, lastBaseLine.lineAscent])
@@ -51,7 +61,13 @@ export const getSelectionRects: SelectionInterface['getSelectionRects'] = (edito
         if (focusBaseLine) {
             const focusXArr = editor.getBaseLineCharacterOffset(focus)
             if (!focusXArr?.length) return result;
-            const startX = getLineIndentationLevelPixels(editor, focusBaseLine.firstCharacter)
+            let startX = getLineIndentationLevelPixels(editor, focusBaseLine.firstCharacter)
+            if (lineFirstCharacterList.includes(focusBaseLine.firstCharacter)) {
+                startX += editor.style.paragraphIndent
+            }
+            if (editor.style.textAlignHorizontal === 'CENTER' || editor.style.textAlignHorizontal === 'RIGHT') {
+                startX = 0
+            }
             result.push([startX, focusBaseLine.lineY, focusXArr[focusOffset] + focusBaseLine.position.x - startX, Math.max(focusBaseLine.lineHeight, focusBaseLine.defaultLineHeight)])
         }
     }
@@ -59,7 +75,13 @@ export const getSelectionRects: SelectionInterface['getSelectionRects'] = (edito
     if (focus - anchor >= 1) {
         for (let i = anchor + 1; i < focus; i++) {
             const baseline = baselines[i];
-            const startX = getLineIndentationLevelPixels(editor, baseline.firstCharacter)
+            let startX = getLineIndentationLevelPixels(editor, baseline.firstCharacter)
+            if (lineFirstCharacterList.includes(baseline.firstCharacter)) {
+                startX += editor.style.paragraphIndent
+            }
+            if (editor.style.textAlignHorizontal === 'CENTER' || editor.style.textAlignHorizontal === 'RIGHT') {
+                startX = 0
+            }
             if (baseline) {
                 result.push([startX, baseline.lineY, editor.width - startX, baseline.lineHeight])
             }

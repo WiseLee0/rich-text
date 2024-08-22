@@ -128,10 +128,17 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
         const lineIdx = getLineIndexForCharacterOffset(editor, lastLen)
         if (lineSymbolVisit[lineIdx] === 0) {
             const endBaseLine = baselines[baselines.length - 1];
-            const lineY = endBaseLine.lineY + endBaseLine.lineHeight
+            const lineY = endBaseLine.lineY + endBaseLine.lineHeight + editor.style.paragraphSpacing
+            let startX = getLineIndentationLevelPixels(editor, endBaseLine.endCharacter) + editor.style.paragraphIndent
+            if (editor.style.textAlignHorizontal === 'CENTER') {
+                startX = (startX + editor.width) / 2
+            }
+            if (editor.style.textAlignHorizontal === 'RIGHT') {
+                startX = editor.width
+            }
             const endLine = {
                 position: {
-                    x: getLineIndentationLevelPixels(editor, endBaseLine.endCharacter),
+                    x: startX,
                     y: lineY + endBaseLine.lineAscent
                 },
                 width: 0,

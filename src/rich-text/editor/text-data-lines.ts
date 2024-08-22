@@ -241,7 +241,7 @@ export const fixTextDataLines = (lines: TextDataLinesInterface[]) => {
                 break;
             }
             // 上一层级等于当前层级
-            if (preLine.indentationLevel === line.indentationLevel) {
+            if ((preLine.indentationLevel === line.indentationLevel) && line.lineType !== 'PLAIN') {
                 // 类型不一致，当前行只能是第一个; 类型一致，当前行必然不是第一个
                 if (preLine.lineType !== line.lineType) {
                     line.isFirstLineOfList = true;

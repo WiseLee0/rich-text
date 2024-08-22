@@ -21,7 +21,7 @@ const spaceLine = (metrice: MetricesInterface, lines: MetricesInterface[][]) => 
     }
 }
 // 对词组进行分行
-const wordGroupLines = (editor: Editor, lines: MetricesInterface[][], wordGroup: MetricesInterface[][], textMaxWidth: number) => {
+const wordGroupLines = (editor: Editor, lines: MetricesInterface[][], _wordGroup: MetricesInterface[][], textMaxWidth: number) => {
     let currentLine: MetricesInterface[] = [];
     let currentWidth = 0
     let maxWidth = textMaxWidth
@@ -30,6 +30,23 @@ const wordGroupLines = (editor: Editor, lines: MetricesInterface[][], wordGroup:
         console.warn('wordGroupLines exception')
         return
     }
+    const wordGroup = [..._wordGroup]
+
+    if (editor.style.paragraphIndent > 0) {
+        const xAdvance = Math.min(editor.style.paragraphIndent, maxWidth)
+        for (let i = 0; i < wordGroup.length; i++) {
+            const word = wordGroup[i];
+            if (i === 0 || isWrap(wordGroup[i - 1])) {
+                word.unshift({
+                    ...word[0],
+                    name: 'paragraphIndent',
+                    codePoints: [-1],
+                    xAdvance
+                })
+            }
+        }
+    }
+
     for (let i = 0; i < wordGroup.length; i++) {
         const word = wordGroup[i]
         const wordWidth = word.reduce((pre, cur) => pre + cur.xAdvance, 0)
@@ -40,14 +57,14 @@ const wordGroupLines = (editor: Editor, lines: MetricesInterface[][], wordGroup:
         maxWidth = textMaxWidth - getLineIndentationLevelPixels(editor, word[0].firstCharacter)
         maxWidth += word[word.length - 1].letterSpacing
 
-
         // 换行符
-        if (word.length === 1 && word[0].name === '\n') {
+        if (isWrap(word)) {
+            const wrapWord = word[0].name === '\n' ? word[0] : word[1]
             // 如果上一行已经存在换行符，则需要新开一行
             if (lines.length && lines[lines.length - 1]) {
                 const preLine = lines[lines.length - 1]
                 if (!currentLine.length && preLine[preLine.length - 1].name === '\n') {
-                    lines.push([word[0]]);
+                    lines.push([wrapWord]);
                     currentLine = []
                     currentWidth = 0
                     continue
@@ -55,14 +72,14 @@ const wordGroupLines = (editor: Editor, lines: MetricesInterface[][], wordGroup:
             }
             // 如果上一行不存在换行符，则拼接到上一行
             if (currentLine.length) {
-                currentLine.push(word[0])
+                currentLine.push(wrapWord)
                 lines.push(currentLine);
             } else if (lines.length) {
                 currentLine = lines.pop()!
-                currentLine.push(word[0])
+                currentLine.push(wrapWord)
                 lines.push(currentLine);
             } else {
-                lines.push([word[0]]);
+                lines.push([wrapWord]);
             }
             currentLine = []
             currentWidth = 0
@@ -99,6 +116,20 @@ const wordGroupLines = (editor: Editor, lines: MetricesInterface[][], wordGroup:
         currentWidth += wordWidth;
     }
     if (currentLine.length) lines.push(currentLine);
+
+    if (editor.style.paragraphIndent > 0) {
+        const newLine = []
+        for (let i = 0; i < lines.length; i++) {
+            const temp = []
+            for (let j = 0; j < lines[i].length; j++) {
+                const item = lines[i][j];
+                if (item.name === 'paragraphIndent') continue
+                temp.push(item)
+            }
+            if (temp.length) newLine.push(temp)
+        }
+        lines = newLine
+    }
     return lines
 }
 // 对单词进行分行
@@ -167,4 +198,10 @@ const splitWordGroup = (editor: Editor) => {
         return;
     }
     return words
+}
+
+const isWrap = (word: MetricesInterface[]) => {
+    if (word.length === 1) return word[0].name === '\n'
+    if (word.length === 2) return word[0].name === 'paragraphIndent' && word[1].name === '\n'
+    return false
 }
