@@ -141,33 +141,63 @@ export default function App() {
       updateRender()
     }
     const handleTextareaKeyDown = (e: KeyboardEvent) => {
+      // 整体修改
+      if (!editorRef.current?.isEditor) {
+        return
+      }
+
       if (e.metaKey && e.key === 'a') {
         editorRef.current?.selectAll()
         e.preventDefault()
+        return
+      }
+      if (e.metaKey && e.shiftKey && e.key === '7') {
+        if (editorRef.current?.getTextListTypeForSelection() === 'ORDERED_LIST') {
+          editorRef.current?.setTextList("PLAIN")
+        } else {
+          editorRef.current?.setTextList("ORDERED_LIST")
+        }
+        e.preventDefault()
+        return
+      }
+      if (e.metaKey && e.shiftKey && e.key === '8') {
+        if (editorRef.current?.getTextListTypeForSelection() === 'UNORDERED_LIST') {
+          editorRef.current?.setTextList("PLAIN")
+        } else {
+          editorRef.current?.setTextList("UNORDERED_LIST")
+        }
+        e.preventDefault()
+        return
       }
       if (e.key === 'Tab' && e.shiftKey) {
         editorRef.current?.reduceIndent()
         e.preventDefault()
+        return
       }
       if (e.key === 'Tab' && !e.shiftKey) {
         editorRef.current?.addIndent()
         e.preventDefault()
+        return
       }
       if (e.key === 'ArrowRight') {
         e.preventDefault()
+        return
       }
       if (e.key === 'ArrowLeft') {
         e.preventDefault()
+        return
       }
       if (e.key === 'Backspace') {
         editorRef.current?.deleteText()
         updateRender()
         e.preventDefault()
+        return
       }
       if (e.key === 'Enter') {
         editorRef.current?.insertText('\n')
         updateRender()
         e.preventDefault()
+        return
       }
     }
     canvasRef.current?.addEventListener('mousedown', handleCanvasMouseDown)
