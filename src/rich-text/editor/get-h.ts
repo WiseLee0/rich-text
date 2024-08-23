@@ -1,10 +1,8 @@
-import { Editor } from "..";
+import { Editor, getFontLineHeight } from "..";
 
 export const getH = (editor: Editor) => {
     const baselines = editor.getBaselines()
-    if (!baselines?.length) return 0;
-
-
+    if (!baselines?.length) return getFontLineHeight(editor);
 
     const lastBaseLine = baselines[baselines.length - 1]
     // 最后一个字符是换行符，则需要添加一段高度

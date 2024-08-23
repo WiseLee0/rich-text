@@ -14,6 +14,8 @@ export type Editor = {
     derivedTextData: Partial<DerivedTextDataInterface>
     /** 文本数据信息 */
     textData: TextDataInterface
+    /** 是否处于编辑态 */
+    isEditor: boolean
 
     // cache
     __events: Partial<EventType>

@@ -58,6 +58,7 @@ export const createEditor = async (): Promise<Editor> => {
         },
         __select_styles: {},
         __events: {},
+        isEditor: false,
         derivedTextData: {},
         textData: {
             characters: "helloworld\nhelloworldmotowo\n",

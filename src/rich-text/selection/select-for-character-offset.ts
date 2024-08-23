@@ -1,10 +1,10 @@
 import { SelectionInterface } from ".."
 
 export const selectForCharacterOffset: SelectionInterface['selectForCharacterOffset'] = (editor, characterOffset) => {
+    editor.isEditor = true
     const baselines = editor.getBaselines()
     const text = editor.getText()
     if (!baselines?.length) {
-        editor.deselection()
         return
     };
 

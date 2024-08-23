@@ -5,14 +5,17 @@ const AxisTable = {
     'Weight': 'wght',
 } as Record<string, string>
 
-export const getFont: EditorInterface['getFont'] = (editor, family, style) => {
-    const fonts = editor.fonMgr.get(family ?? '')
+export const getFont: EditorInterface['getFont'] = (editor, _family, _style) => {
+    const family = _family ?? editor.style.fontName.family
+    const style = _style ?? editor.style.fontName.style
+
+    const fonts = editor.fonMgr.get(family)
     if (!fonts) return;
 
     for (let i = 0; i < fonts?.length; i++) {
         const font = fonts[i];
         // 优先搜索可变字体
-        let variation = (font as any).namedVariations[style ?? '']
+        let variation = (font as any).namedVariations[style]
         if (variation && editor.style.fontVariations.length && family === editor.style.fontName?.family) {
             variation = {}
             editor.style.fontVariations.map(item => {

@@ -1,9 +1,9 @@
 import { findClosestIndex, SelectionInterface } from ".."
 
 export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y, isAnchor) => {
+    editor.isEditor = true
     const baselines = editor.getBaselines()
     if (!baselines?.length) {
-        editor.deselection()
         return
     };
 

@@ -45,7 +45,7 @@ export const renderBorder = (Skia: CanvasKit, canvas: Canvas, editorRef: React.M
     const size = 2
     paint.setColor(Skia.Color(...theme_color))
     paint.setStyle(Skia.PaintStyle.Stroke)
-    if (editor.hasSelection()) {
+    if (editor.isEditor) {
         canvas.drawRect([0, 0, width, height], paint)
         paint.delete()
         return

@@ -1,14 +1,15 @@
 import { getLineFirstCharacterList, getLineIndentationLevelPixels, Rect, SelectionInterface } from "..";
+import { getFontLineHeight } from "..";
 
 export const getSelectionRects: SelectionInterface['getSelectionRects'] = (editor) => {
+    if (!editor.isEditor) return []
     const { anchor, focus, anchorOffset, focusOffset } = editor.getSelection()
     const baselines = editor.getBaselines()
-    if (!editor.hasSelection()) return [];
-    const lineFirstCharacterList = getLineFirstCharacterList(editor)
-
-    if (!baselines?.length) {
-        return [[0, 0, 1, editor.style.fontSize]]
+    const fontLineHeight = getFontLineHeight(editor)
+    if (!editor.hasSelection() || !baselines?.length) {
+        return [[0, 0, 1, fontLineHeight]]
     }
+    const lineFirstCharacterList = getLineFirstCharacterList(editor)
 
     const result: Rect[] = []
 

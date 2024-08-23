@@ -1,7 +1,13 @@
 import { EditorInterface, handleInsertTextOfTextDataLine } from "..";
 
 export const insertText: EditorInterface['insertText'] = (editor, content) => {
-    if (!editor.hasSelection()) return;
+    if (!editor.isEditor) return;
+    if (!editor.hasSelection() && editor.isEditor) {
+        editor.replaceText(content)
+        editor.apply()
+        editor.selectForCharacterOffset(content.length)
+        return
+    }
     if (!editor.isCollapse()) {
         editor.deleteText()
     }
@@ -10,7 +16,7 @@ export const insertText: EditorInterface['insertText'] = (editor, content) => {
     if (!baselines?.length || !selectCharacterOffset) return
     const text = editor.getText()
     const characterIdx = selectCharacterOffset.anchor
-    
+
     const stopInsert = handleInsertTextOfTextDataLine(editor, content)
     if (stopInsert) {
         editor.apply()

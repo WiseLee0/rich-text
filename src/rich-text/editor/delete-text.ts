@@ -36,6 +36,24 @@ export const deleteText: EditorInterface['deleteText'] = (editor) => {
     }
     const newText = text.substring(0, anchorCharacterIdx) + text.substring(focusCharacterIdx)
     editor.replaceText(newText)
+    
+    // 删除空了
+    if (newText === '') {
+        editor.setSelection({
+            anchor: -1,
+            focus: -1,
+            focusOffset: -1,
+            anchorOffset: -1
+        })
+        editor.textData.lines = [{
+            lineType: 'PLAIN',
+            listStartOffset: 0,
+            isFirstLineOfList: true,
+            indentationLevel: 0
+        }]
+        editor.apply()
+        return
+    }
 
     // 更新局部样式表
     const { characterStyleIDs, styleOverrideTable } = editor.textData
