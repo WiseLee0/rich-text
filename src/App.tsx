@@ -141,6 +141,10 @@ export default function App() {
       updateRender()
     }
     const handleTextareaKeyDown = (e: KeyboardEvent) => {
+      if (e.metaKey && e.key === 'a') {
+        editorRef.current?.selectAll()
+        e.preventDefault()
+      }
       if (e.key === 'Tab' && e.shiftKey) {
         editorRef.current?.reduceIndent()
         e.preventDefault()

@@ -17,5 +17,6 @@ export interface SelectionInterface {
     isCollapse: (editor: Editor) => boolean
     hasSelection: (editor: Editor) => boolean
     deselection: (editor: Editor) => void
+    selectAll: (editor: Editor) => void
 }
 

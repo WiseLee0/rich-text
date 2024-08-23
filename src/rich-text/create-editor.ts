@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyphs, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getTextListTypeForSelection, setTextList, loadDefaultFont, getStyleForStyleID, addIndent, reduceIndent } from './'
+import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyphs, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getTextListTypeForSelection, setTextList, loadDefaultFont, getStyleForStyleID, addIndent, reduceIndent, selectAll } from './'
 
 export const createEditor = async (): Promise<Editor> => {
 
@@ -127,6 +127,7 @@ export const createEditor = async (): Promise<Editor> => {
         hasSelection: (...args) => hasSelection(editor, ...args),
         deselection: (...args) => deselection(editor, ...args),
         getSelectionRects: (...args) => getSelectionRects(editor, ...args),
+        selectAll: (...args) => selectAll(editor, ...args),
     }
 
     await loadDefaultFont(editor)

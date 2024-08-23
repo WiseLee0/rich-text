@@ -102,6 +102,8 @@ export type Editor = {
     deselection: OmitFirstArg<SelectionInterface['deselection']>
     /** 获取选区范围矩形，用于绘制 */
     getSelectionRects: OmitFirstArg<SelectionInterface['getSelectionRects']>
+    /** 全选 */
+    selectAll: OmitFirstArg<SelectionInterface['selectAll']>
 }
 
 export type EditorInterface = {
