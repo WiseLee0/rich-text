@@ -3,14 +3,13 @@ import { Editor } from "./rich-text"
 
 const theme_color = [11, 153, 255, 1] as [number, number, number, number]
 
-export const renderBaseLine = (Skia: CanvasKit, canvas: Canvas, editorRef: React.MutableRefObject<Editor | undefined>, enableRef: React.MutableRefObject<any>) => {
+export const renderBaseLine = (Skia: CanvasKit, canvas: Canvas, editorRef: React.MutableRefObject<Editor | undefined>) => {
     const editor = editorRef.current
     if (!editor || !editor.derivedTextData) return;
     const { baselines } = editor.derivedTextData
     if (!baselines?.length) return;
     const paint = new Skia.Paint()
     paint.setAntiAlias(true)
-    if (editor.hasSelection() && !enableRef.current.baseline) return
 
     // 渲染基线
     paint.setColor(Skia.Color(...theme_color))

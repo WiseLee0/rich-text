@@ -18,10 +18,7 @@ export default function App() {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [spinning, setSpinning] = useState(true)
   const [, updateRender] = useReducer(i => i + 1, 0)
-  const enableRef = useRef({
-    baseline: false,
-    glyphBorder: false
-  })
+  const isCompositionRef = useRef(false)
   const editorRef = useRef<Editor>()
   const mouseRef = useRef({
     cursor: 'defalut',
@@ -39,7 +36,7 @@ export default function App() {
       renderText(Skia, canvas, editorRef)
       renderTextDecoration(Skia, canvas, editorRef)
       renderBorder(Skia, canvas, editorRef)
-      renderBaseLine(Skia, canvas, editorRef, enableRef)
+      renderBaseLine(Skia, canvas, editorRef)
       renderCursor(Skia, canvas, editorRef)
       canvas.restore()
       surface.requestAnimationFrame(drawFrame)
@@ -136,7 +133,17 @@ export default function App() {
         textareaRef.current?.focus()
       }, 0);
     }
+    const handleTextareaCompositionstart = (e: any) => {
+      isCompositionRef.current = true
+
+    }
+    const handleTextareaCompositionend = (e: any) => {
+      isCompositionRef.current = false
+      editorRef.current?.insertText(e.data)
+      updateRender()
+    }
     const hanldeInsertText = (e: any) => {
+      if (isCompositionRef.current) return;
       editorRef.current?.insertText(e.data)
       updateRender()
     }
@@ -205,14 +212,19 @@ export default function App() {
     canvasRef.current?.addEventListener('mouseup', handleCanvasMouseUp)
     textareaRef.current?.addEventListener('input', hanldeInsertText)
     textareaRef.current?.addEventListener('keydown', handleTextareaKeyDown)
+    textareaRef.current?.addEventListener('compositionstart', handleTextareaCompositionstart)
+    textareaRef.current?.addEventListener('compositionend', handleTextareaCompositionend)
     return () => {
       canvasRef.current?.removeEventListener('mousedown', handleCanvasMouseDown)
       canvasRef.current?.removeEventListener('mousemove', handleCanvasMouseMove)
       canvasRef.current?.removeEventListener('mouseup', handleCanvasMouseUp)
       textareaRef.current?.removeEventListener('input', hanldeInsertText)
       textareaRef.current?.removeEventListener('keydown', handleTextareaKeyDown)
+      textareaRef.current?.removeEventListener('compositionstart', handleTextareaCompositionstart)
+      textareaRef.current?.removeEventListener('compositionend', handleTextareaCompositionend)
     }
   }, [])
+
 
 
   return (
@@ -228,7 +240,7 @@ export default function App() {
           {editorRef.current && <ParagraphComp editorRef={editorRef} updateRender={updateRender} />}
           {editorRef.current && <FillsComp editorRef={editorRef} />}
           {editorRef.current && <OpenTypeComp editorRef={editorRef} />}
-          {editorRef.current && <DebugComp editorRef={editorRef} updateRender={updateRender} enableRef={enableRef} />}
+          {editorRef.current && <DebugComp editorRef={editorRef} updateRender={updateRender} />}
         </div>
       </div>
     </div>
