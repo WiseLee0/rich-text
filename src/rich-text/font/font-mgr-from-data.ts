@@ -12,7 +12,7 @@ const addFont = (editor: Editor, font: Font) => {
     }
     const fontInfo = fonMgr.get(familyName)
     if (fontInfo) {
-        const hasFont = fontInfo.find(item => item.constructor.name === font.constructor.name)
+        const hasFont = fontInfo.find(item => item.subfamilyName === font.subfamilyName)
         if (hasFont) return;
         fontInfo.push(font)
         fonMgr.set(familyName, fontInfo)
