@@ -6,7 +6,7 @@ export const getFontLineHeight = (editor: Editor, family?: string, fontStyle?: s
     const fontSize = editor.style.fontSize
     const key = `${family ?? editor.style.fontName.family}&${fontStyle ?? editor.style.fontName.style}&${fontSize}`
     if (line_height_key === key) return line_height_value
-    const font = editor.getFont(family, fontStyle)
+    let font = editor.getFont(family, fontStyle);
     if (!font) return 0;
     let unitsPerPx = fontSize / (font.unitsPerEm || 1000);
     const ascent = font.ascent * unitsPerPx

@@ -15,7 +15,7 @@ export interface StyleInterface {
     paragraphSpacing: number,
     /** 段落缩进 */
     paragraphIndent: number,
-    
+
     /** 文本省略 */
     textTruncation: SwitchType,
     /** 省略最大行数 */
@@ -24,7 +24,7 @@ export interface StyleInterface {
     truncationStartIndex: number,
     /** 省略高度 */
     truncatedHeight: number,
-    
+
     /** 垂直裁剪 */
     leadingTrim: "CAP_HEIGHT" | "NONE"
     /** 行高 */
@@ -47,10 +47,7 @@ export interface StyleInterface {
         units: "PERCENT" | "PIXELS"
     },
     /** 可变字体 */
-    fontVariations: {
-        axisName: string,
-        value: number
-    }[]
+    fontVariations: Record<string, number>,
     /** 填充样式 */
     fillPaints: FillPaintType[],
     /** 字体常见连字 */

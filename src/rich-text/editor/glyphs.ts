@@ -40,7 +40,8 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
         // 空格宽度
         let spaceWidth = i < baselines.length - 1 ? calcJustifiedSpaceWidth(editor, line, firstCharacter, endCharacter) : -1
         const endStyle = editor.getStyle(baseline.endCharacter - 1)
-        const endFont = editor.getFont(endStyle.fontName.family, endStyle.fontName.style)
+        let endFont = editor.getFont(endStyle.fontName.family, endStyle.fontName.style)
+        if (Object.keys(endStyle.fontVariations)?.length) endFont = endFont?.getVariation(endStyle.fontVariations)
 
         // 添加列表符号
         const lineIdx = getLineIndexForCharacterOffset(editor, firstCharacter)
@@ -169,7 +170,8 @@ const addListSymbol = (editor: Editor, glyphs: GlyphsInterface[], lineIdx: numbe
 
     const styleID = getLineStyleID(editor, baseline.firstCharacter)
     const firstStyle = editor.getStyleForStyleID(styleID)
-    const font = editor.getFont(firstStyle.fontName.family, firstStyle.fontName.style)
+    let font = editor.getFont(firstStyle.fontName.family, firstStyle.fontName.style)
+    if (Object.keys(firstStyle.fontVariations)?.length) font = font?.getVariation(firstStyle.fontVariations)
     if (!font) return;
 
     let lineListOffset = 0

@@ -3,7 +3,6 @@ import './App.css'
 import { CANVAS_W, CANVAS_H, loadSkia, CANVAS_MARING } from './utils';
 import { Canvas } from 'canvaskit-wasm';
 import { Spin } from 'antd';
-import PlayRegular from './assets/Play-Regular.ttf'
 import { createEditor, Editor } from './rich-text';
 import { AutoResizeComp } from './components/autoResize/index';
 import { renderBaseLine, renderBorder, renderCursor, renderText, renderTextDecoration } from './render';
@@ -45,7 +44,7 @@ export default function App() {
   }
 
   const initRichData = async () => {
-    const data1 = await (await fetch(PlayRegular)).arrayBuffer()
+    const data1 = await (await fetch(`https://static.figma.com/font/Inter_1`)).arrayBuffer()
     const editor = await createEditor()
     editor.fontMgrFromData([data1])
     editorRef.current = editor;
@@ -133,17 +132,15 @@ export default function App() {
         textareaRef.current?.focus()
       }, 0);
     }
-    const handleTextareaCompositionstart = (e: any) => {
+    const handleTextareaCompositionstart = () => {
       isCompositionRef.current = true
-
     }
     const handleTextareaCompositionend = (e: any) => {
       isCompositionRef.current = false
-      editorRef.current?.insertText(e.data)
-      updateRender()
+      hanldeInsertText(e)
     }
     const hanldeInsertText = (e: any) => {
-      if (isCompositionRef.current) return;
+      if (isCompositionRef.current) return
       editorRef.current?.insertText(e.data)
       updateRender()
     }

@@ -11,7 +11,7 @@ export const setStyle: EditorInterface['setStyle'] = (editor, styles) => {
     clearGetStyleCache(editor)  // 清除获取样式缓存
 
     if (styles.fontName) {
-        styles.fontVariations = []
+        styles.fontVariations = {}
     }
 
     handleStyleOverride(editor, styles)
@@ -29,11 +29,11 @@ export const setStyle: EditorInterface['setStyle'] = (editor, styles) => {
 
 
 /** 控制哪些属性允许局部更新样式 */
-const getChangeStyles = (styles: Partial<StyleInterface>, isAllSelectModify: boolean) => {
+const getChangeStyles = (editor: Editor, styles: Partial<StyleInterface>, isAllSelectModify: boolean) => {
     const changeStyles: Partial<StyleInterface> = {}
-    if (styles['fontName']) {
-        changeStyles['fontName'] = styles['fontName']
-        changeStyles['fontVariations'] = styles['fontVariations'] ?? []
+    if (styles['fontName'] || styles['fontVariations']) {
+        changeStyles['fontName'] = styles['fontName'] ?? editor.style.fontName
+        changeStyles['fontVariations'] = styles['fontVariations'] ?? {}
         if (!isAllSelectModify) delete styles['fontName']
         if (!isAllSelectModify) delete styles['fontVariations']
     }
@@ -93,7 +93,7 @@ const handleStyleOverride: EditorInterface['setStyle'] = (editor, styles) => {
         }
     }
 
-    const changeStyles = getChangeStyles(styles, isAllSelectModify)
+    const changeStyles = getChangeStyles(editor, styles, isAllSelectModify)
     if (!Object.keys(changeStyles).length) return
 
     // 第一次局部修改

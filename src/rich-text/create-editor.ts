@@ -12,7 +12,7 @@ export const createEditor = async (): Promise<Editor> => {
             textAlignVertical: "TOP",
             textAutoResize: 'WIDTH_AND_HEIGHT',
             fontName: {
-                family: "Play", style: "Regular", postscript: "Play"
+                family: "Inter", style: "Regular", postscript: "Inter-Regular"
             },
             fillPaints: [
                 {
@@ -38,7 +38,7 @@ export const createEditor = async (): Promise<Editor> => {
                 "units": "PERCENT",
                 "value": 0
             },
-            fontVariations: [],
+            fontVariations: {},
             fontLigatures: "ENABLE",
             textDecoration: "NONE",
             textCase: "NONE",

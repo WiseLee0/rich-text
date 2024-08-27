@@ -1,12 +1,21 @@
 import { Input, InputNumber, Radio, RadioChangeEvent, Select, Slider, Tooltip } from "antd"
 import { Editor, StyleInterface } from "../../rich-text"
 import './index.css'
-import { useEffect, useReducer, useState } from "react"
-import { fontListData } from './font-list'
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react"
+import { googleFontList } from "./google-font"
 
 
 type TypographyCompProps = {
     editorRef: React.MutableRefObject<Editor | undefined>
+}
+
+type FontListType = {
+    familyName: string;
+    subfamilyName: string;
+    postscriptName: string;
+    svg: string;
+    assetUrl: string;
+    namedVariations?: any;
 }
 
 const getLineHeight = (editor: Editor) => {
@@ -40,15 +49,84 @@ export const TypographyComp = (props: TypographyCompProps) => {
     const [textDecoration, setTextDecoration] = useState(editorStyle.textDecoration)
     const [lineHeight, setLineHeight] = useState(getLineHeight(editor))
     const [letterSpacing, setLetterSpacing] = useState(getLetterSpacing(editor))
+    const [fontLoading, setFontLoading] = useState(false)
+    const [fontVariations, setFontVariations] = useState(editorStyle.fontVariations)
 
-    const fontOptions = fontListData.familyList.map(item => ({ label: item, value: item }))
-    const styleOptions = fontListData.styleList[family]?.map(item => ({ label: item, value: item }))
+    const initFontData = useCallback(() => {
+        const fontFamilyList = () => {
+            const set = new Set()
+            const arr: typeof googleFontList = []
+            for (let i = 0; i < googleFontList.length; i++) {
+                const item = googleFontList[i];
+                if (set.has(item.familyName)) continue
+                arr.push(item)
+                set.add(item.familyName)
+            }
+            arr.sort((a, b) => a.familyName.localeCompare(b.familyName))
+            return arr;
+        }
+        const fontOption = fontFamilyList().map(item => ({
+            label: item.familyName,
+            value: item.familyName,
+            ...item
+        }))
+
+        const styleOpionList = () => {
+            const styleObj: Record<string, string[]> = {}
+            for (let i = 0; i < googleFontList.length; i++) {
+                const item = googleFontList[i]
+                if (!styleObj[item.familyName]) {
+                    if (item.namedVariations) {
+                        styleObj[item.familyName] = Object.keys(item.namedVariations)
+                    } else {
+                        styleObj[item.familyName] = [item.subfamilyName]
+                    }
+                } else {
+                    styleObj[item.familyName].push(item.subfamilyName)
+                }
+            }
+
+            return styleObj;
+        }
+
+        const fontList = () => {
+            const fontObj: Record<string, typeof googleFontList[number]> = {}
+            for (let i = 0; i < googleFontList.length; i++) {
+                const item = googleFontList[i]
+                const key = `${item.familyName}#${item.subfamilyName}`
+                fontObj[key] = item
+            }
+
+            return fontObj;
+        }
+
+        const familyList = () => {
+            const fontObj: Record<string, typeof googleFontList[number]> = {}
+            for (let i = 0; i < googleFontList.length; i++) {
+                const item = googleFontList[i]
+                fontObj[item.familyName] = item
+            }
+
+            return fontObj;
+        }
+
+        return {
+            fontOption,
+            styleOpionList: styleOpionList(),
+            fontList: fontList() as unknown as Record<string, FontListType>,
+            familyList: familyList() as unknown as Record<string, FontListType>,
+        }
+    }, [])
+
+    const { fontOption, styleOpionList, fontList, familyList } = initFontData()
+    const styleOption = useMemo(() => styleOpionList[family]?.map(item => ({ label: item, value: item })), [family])
+    const variationAxes = familyList[family]?.namedVariations?.[style]
+
     const fontSizeOptions = [12, 16, 20, 24, 32, 36, 40, 48].map(item => ({ label: item, value: item.toString() }))
-    const variationAxes = fontListData.variationAxesList[`${family}#${style}`]
 
 
     const loadFontAsset = async (family: string, style: string) => {
-        const asset = fontListData.assetList[`${family}#${style}`]
+        const asset = fontList[`${family}#${style}`]?.assetUrl
         if (asset) {
             const fontData = await (await fetch(asset)).arrayBuffer()
             editor?.fontMgrFromData([fontData])
@@ -104,47 +182,57 @@ export const TypographyComp = (props: TypographyCompProps) => {
         setLetterSpacing(getLetterSpacing(editor))
     }
 
-    const handleFamilyChange = async (family: string) => {
-        const style = fontListData.styleList[family]?.[0]
-        const postscript = fontListData.postscriptList[`${family}#${style}`]
-        if (!style || !postscript) return
-        await loadFontAsset(family, style ?? '')
-        const font = editor?.getFont(family, style)
+    const handleFamilyChange = async (val: string) => {
+        const _family = val
+        let _style = style
+
+        // 优先字重继承，不存在优先选择Regular，否则列表第一个
+        if (!styleOpionList[_family].includes(_style)) {
+            if (styleOpionList[_family].includes('Regular')) {
+                _style = 'Regular'
+            } else {
+                _style = styleOpionList[_family][0]
+            }
+        }
+        const info = fontList[`${_family}#${_style}`]
+        if (!info) return;
+
+        setFontLoading(true)
+        await loadFontAsset(_family, _style)
+        const font = editor?.getFont(_family, _style)
+
         if (!font) {
             console.warn("切换查找字体失败")
             return
         }
+
         editor?.setStyle({
             fontName: {
-                family,
-                style,
-                postscript
+                family: _family,
+                style: _style,
+                postscript: info.postscriptName
             },
         })
-        updateRender()
-        setFamily(family)
-        setStyle(style)
+        setFamily(_family)
+        setStyle(_style)
+        setFontLoading(false)
     }
 
-    const handleStyleChange = async (style: string) => {
-        const postscript = fontListData.postscriptList[`${family}#${style}`]
-        if (!style || !postscript) return
-        await loadFontAsset(family, style ?? '')
-        const font = editor?.getFont(family, style)
-        if (!font) {
-            console.warn("切换查找字体样式失败")
-            return
-        }
+    const handleStyleChange = async (val: string) => {
+        const _family = family
+        const _style = val
+        await loadFontAsset(_family, _style)
+        let font = editor?.getFont(_family, _style)
+        if (!font) return
         editor?.setStyle({
             fontName: {
-                family,
-                style,
-                postscript
+                family: _family,
+                style: _style,
+                postscript: font.postscriptName
             },
         })
-        updateRender()
-        setFamily(family)
-        setStyle(style)
+        setFamily(_family)
+        setStyle(_style)
     }
 
     const handleFontSizeChange = (size: string) => {
@@ -187,60 +275,66 @@ export const TypographyComp = (props: TypographyCompProps) => {
 
     const changeVariationAxes = (val: number | null, name: string) => {
         if (val === null) return;
-        const fontVariations = editor?.style?.fontVariations
-        if (!fontVariations?.length) {
-            const variations = variationAxes.map(item => {
-                let value = item.value
-                if (item.name === name) {
-                    value = val
-                }
-                return {
-                    axisName: item.name,
-                    value
-                }
-            })
+        const fontVariations = { ...editorStyle.fontVariations }
+        if (!fontVariations) {
+            const fontVariations = { name: val }
             editor?.setStyle({
-                fontVariations: variations
+                fontVariations
             })
-            updateRender()
+            setFontVariations(fontVariations)
             return
         }
-        const variation = fontVariations.find(item => item.axisName === name)
-        if (!variation) {
-            console.warn('changeVariationAxes exception')
-            return;
-        }
-        variation.value = val
+        fontVariations[name] = val
         editor?.setStyle({
             fontVariations
         })
-        updateRender()
+        setFontVariations(fontVariations)
     }
 
     const showVariationAxes = () => {
-        if (!variationAxes?.length) return <></>
-        return variationAxes.map(item => {
-            const value = editor?.style.fontVariations.find(font => font.axisName === item.name)?.value ?? item.value
-            if (item.name === "Width") {
-                return <div key={"width"}>
-                    <div className="typography-row">
-                        <span>字宽</span>
-                        <InputNumber size="small" min={item.min} max={item.max} value={value} onChange={(val) => changeVariationAxes(val, 'Width')} />
-                    </div>
-                    <Slider min={item.min} max={item.max} value={value} onChange={(val) => changeVariationAxes(val, 'Width')} />
-                </div>
+        if (!variationAxes) return <></>
+        const font = editor.getFont(family, style) as any
+        const result: JSX.Element[] = []
+        for (const key in variationAxes) {
+            const { min, max } = font.variationAxes[key]
+            let value = variationAxes[key]
+            if ((fontVariations as any) === 'mix') {
+                value = 'mix'
+            } else {
+                value = fontVariations[key] ?? variationAxes[key]
             }
-            if (item.name === "Weight") {
-                return <div key={"Weight"}>
+            if (key === 'wght') {
+                const item = <div key={"wght"}>
                     <div className="typography-row" >
                         <span>字重</span>
-                        <InputNumber size="small" min={item.min} max={item.max} value={value} onChange={(val) => changeVariationAxes(val, 'Weight')} />
+                        <InputNumber size="small" min={min} max={max} value={value} onChange={(val) => changeVariationAxes(val, 'wght')} />
                     </div>
-                    <Slider min={item.min} max={item.max} value={value} onChange={(val) => changeVariationAxes(val, 'Weight')} />
+                    <Slider min={min} max={max} value={value} onChange={(val) => changeVariationAxes(val, 'wght')} />
                 </div>
+                result.push(item)
             }
-            return <></>
-        })
+            if (key === 'wdth') {
+                const item = <div key={"wdth"}>
+                    <div className="typography-row" >
+                        <span>字宽</span>
+                        <InputNumber size="small" min={min} max={max} value={value} onChange={(val) => changeVariationAxes(val, 'wdth')} />
+                    </div>
+                    <Slider min={min} max={max} value={value} onChange={(val) => changeVariationAxes(val, 'wdth')} />
+                </div>
+                result.push(item)
+            }
+            if (key === 'slnt') {
+                const item = <div key={"slnt"}>
+                    <div className="typography-row" >
+                        <span>倾斜</span>
+                        <InputNumber size="small" min={min} max={max} value={value} onChange={(val) => changeVariationAxes(val, 'slnt')} />
+                    </div>
+                    <Slider min={min} max={max} value={value} onChange={(val) => changeVariationAxes(val, 'slnt')} />
+                </div>
+                result.push(item)
+            }
+        }
+        return result
     }
 
     useEffect(() => {
@@ -253,6 +347,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
             else setTextDecoration("NONE")
             if (style?.lineHeight) setLineHeight(getLineHeight(editor))
             if (style?.letterSpacing) setLetterSpacing(getLetterSpacing(editor))
+            if (style?.fontVariations) setFontVariations(style.fontVariations)
         }
         editorRef.current?.addEventListener('selection', watchSelection)
         return () => {
@@ -264,17 +359,23 @@ export const TypographyComp = (props: TypographyCompProps) => {
     return <div className="typography-container">
         <span className="title">字体排印</span>
         <Select
+            showSearch
             value={family}
             style={{ margin: '8px 0' }}
             onChange={handleFamilyChange}
-            options={fontOptions}
+            loading={fontLoading}
+            disabled={fontLoading}
+            options={fontOption}
+            optionRender={(option) => (<div style={{ marginTop: 8 }} dangerouslySetInnerHTML={{
+                __html: option.data.svg
+            }} />)}
         />
         <div className="typography-row" style={{ marginBottom: '8px' }}>
             <Select
                 value={style}
                 style={{ width: 110 }}
                 onChange={handleStyleChange}
-                options={styleOptions}
+                options={styleOption}
             />
             <Select
                 value={fontSize.toString()}

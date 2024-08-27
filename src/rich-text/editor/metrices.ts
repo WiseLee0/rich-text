@@ -17,7 +17,9 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
         const style = getStyleForStyleID(editor, characterStyleIDs?.[tokenOffset])
         let family = style.fontName.family
         let fontStyle = style.fontName.style
-        const font = editor.getFont(family, fontStyle)
+        const fontVariations = style.fontVariations
+        let font = editor.getFont(family, fontStyle)
+        if (Object.keys(fontVariations)?.length) font = font?.getVariation(fontVariations)
 
         if (!font) continue
 
@@ -38,7 +40,7 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
                 xAdvance = positions[j].xAdvance * unitsPerPx + letterSpacing
                 name = glyph.name
             }
-            const height = (glyph as any).advanceHeight * unitsPerPx
+            const height = ((glyph as any).advanceHeight || (font.ascent - font.descent)) * unitsPerPx
             const ascent = font.ascent * unitsPerPx
             const capHeight = font.capHeight * unitsPerPx
             const path = isWrap ? '' : glyph.path.scale(unitsPerPx, -unitsPerPx).toSVG()

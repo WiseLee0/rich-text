@@ -1,11 +1,11 @@
 import { deepClone, EditorInterface, StyleInterface } from "..";
 
-export const getStyle: EditorInterface['getStyle'] = (editor, firstCharacter) => {
+export const getStyle: EditorInterface['getStyle'] = (editor, firstCharacter, needClone = true) => {
     if (firstCharacter === undefined) {
-        return deepClone(editor.style)
+        return needClone ? deepClone(editor.style) : editor.style
     }
     const { characterStyleIDs, styleOverrideTable } = editor.textData
     const styleID = characterStyleIDs?.[firstCharacter]
     const style = styleOverrideTable?.find(item => item.styleID === styleID)
-    return deepClone({ ...editor.style, ...style }) as StyleInterface;
+    return needClone ? deepClone({ ...editor.style, ...style }) as StyleInterface : { ...editor.style, ...style };
 }
