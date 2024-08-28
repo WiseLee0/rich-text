@@ -1,5 +1,5 @@
 import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyphs, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getTextListTypeForSelection, setTextList, loadDefaultFont, getStyleForStyleID, addIndent, reduceIndent, selectAll } from './'
-
+import detectLangModel from './detect-lang/pkg/detect_lang'
 export const createEditor = async (): Promise<Editor> => {
 
     const editor: Editor = {
@@ -61,26 +61,15 @@ export const createEditor = async (): Promise<Editor> => {
         isEditor: false,
         derivedTextData: {},
         textData: {
-            characters: "helloworld\nhelloworldmotowo\n",
+            // characters: "हैलोԠhelloworld,我们的时代,妳好的時代,한국어안녕하세요,こんにちは",
+            characters: "helloworld,我们的时代,妳好的時代,한국어안녕하세요,こんにちは",
             lines: [
                 {
-                    "lineType": "ORDERED_LIST",
-                    "indentationLevel": 1,
+                    "lineType": "PLAIN",
+                    "indentationLevel": 0,
                     "isFirstLineOfList": true,
                     "listStartOffset": 0
-                },
-                {
-                    "lineType": "ORDERED_LIST",
-                    "indentationLevel": 1,
-                    "isFirstLineOfList": false,
-                    "listStartOffset": 0
-                },
-                {
-                    "lineType": "ORDERED_LIST",
-                    "indentationLevel": 1,
-                    "isFirstLineOfList": false,
-                    "listStartOffset": 0
-                },
+                }
             ]
         },
 
@@ -131,6 +120,8 @@ export const createEditor = async (): Promise<Editor> => {
     }
 
     await loadDefaultFont(editor)
+
+    await detectLangModel()
 
     return editor
 }

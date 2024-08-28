@@ -1,0 +1,23 @@
+{
+  "name": "detect-lang",
+  "collaborators": [
+    "lizhi"
+  ],
+  "description": "语言检测模型",
+  "version": "0.1.0",
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "files": [
+    "detect_lang_bg.wasm",
+    "detect_lang.js",
+    "detect_lang.d.ts"
+  ],
+  "module": "detect_lang.js",
+  "types": "detect_lang.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

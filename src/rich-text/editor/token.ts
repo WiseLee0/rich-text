@@ -102,7 +102,7 @@ export function fontTokenize(textData: Record<string, any>, characters: string) 
     for (let i = 0; i < characters?.length; i++) {
         const char = characters[i];
         if (char === '\n') {
-            token.push(str)
+            if (str.length) token.push(str)
             str = ''
             token.push(char)
             continue

@@ -1,0 +1,16 @@
+[package]
+name = "detect-lang"
+version = "0.1.0"
+edition = "2021"
+authors = ["lizhi"]
+description = "语言检测模型"
+repository = ""
+license = "MIT OR Apache-2.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen = { version = "0.2.92" }
+whatlang = { version = "0.16.4" }
