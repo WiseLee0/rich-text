@@ -1,4 +1,4 @@
-import { Editor, getLineIndentationLevelPixels, lineTokenize, MetricesInterface } from "..";
+import { Editor, getCodePoints, getLineIndentationLevelPixels, lineTokenize, MetricesInterface } from "..";
 
 // Rule1: 空白词组遇到段行会放置在当前行末尾，即使它已经超出元素外
 // Rule2: 尽可能不切断词组，让其完整在一行展示，除非当前词组的宽度大于文本元素的宽度
@@ -179,7 +179,7 @@ const splitWordGroup = (editor: Editor) => {
     if (!metrices) return;
 
     const text = editor.getText()
-    const wordLens = lineTokenize(text).map(item => item.length)
+    const wordLens = lineTokenize(text).map(item => getCodePoints(item).length)
     const words: MetricesInterface[][] = []
     let mIdx = 0
     for (let i = 0; i < wordLens.length; i++) {

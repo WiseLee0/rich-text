@@ -3,9 +3,11 @@ export interface GlyphsInterface {
     position: {
         x: number,
         y: number
-    },
-    fontSize: number,
+    }
+    fontSize: number
     firstCharacter?: number
     xAdvance?: number
     styleID?: number
+    emojiCodePoints?: number[]
+    emojiRect?: number[]
 }

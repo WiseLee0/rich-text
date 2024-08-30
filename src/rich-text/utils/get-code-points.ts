@@ -1,4 +1,4 @@
-export const getEmojiCodePoints = (char: string) => {
+export const getCodePoints = (char: string) => {
     const codePoints: number[] = [];
     for (let i = 0; i < char.length; i++) {
         const codePoint = char.codePointAt(i);

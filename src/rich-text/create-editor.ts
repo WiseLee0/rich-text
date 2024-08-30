@@ -61,8 +61,7 @@ export const createEditor = async (): Promise<Editor> => {
         isEditor: false,
         derivedTextData: {},
         textData: {
-            // characters: "हैलोԠhelloworld,我们的时代,妳好的時代,한국어안녕하세요,こんにちは",
-            characters: "helloworld,我们的时代,妳好的時代,한국어안녕하세요,こんにちは",
+            characters: "👩‍❤️‍👩😁🫣😶‍🌫️👨‍👩‍👧‍👦👻🙃😍😠🥳👦🏾helloworld,我们的时代,妳好的時代,한국어안녕하세요,こんにちは",
             lines: [
                 {
                     "lineType": "PLAIN",

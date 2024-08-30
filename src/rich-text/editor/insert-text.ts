@@ -1,4 +1,4 @@
-import { EditorInterface, handleInsertTextOfTextDataLine } from "..";
+import { EditorInterface, getCodePoints, handleInsertTextOfTextDataLine } from "..";
 
 export const insertText: EditorInterface['insertText'] = (editor, content) => {
     if (!editor.isEditor) return;
@@ -14,7 +14,7 @@ export const insertText: EditorInterface['insertText'] = (editor, content) => {
     const selectCharacterOffset = editor.getSelectCharacterOffset()
     const baselines = editor.getBaselines()
     if (!baselines?.length || !selectCharacterOffset) return
-    const text = editor.getText()
+    const text = Array.from(editor.getText())
     const characterIdx = selectCharacterOffset.anchor
 
     const stopInsert = handleInsertTextOfTextDataLine(editor, content)
@@ -22,8 +22,10 @@ export const insertText: EditorInterface['insertText'] = (editor, content) => {
         editor.apply()
         return
     }
-    const newText = text.substring(0, characterIdx) + content + text.substring(characterIdx)
+    const newText = text.slice(0, characterIdx).join("") + content + text.slice(characterIdx).join("")
     editor.replaceText(newText)
+
+    const contentLen = getCodePoints(content).length
 
     // 更新局部样式表
     const { characterStyleIDs, characters } = editor.textData
@@ -32,9 +34,9 @@ export const insertText: EditorInterface['insertText'] = (editor, content) => {
         styleID = characterStyleIDs?.[characterIdx]
     }
     if (characterStyleIDs?.length && styleID !== undefined) {
-        const styleIDArr = new Array(content.length).fill(styleID)
+        const styleIDArr = new Array(contentLen).fill(styleID)
         characterStyleIDs.splice(characterIdx, 0, ...styleIDArr)
     }
     editor.apply()
-    editor.selectForCharacterOffset(characterIdx + content.length)
+    editor.selectForCharacterOffset(characterIdx + contentLen)
 }

@@ -1,3 +1,4 @@
+import { detectEmoji, splitString } from "..";
 /**
  * 将字符列表分割为换行词组
  *
@@ -8,19 +9,20 @@
  *
  */
 export function lineTokenize(input: string) {
+    const { charArr } = splitString(input)
     const tokens: string[] = [];
     let i = 0;
     const asciiPrintable = /[\x20-\x7E]/;
 
-    while (i < input.length) {
-        const char = input[i];
+    while (i < charArr.length) {
+        const char = charArr[i];
         // Rule 1: 连续的、不包含空格的 ASCII 可打印字符是一个词组，比如「I'm」、「constant.」、「word」、「etc...」
         if (asciiPrintable.test(char) && char !== ' ') {
             let start = i;
-            while (i < input.length && asciiPrintable.test(input[i]) && input[i] !== ' ') {
+            while (i < charArr.length && asciiPrintable.test(charArr[i]) && charArr[i] !== ' ') {
                 i++;
             }
-            tokens.push(input.slice(start, i));
+            tokens.push(charArr.slice(start, i).join(''));
         }
         // Rule 2: 剩余未明确定义的字符，单个字符就算作是一个词组
         else {
@@ -99,20 +101,33 @@ export function fontTokenize(textData: Record<string, any>, characters: string) 
 
     let str = ''
     const token: string[] = []
-    for (let i = 0; i < characters?.length; i++) {
-        const char = characters[i];
-        if (char === '\n') {
+    const { charArr, codePoints } = splitString(characters)
+
+    let charIdx = 0
+    for (let i = 0; i < charArr?.length; i++) {
+        const char = charArr[i];
+        if (char === '\n' || detectEmoji(char)) {
             if (str.length) token.push(str)
             str = ''
             token.push(char)
             continue
         }
-        if (characterStyleIDs && modifySet.has(characterStyleIDs[i])) {
+        // 零宽连接符不可以单独存在
+        const code = char.codePointAt(0)
+        if (code && (code === 8205 || code === 65039)) {
+            if (str.length) token.push(str)
+            str = ''
+            token.push(char)
+            continue
+        }
+
+        if (characterStyleIDs && modifySet.has(characterStyleIDs[charIdx])) {
             if (str.length) token.push(str)
             str = char
-            let idx = i
-            while (characters[i + 1] && characterStyleIDs[i + 1] === characterStyleIDs[idx] && characters[i + 1] !== '\n') {
-                str += characters[i + 1]
+            let idx = charIdx
+            while (charArr[i + 1] && characterStyleIDs[idx + 1] === characterStyleIDs[idx] && charArr[i + 1] !== '\n') {
+                str += charArr[i + 1]
+                charIdx += codePoints[i].length
                 i++
             }
             token.push(str)
@@ -120,6 +135,7 @@ export function fontTokenize(textData: Record<string, any>, characters: string) 
             continue
         }
         str += char
+        charIdx += codePoints[i].length
     }
     if (str.length) token.push(str)
     return token

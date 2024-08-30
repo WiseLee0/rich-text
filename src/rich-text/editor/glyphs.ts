@@ -53,15 +53,30 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
         for (let j = 0; j < line.length; j++) {
             const metrice = line[j];
             if (metrice.name !== '\n') {
-                glyphs.push({
-                    commandsBlob: metrice.path,
-                    position: {
-                        x,
-                        y: baseline.position.y
-                    },
-                    fontSize: metrice.fontSize,
-                    firstCharacter: baseline.firstCharacter + count
-                })
+                let y = baseline.position.y
+                if (metrice.name === 'isEmoji') {
+                    glyphs.push({
+                        commandsBlob: metrice.path,
+                        position: {
+                            x,
+                            y
+                        },
+                        fontSize: metrice.fontSize,
+                        firstCharacter: baseline.firstCharacter + count,
+                        emojiCodePoints: metrice.codePoints,
+                        emojiRect: [x, y - metrice.ascent + (metrice.height - metrice.ascent) / 3, x + metrice.xAdvance, y + (metrice.height - metrice.ascent) / 3]
+                    })
+                } else {
+                    glyphs.push({
+                        commandsBlob: metrice.path,
+                        position: {
+                            x,
+                            y
+                        },
+                        fontSize: metrice.fontSize,
+                        firstCharacter: baseline.firstCharacter + count
+                    })
+                }
                 if (metrice.name === 'space' && spaceWidth > -1) x += spaceWidth;
                 else x += metrice.xAdvance;
             }

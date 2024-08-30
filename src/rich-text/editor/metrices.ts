@@ -1,4 +1,4 @@
-import { checkFontSupport, EditorInterface, getLangFont, fontTokenize, getStyleForStyleID, setFontFeatures, StyleInterface, loadLangFont } from "..";
+import { checkFontSupport, EditorInterface, getLangFont, fontTokenize, getStyleForStyleID, setFontFeatures, StyleInterface, loadLangFont, detectEmoji, getCodePoints } from "..";
 
 const allLackURLSet = new Set<string>()
 export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
@@ -11,12 +11,12 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
     const { characterStyleIDs } = data
 
     editor.__metrices = []
-    let tokenOffset = 0
     let firstCharacter = 0
     const lackFontURLSet = new Set<string>()
     for (let i = 0; i < tokens.length; i++) {
         const token = tokens[i];
-        const style = getStyleForStyleID(editor, characterStyleIDs?.[tokenOffset])
+        const isEmoji = detectEmoji(token)
+        const style = getStyleForStyleID(editor, characterStyleIDs?.[firstCharacter])
         let family = style.fontName.family
         let fontStyle = style.fontName.style
         const fontVariations = style.fontVariations
@@ -25,9 +25,27 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
 
         if (!originFont) continue
 
-        const features = setFontFeatures(editor, tokenOffset)
+        const features = setFontFeatures(editor, firstCharacter)
         const { glyphs, positions } = originFont.layout(token, features)
 
+        if (!glyphs.length) {
+            const codePoints = getCodePoints(token)
+            editor.__metrices.push({
+                isLigature: false,
+                codePoints,
+                path: '',
+                xAdvance: 0,
+                ascent: 0,
+                height: 0,
+                fontSize: 0,
+                capHeight: 0,
+                name: '',
+                letterSpacing: 0,
+                firstCharacter,
+            })
+            firstCharacter += codePoints.length;
+            continue
+        }
         const isWrap = token === '\n'
         let tokenIdx = 0
         for (let j = 0; j < glyphs.length; j++) {
@@ -36,8 +54,8 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
             let position = positions[j]
             let supportLang = true
 
-            // 检测当前字体是否支持渲染
-            if (!isWrap && !checkFontSupport(font, glyph.codePoints) && token[tokenIdx]) {
+            // 检测当前字体是否支持字符渲染
+            if (!isEmoji && !isWrap && !checkFontSupport(font, glyph.codePoints) && token[tokenIdx]) {
                 const [langFont, url] = getLangFont(editor, token[tokenIdx], { originFont, fontStyle, fontVariations })
                 if (langFont) {
                     font = langFont
@@ -55,19 +73,27 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
             let xAdvance = 0
             let letterSpacing = 0
             let name = '\n'
+            let isLigature = glyph.isLigature
+            let codePoints = glyph.codePoints
+            const height = ((glyph as any).advanceHeight || (font.ascent - font.descent)) * unitsPerPx
+            const ascent = font.ascent * unitsPerPx
+            const capHeight = font.capHeight * unitsPerPx
+            let path = (isWrap || !supportLang) ? '' : glyph.path.scale(unitsPerPx, -unitsPerPx).toSVG()
             if (!isWrap) {
                 letterSpacing = getLetterSpacing(style)
                 xAdvance = position.xAdvance * unitsPerPx + letterSpacing
                 name = glyph.name
             }
-            const height = ((glyph as any).advanceHeight || (font.ascent - font.descent)) * unitsPerPx
-            const ascent = font.ascent * unitsPerPx
-            const capHeight = font.capHeight * unitsPerPx
-            const path = (isWrap || !supportLang) ? '' : glyph.path.scale(unitsPerPx, -unitsPerPx).toSVG()
+            if (isEmoji) {
+                name = 'isEmoji'
+                path = ''
+                codePoints = getCodePoints(token)
+                isLigature = false
+            }
 
             editor.__metrices.push({
-                isLigature: glyph.isLigature,
-                codePoints: glyph.codePoints,
+                isLigature,
+                codePoints,
                 path,
                 xAdvance,
                 ascent,
@@ -78,10 +104,11 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
                 letterSpacing,
                 firstCharacter,
             })
-            firstCharacter += glyph.codePoints.length;
-            tokenIdx += glyph.codePoints.length;
+
+            firstCharacter += codePoints.length;
+            tokenIdx += codePoints.length;
+            if (isEmoji) break
         }
-        tokenOffset += token.length
     }
 
     // 加载缺失字体

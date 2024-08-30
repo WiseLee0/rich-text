@@ -19,7 +19,7 @@ export const getLogicalCharacterOffset: EditorInterface['getLogicalCharacterOffs
         let offset = 0
         for (let j = start; j < end; j++) {
             const metrice = metrices[j];
-            if (metrice.isLigature) {
+            if (metrice.codePoints.length > 1) {
                 const step_w = metrice.xAdvance / metrice.codePoints.length
                 for (let j = 0; j < metrice.codePoints.length; j++) {
                     logicalCharacterOffset.push(offset + step_w * j)
@@ -43,6 +43,7 @@ export const getLogicalCharacterOffset: EditorInterface['getLogicalCharacterOffs
 // 获取当前基线行的宽度列表
 export const getBaseLineCharacterOffset: EditorInterface['getBaseLineCharacterOffset'] = (editor, baselineIdx) => {
     const characterOffset = getLogicalCharacterOffset(editor)
+    
     const offset: number[] = []
     let idx = -1
     for (let i = 0; i < characterOffset.length; i++) {

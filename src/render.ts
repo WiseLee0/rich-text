@@ -1,7 +1,8 @@
-import { CanvasKit, Canvas } from "canvaskit-wasm"
-import { Editor } from "./rich-text"
+import { CanvasKit, Canvas, Image } from "canvaskit-wasm"
+import { Editor, GlyphsInterface } from "./rich-text"
 
 const theme_color = [11, 153, 255, 1] as [number, number, number, number]
+let emoji_image = new Map<string, Image>()
 
 export const renderBaseLine = (Skia: CanvasKit, canvas: Canvas, editorRef: React.MutableRefObject<Editor | undefined>) => {
     const editor = editorRef.current
@@ -77,6 +78,56 @@ export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.Mut
     paint.setAntiAlias(true)
     const fillPaintsArr = editor.getFillPaintsForGlyphs()
 
+    const renderGlyph = (glyphs: GlyphsInterface[], len: number) => {
+        for (let idx = 0; idx < len; idx++) {
+            const glyph = glyphs[idx];
+            if (!glyph.commandsBlob) continue;
+            const path = Skia.Path.MakeFromSVGString(glyph.commandsBlob)!
+            canvas.save()
+            canvas.translate(glyph.position.x, glyph.position.y)
+            canvas.clipPath(path, Skia.ClipOp.Intersect, true)
+            for (let j = 0; j < fillPaintsArr[idx].length; j++) {
+                const fillPaint = fillPaintsArr[idx][j];
+                if (!fillPaint.visible) continue
+                // 注意：这里alpha取opacity
+                paint.setColor([fillPaint.color.r, fillPaint.color.g, fillPaint.color.b, fillPaint.opacity])
+                canvas.drawPaint(paint)
+            }
+            canvas.restore()
+            path.delete()
+        }
+    }
+    const renderEmoji = (glyphs: GlyphsInterface[], len: number) => {
+        for (let idx = 0; idx < len; idx++) {
+            const glyph = glyphs[idx];
+            if (!glyph.emojiCodePoints?.length) continue;
+            const key = glyph.emojiCodePoints.map(item => item.toString(16)).join('-')
+
+            const renderImage = (image?: Image) => {
+                if (!image) return;
+                canvas.drawImageRectOptions(image, [0, 0, image.width(), image.height()], glyph.emojiRect!, Skia.FilterMode.Linear, Skia.MipmapMode.Linear)
+            }
+
+            if (!emoji_image.has(key)) {
+                emoji_image.set(key, null!)
+                fetch(`https://static.figma.com/emoji/5/apple/medium/${key}.png`).then(async res => {
+                    if (res.ok) {
+                        const buffer = await res.arrayBuffer()
+                        const image = Skia.MakeImageFromEncoded(buffer)
+                        emoji_image.set(key, image!)
+                        if (image) renderImage(image)
+                    } else {
+                        console.warn(`请求emoji ${key}失败`);
+                        emoji_image.set(key, null!)
+                    }
+                })
+            } else {
+                const image = emoji_image.get(key)
+                renderImage(image)
+            }
+        }
+    }
+
     // 编辑态文本渲染
     if (editor.hasSelection()) {
         for (let i = 0; i < glyphs?.length; i++) {
@@ -95,21 +146,10 @@ export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.Mut
                 path.delete()
                 continue
             }
-
-            const path = Skia.Path.MakeFromSVGString(glyph.commandsBlob)!
-            canvas.save()
-            canvas.translate(glyph.position.x, glyph.position.y)
-            canvas.clipPath(path, Skia.ClipOp.Intersect, true)
-            for (let j = 0; j < fillPaintsArr[i].length; j++) {
-                const fillPaint = fillPaintsArr[i][j];
-                if (!fillPaint.visible) continue
-                // 注意：这里alpha取opacity
-                paint.setColor([fillPaint.color.r, fillPaint.color.g, fillPaint.color.b, fillPaint.opacity])
-                canvas.drawPaint(paint)
-            }
-            canvas.restore()
-            path.delete()
         }
+
+        renderGlyph(glyphs, glyphs?.length)
+        renderEmoji(glyphs, glyphs?.length)
     } else {
         let len = glyphs?.length
 
@@ -141,23 +181,8 @@ export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.Mut
             path.delete()
         }
 
-        for (let i = 0; i < len; i++) {
-            const glyph = glyphs[i];
-
-            const path = Skia.Path.MakeFromSVGString(glyph.commandsBlob)!
-            canvas.save()
-            canvas.translate(glyph.position.x, glyph.position.y)
-            canvas.clipPath(path, Skia.ClipOp.Intersect, true)
-            for (let j = 0; j < fillPaintsArr[i].length; j++) {
-                const fillPaint = fillPaintsArr[i][j];
-                if (!fillPaint.visible) continue
-                // 注意：这里alpha取opacity
-                paint.setColor([fillPaint.color.r, fillPaint.color.g, fillPaint.color.b, fillPaint.opacity])
-                canvas.drawPaint(paint)
-            }
-            canvas.restore()
-            path.delete()
-        }
+        renderGlyph(glyphs, len)
+        renderEmoji(glyphs, len)
     }
 
     paint.delete()

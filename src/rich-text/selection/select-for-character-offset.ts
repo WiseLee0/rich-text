@@ -21,7 +21,7 @@ export const selectForCharacterOffset: SelectionInterface['selectForCharacterOff
         return;
     }
 
-    if (characterOffset === text.length) {
+    if (characterOffset === Array.from(text).length) {
         if (text[text.length - 1] === '\n') {
             editor.setSelection({
                 anchor: baselines.length,
