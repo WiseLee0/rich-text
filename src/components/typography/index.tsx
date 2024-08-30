@@ -2,11 +2,19 @@ import { Input, InputNumber, Radio, RadioChangeEvent, Select, Slider, Tooltip } 
 import { Editor, StyleInterface } from "../../rich-text"
 import './index.css'
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react"
-import { googleFontList } from "./google-font"
+import googleFontListURL from './google-font.json?url'
 
 
 type TypographyCompProps = {
     editorRef: React.MutableRefObject<Editor | undefined>
+}
+type GoogleFontListType = {
+    familyName: string;
+    subfamilyName: string;
+    postscriptName: string;
+    svg: string;
+    assetUrl: string;
+    namedVariations?: undefined;
 }
 
 type FontListType = {
@@ -42,6 +50,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
     const editor = editorRef.current!
     const editorStyle = editor.getStyle()
 
+    const [googleFontList, setGoogleFontList] = useState<GoogleFontListType[]>([])
     const [, updateRender] = useReducer(i => i + 1, 0)
     const [family, setFamily] = useState(editorStyle.fontName!.family)
     const [style, setStyle] = useState(editorStyle.fontName!.style)
@@ -51,6 +60,15 @@ export const TypographyComp = (props: TypographyCompProps) => {
     const [letterSpacing, setLetterSpacing] = useState(getLetterSpacing(editor))
     const [fontLoading, setFontLoading] = useState(false)
     const [fontVariations, setFontVariations] = useState(editorStyle.fontVariations)
+
+    useEffect(() => {
+        setFontLoading(true)
+        fetch(googleFontListURL).then(async res => {
+            const json = await res.json()
+            setGoogleFontList(json)
+            setFontLoading(false)
+        })
+    }, [])
 
     const initFontData = useCallback(() => {
         const fontFamilyList = () => {
@@ -116,10 +134,10 @@ export const TypographyComp = (props: TypographyCompProps) => {
             fontList: fontList() as unknown as Record<string, FontListType>,
             familyList: familyList() as unknown as Record<string, FontListType>,
         }
-    }, [])
+    }, [googleFontList])
 
     const { fontOption, styleOpionList, fontList, familyList } = initFontData()
-    const styleOption = useMemo(() => styleOpionList[family]?.map(item => ({ label: item, value: item })), [family])
+    const styleOption = useMemo(() => styleOpionList[family]?.map(item => ({ label: item, value: item })), [googleFontList, family])
     const variationAxes = familyList[family]?.namedVariations?.[style]
 
     const fontSizeOptions = [12, 16, 20, 24, 32, 36, 40, 48].map(item => ({ label: item, value: item.toString() }))
