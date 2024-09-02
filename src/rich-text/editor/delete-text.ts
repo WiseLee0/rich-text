@@ -19,6 +19,7 @@ export const deleteText: EditorInterface['deleteText'] = (editor) => {
                 anchorOffset = 0
             }
         }
+        editor.__selection = { focus, anchor, focusOffset, anchorOffset }
     }
 
     const anchorCharacterIdx = baselines[anchor].firstCharacter + anchorOffset
@@ -36,7 +37,7 @@ export const deleteText: EditorInterface['deleteText'] = (editor) => {
     }
     const newText = text.slice(0, anchorCharacterIdx).join("") + text.slice(focusCharacterIdx).join("")
     editor.replaceText(newText)
-    
+
     // 删除空了
     if (newText === '') {
         editor.setSelection({
