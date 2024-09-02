@@ -61,14 +61,38 @@ export const createEditor = async (): Promise<Editor> => {
         isEditor: false,
         derivedTextData: {},
         textData: {
-            characters: "👩‍❤️‍👩😁🫣😶‍🌫️👨‍👩‍👧‍👦👻🙃😍😠🥳👦🏾helloworld,我们的时代,妳好的時代,한국어안녕하세요,こんにちは",
+            characters: "emoji: 👩‍❤️‍👩😁🫣😶‍🌫️👨‍👩‍👧‍👦👻🙃😍😠🥳👦🏾\nEnglish: helloworld\nChinese: 我们的时代妳時代\nKorean: 한국어안녕하세요\nJapanese: こんにちは",
             lines: [
                 {
-                    "lineType": "PLAIN",
-                    "indentationLevel": 0,
+                    "lineType": "ORDERED_LIST",
+                    "indentationLevel": 1,
                     "isFirstLineOfList": true,
                     "listStartOffset": 0
-                }
+                },
+                {
+                    "lineType": "ORDERED_LIST",
+                    "indentationLevel": 1,
+                    "isFirstLineOfList": false,
+                    "listStartOffset": 0
+                },
+                {
+                    "lineType": "ORDERED_LIST",
+                    "indentationLevel": 1,
+                    "isFirstLineOfList": false,
+                    "listStartOffset": 0
+                },
+                {
+                    "lineType": "ORDERED_LIST",
+                    "indentationLevel": 1,
+                    "isFirstLineOfList": false,
+                    "listStartOffset": 0
+                },
+                {
+                    "lineType": "ORDERED_LIST",
+                    "indentationLevel": 1,
+                    "isFirstLineOfList": false,
+                    "listStartOffset": 0
+                },
             ]
         },
 

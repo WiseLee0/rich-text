@@ -48,7 +48,7 @@ export default function App() {
     const editor = await createEditor()
     editor.fontMgrFromData([data1])
     editorRef.current = editor;
-    editor.layout(300);
+    editor.layout(500);
 
     (window as any).getEditor = () => {
       return editorRef.current
