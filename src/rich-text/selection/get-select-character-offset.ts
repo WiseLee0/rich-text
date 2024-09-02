@@ -1,10 +1,10 @@
-import { SelectionInterface } from ".."
+import { getTextArr, SelectionInterface } from ".."
 
 export const getSelectCharacterOffset: SelectionInterface['getSelectCharacterOffset'] = (editor) => {
     if (!editor.hasSelection()) return;
     const selection = editor.getSelection()
     const baselines = editor.getBaselines()
-    const text = editor.getText()
+    const textArr = getTextArr(editor)
     const { anchor, focus, anchorOffset, focusOffset } = selection
     if (!baselines) return { anchor: 0, focus: 0 }
 
@@ -25,7 +25,7 @@ export const getSelectCharacterOffset: SelectionInterface['getSelectCharacterOff
     }
 
     // 比如：hello\nworld , 选中第一行应该是 hello\n
-    if (text[r_anchor] !== '\n' && text[r_focus] === '\n') {
+    if (textArr[r_anchor] !== '\n' && textArr[r_focus] === '\n') {
         r_focus++
     }
 

@@ -1,4 +1,4 @@
-import { clearGetStyleCache, deepEqual, Editor, EditorInterface, execEvent, StyleInterface } from "..";
+import { clearGetStyleCache, deepEqual, Editor, EditorInterface, execEvent, getTextArr, StyleInterface } from "..";
 
 /**
  * 修改样式
@@ -80,10 +80,10 @@ const getChangeStyles = (editor: Editor, styles: Partial<StyleInterface>, isAllS
 const handleStyleOverride: EditorInterface['setStyle'] = (editor, styles) => {
     let characterOffset = editor.getSelectCharacterOffset()
     let anchor = characterOffset?.anchor ?? 0
-    let focus = characterOffset?.focus ?? editor.textData.characters.length
+    let focus = characterOffset?.focus ?? getTextArr(editor).length
     const { textData } = editor
     const { characterStyleIDs, styleOverrideTable } = textData
-    const isAllSelectModify = anchor === 0 && focus === editor.textData.characters.length  // 全选修改
+    const isAllSelectModify = anchor === 0 && focus === getTextArr(editor).length  // 全选修改
 
     // 全选修改，则先应用一次
     if (isAllSelectModify) {

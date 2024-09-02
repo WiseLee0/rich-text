@@ -1,7 +1,7 @@
-import { EditorInterface } from "..";
+import { EditorInterface, getTextArr } from "..";
 
 export const getLineFirstCharacterList: EditorInterface['getLineFirstCharacterList'] = (editor) => {
-    const text = editor.textData.characters
+    const text = getTextArr(editor)
     const firstCharacterArr = []
     let flag = true
     for (let i = 0; i < text.length; i++) {

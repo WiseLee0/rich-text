@@ -1,9 +1,9 @@
-import { EditorInterface, handleDeleteTextOfTextDataLine, mergeStyleOverride } from "..";
+import { EditorInterface, getTextArr, handleDeleteTextOfTextDataLine, mergeStyleOverride } from "..";
 
 export const deleteText: EditorInterface['deleteText'] = (editor) => {
     if (!editor.hasSelection()) return;
     const selection = editor.getSelection()
-    const text = Array.from(editor.getText())
+    const textArr = getTextArr(editor)
     const baselines = editor.getBaselines()
     if (!baselines?.length) return
     let { focus, anchor, focusOffset, anchorOffset } = selection
@@ -25,7 +25,7 @@ export const deleteText: EditorInterface['deleteText'] = (editor) => {
     const anchorCharacterIdx = baselines[anchor].firstCharacter + anchorOffset
     let focusCharacterIdx = 0
     if (focus === baselines.length) {
-        focusCharacterIdx = text.length
+        focusCharacterIdx = textArr.length
     } else {
         focusCharacterIdx = baselines[focus].firstCharacter + focusOffset
     }
@@ -35,7 +35,7 @@ export const deleteText: EditorInterface['deleteText'] = (editor) => {
         editor.apply()
         return
     }
-    const newText = text.slice(0, anchorCharacterIdx).join("") + text.slice(focusCharacterIdx).join("")
+    const newText = textArr.slice(0, anchorCharacterIdx).join("") + textArr.slice(focusCharacterIdx).join("")
     editor.replaceText(newText)
 
     // 删除空了

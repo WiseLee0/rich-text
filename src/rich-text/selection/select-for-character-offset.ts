@@ -1,9 +1,9 @@
-import { SelectionInterface } from ".."
+import { getTextArr, SelectionInterface } from ".."
 
 export const selectForCharacterOffset: SelectionInterface['selectForCharacterOffset'] = (editor, characterOffset) => {
     editor.isEditor = true
     const baselines = editor.getBaselines()
-    const text = editor.getText()
+    const textArr = getTextArr(editor)
     if (!baselines?.length) {
         return
     };
@@ -21,8 +21,8 @@ export const selectForCharacterOffset: SelectionInterface['selectForCharacterOff
         return;
     }
 
-    if (characterOffset === Array.from(text).length) {
-        if (text[text.length - 1] === '\n') {
+    if (characterOffset === textArr.length) {
+        if (textArr[textArr.length - 1] === '\n') {
             editor.setSelection({
                 anchor: baselines.length,
                 focus: baselines.length,

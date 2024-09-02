@@ -1,4 +1,4 @@
-import { EditorInterface, getCodePoints, handleInsertTextOfTextDataLine } from "..";
+import { EditorInterface, getCodePoints, getTextArr, handleInsertTextOfTextDataLine } from "..";
 
 export const insertText: EditorInterface['insertText'] = (editor, content) => {
     if (!editor.isEditor) return;
@@ -14,7 +14,7 @@ export const insertText: EditorInterface['insertText'] = (editor, content) => {
     const selectCharacterOffset = editor.getSelectCharacterOffset()
     const baselines = editor.getBaselines()
     if (!baselines?.length || !selectCharacterOffset) return
-    const text = Array.from(editor.getText())
+    const textArr = getTextArr(editor)
     const characterIdx = selectCharacterOffset.anchor
 
     const stopInsert = handleInsertTextOfTextDataLine(editor, content)
@@ -22,7 +22,7 @@ export const insertText: EditorInterface['insertText'] = (editor, content) => {
         editor.apply()
         return
     }
-    const newText = text.slice(0, characterIdx).join("") + content + text.slice(characterIdx).join("")
+    const newText = textArr.slice(0, characterIdx).join("") + content + textArr.slice(characterIdx).join("")
     editor.replaceText(newText)
 
     const contentLen = getCodePoints(content).length
