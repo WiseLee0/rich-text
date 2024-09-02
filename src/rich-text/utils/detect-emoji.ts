@@ -5,8 +5,14 @@ export const detectEmoji = (str: string) => {
     return emojiRegExp.test(str)
 }
 
-export function isCompositeEmoji(input: string) {
+export function getCompositeEmoji(input: string) {
     emojiRegExp.lastIndex = 0
-    const result = input.match(emojiRegExp)
-    return result?.length === 1 && result[0].length === input.length
+    const emojiArr: string[] = []
+    const emojiIdxArr: number[] = []
+    const resultIterable = input.matchAll(emojiRegExp)
+    for (const item of resultIterable) {
+        emojiArr.push(item[0])
+        emojiIdxArr.push(item.index)
+    }
+    return [emojiArr?.length === 1 && emojiArr[0].length === input.length, emojiArr, emojiIdxArr] as const
 }

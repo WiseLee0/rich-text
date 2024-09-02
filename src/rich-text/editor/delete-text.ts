@@ -3,7 +3,7 @@ import { EditorInterface, handleDeleteTextOfTextDataLine, mergeStyleOverride } f
 export const deleteText: EditorInterface['deleteText'] = (editor) => {
     if (!editor.hasSelection()) return;
     const selection = editor.getSelection()
-    const text = editor.getText()
+    const text = Array.from(editor.getText())
     const baselines = editor.getBaselines()
     if (!baselines?.length) return
     let { focus, anchor, focusOffset, anchorOffset } = selection
@@ -34,7 +34,7 @@ export const deleteText: EditorInterface['deleteText'] = (editor) => {
         editor.apply()
         return
     }
-    const newText = text.substring(0, anchorCharacterIdx) + text.substring(focusCharacterIdx)
+    const newText = text.slice(0, anchorCharacterIdx).join("") + text.slice(focusCharacterIdx).join("")
     editor.replaceText(newText)
     
     // 删除空了
