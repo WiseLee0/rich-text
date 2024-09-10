@@ -24,20 +24,6 @@ export const renderBaseLine = (Skia: CanvasKit, canvas: Canvas, editorRef: React
     paint.delete()
 }
 
-export const renderTextDecoration = (Skia: CanvasKit, canvas: Canvas, editorRef: React.MutableRefObject<Editor | undefined>) => {
-    const editor = editorRef.current
-    const baselines = editor?.getBaselines()
-    if (!baselines?.length || !editor) return;
-    const paint = new Skia.Paint()
-    paint.setAntiAlias(true)
-    const rects = editor.getTextDecorationRects()
-    for (let i = 0; i < rects.length; i++) {
-        const rect = rects[i];
-        canvas.drawRect(Skia.XYWHRect(...rect), paint)
-    }
-    paint.delete()
-}
-
 export const renderBorder = (Skia: CanvasKit, canvas: Canvas, editorRef: React.MutableRefObject<Editor | undefined>) => {
     const editor = editorRef.current!
     const { width, height } = editor
@@ -127,9 +113,29 @@ export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.Mut
             }
         }
     }
+    const renderTextDecoration = (len: number) => {
+        const rects = editor.getTextDecorationRects()
+        for (let idx = 0; idx < len; idx++) {
+            const rect = rects[idx]
+            if (!rect || rect[2] === 0) continue;
+            canvas.save()
+            for (let j = 0; j < fillPaintsArr[idx].length; j++) {
+                const fillPaint = fillPaintsArr[idx][j];
+                if (!fillPaint.visible) continue
+                // 注意：这里alpha取opacity
+                paint.setColor([fillPaint.color.r, fillPaint.color.g, fillPaint.color.b, fillPaint.opacity])
+                canvas.drawRect(Skia.XYWHRect(...rect), paint)
+            }
+            canvas.restore()
+        }
+    }
 
     // 编辑态文本渲染
     if (editor.hasSelection()) {
+        let len = glyphs?.length
+        if (editor.style.textTruncation === 'ENABLE' && editor.style.truncationStartIndex > -1) {
+            len = editor.style.truncationStartIndex
+        }
         for (let i = 0; i < glyphs?.length; i++) {
             const glyph = glyphs[i];
             // 渲染省略内容
@@ -150,6 +156,7 @@ export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.Mut
 
         renderGlyph(glyphs, glyphs?.length)
         renderEmoji(glyphs, glyphs?.length)
+        renderTextDecoration(len)
     } else {
         let len = glyphs?.length
 
@@ -183,6 +190,7 @@ export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.Mut
 
         renderGlyph(glyphs, len)
         renderEmoji(glyphs, len)
+        renderTextDecoration(len)
     }
 
     paint.delete()

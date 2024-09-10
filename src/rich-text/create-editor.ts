@@ -1,5 +1,6 @@
 import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyphs, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getTextListTypeForSelection, setTextList, loadDefaultFont, getStyleForStyleID, addIndent, reduceIndent, selectAll } from './'
 import detectLangModel from './detect-lang/pkg/detect_lang'
+import wasmURL from './detect-lang/pkg/detect_lang_bg.wasm?url'
 export const createEditor = async (): Promise<Editor> => {
 
     const editor: Editor = {
@@ -144,7 +145,7 @@ export const createEditor = async (): Promise<Editor> => {
 
     await loadDefaultFont(editor)
 
-    await detectLangModel()
+    await detectLangModel(wasmURL)
 
     return editor
 }
