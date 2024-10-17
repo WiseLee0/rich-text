@@ -1,6 +1,6 @@
 import * as fontkit from 'fontkit'
 import type { FontCollection, Font } from "fontkit";
-import { Editor, EditorInterface } from '..';
+import { Editor, EditorInterface, opfs } from '..';
 import InterSub from './inter-sub.ttf'
 
 const addFont = (editor: Editor, font: Font) => {
@@ -40,7 +40,7 @@ export const fontMgrFromData: EditorInterface['fontMgrFromData'] = (editor, buff
 
 const DefaultFontGlyphs = '•.0123456789abcdefghijklmnopqrstuvwxyz'
 export const loadDefaultFont = async (editor: Editor) => {
-    const data = await (await fetch(InterSub)).arrayBuffer()
+    const data = await opfs.read('__default_font', InterSub);
     const font = fontkit.create(new Uint8Array(data) as any) as fontkit.Font
     editor.fonMgr.set('__default', [font])
 }

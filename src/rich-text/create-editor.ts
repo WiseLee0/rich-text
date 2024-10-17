@@ -2,7 +2,6 @@ import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, i
 import detectLangModel from './detect-lang/pkg/detect_lang'
 import wasmURL from './detect-lang/pkg/detect_lang_bg.wasm?url'
 export const createEditor = async (): Promise<Editor> => {
-
     const editor: Editor = {
         width: 0,
         height: 0,
