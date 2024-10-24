@@ -133,6 +133,13 @@ export const handleDeleteTextOfTextDataLine = (editor: Editor) => {
         return false
     }
 
+    // 空行删除
+    if (deleteCount === 1 && range.focusOffset === 0) {
+        lines?.splice(focusLineIdx, 1)
+        fixTextDataLines(lines)
+        return false
+    }
+
     if (deleteCount <= 0) return false;
     lines?.splice(anchorLineIdx + 1, deleteCount)
     return false
