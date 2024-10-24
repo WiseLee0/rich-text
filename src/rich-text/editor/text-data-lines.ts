@@ -1,4 +1,4 @@
-import { Editor, getLineFirstCharacterList, getLineIndexForCharacterOffset, mergeStyleOverride, TextDataLinesInterface } from "..";
+import { Editor, getLineFirstCharacterList, getLineIndexForCharacterOffset, getTextArr, mergeStyleOverride, TextDataLinesInterface } from "..";
 
 export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) => {
     const plainData = {
@@ -7,7 +7,7 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
         isFirstLineOfList: true,
         listStartOffset: 0
     } as TextDataLinesInterface
-    const { lines, characters, characterStyleIDs, styleOverrideTable } = editor.textData
+    const { lines, characterStyleIDs, styleOverrideTable } = editor.textData
     let wrapNum = getWrapNum(content)
     const result: TextDataLinesInterface[] = []
     if (!lines?.length) {
@@ -21,20 +21,21 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
     }
     const selectCharacterOffset = editor.getSelectCharacterOffset()
     if (!selectCharacterOffset) return false;
+    const textArr = getTextArr(editor)
     const { anchor } = selectCharacterOffset
 
     if (content === ' ') {
         // 看前面是否符合激活列表条件
         let symbolStr = ''
         let charIdx = anchor - 1
-        while (charIdx >= 0 && characters[charIdx] !== '\n' && symbolStr.length < 4) {
-            symbolStr = characters[charIdx] + symbolStr
+        while (charIdx >= 0 && textArr[charIdx] !== '\n' && symbolStr.length < 4) {
+            symbolStr = textArr[charIdx] + symbolStr
             charIdx--
         }
         // 有序列表限制 99.
         if (symbolStr.length < 4) {
             const modifyText = () => {
-                const newStr = characters.substring(0, anchor - symbolStr.length) + characters.slice(anchor)
+                const newStr = textArr.slice(0, anchor - symbolStr.length).join('') + textArr.slice(anchor).join('')
                 editor.replaceText(newStr)
                 editor.selectForCharacterOffset(anchor - symbolStr.length)
                 if (characterStyleIDs?.[anchor - symbolStr.length] && styleOverrideTable?.length) {
@@ -67,7 +68,7 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
     if (content[0] === '\n') {
         const lineIdx = getLineIndexForCharacterOffset(editor, anchor)
         // 空行列表再次换行，需要缩减层级
-        if (lines[lineIdx].lineType !== 'PLAIN' && (characters[anchor] === undefined || characters[anchor] === '\n') && (characters[anchor - 1] === undefined || characters[anchor - 1] === '\n')) {
+        if (lines[lineIdx].lineType !== 'PLAIN' && (textArr[anchor] === undefined || textArr[anchor] === '\n') && (textArr[anchor - 1] === undefined || textArr[anchor - 1] === '\n')) {
             if (lines[lineIdx].indentationLevel > 1) {
                 lines[lineIdx].indentationLevel--
             } else {
