@@ -13,6 +13,7 @@ canvas:focus {
 }
 body {
   user-select: none;
+  position: relative;
 }
 
 .page {
@@ -33,4 +34,11 @@ body {
 }
 .ant-tooltip-inner {
   padding: 2px 4px;
+}
+#_textEditorInput {
+  position: absolute;
+  display: block;
+  width: 1px;
+  z-index: -1;
+  opacity: 0;
 }

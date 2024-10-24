@@ -14,11 +14,12 @@ import { ParagraphComp } from './components/paragraph';
 
 export default function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
   const [spinning, setSpinning] = useState(true)
   const [, updateRender] = useReducer(i => i + 1, 0)
   const isCompositionRef = useRef(false)
   const editorRef = useRef<Editor>()
+  const compositionAnchorRef = useRef([0, 0])
   const mouseRef = useRef({
     cursor: 'defalut',
     isDown: false
@@ -106,6 +107,7 @@ export default function App() {
         return
       }
       editorRef.current?.selectForXY(x, y)
+      updateInputPosition()
     }
     const handleCanvasMouseMove = (e: MouseEvent) => {
       const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
@@ -127,97 +129,169 @@ export default function App() {
       const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
       mouseRef.current.isDown = false
       setCursor(x, y)
-      setTimeout(() => {
-        textareaRef.current?.focus()
-      }, 0);
+      inputRef.current?.focus()
     }
-    const handleTextareaCompositionstart = () => {
-      isCompositionRef.current = true
-    }
-    const handleTextareaCompositionend = (e: any) => {
-      isCompositionRef.current = false
-      hanldeInsertText(e)
-    }
-    const hanldeInsertText = (e: any) => {
-      if (isCompositionRef.current) return
-      editorRef.current?.insertText(e.data)
-      updateRender()
-    }
-    const handleTextareaKeyDown = (e: KeyboardEvent) => {
-      // 整体修改
-      if (!editorRef.current?.isEditor) {
-        return
-      }
 
-      if (e.metaKey && e.key === 'a') {
-        editorRef.current?.selectAll()
-        e.preventDefault()
-        return
+    /**
+     * 处理 beforeinput 事件
+     *
+     * note: 大部分情况下 beforeinput 事件的默认行为都会被拦截，编辑器会根据
+     * InputEvent 携带的信息去修改对应的部分
+     * @param e
+     */
+    const onBeforeInput = (e: InputEvent) => {
+      if (isCompositionRef.current) {
+        return;
       }
-      if (e.metaKey && e.shiftKey && e.key === '7') {
-        if (editorRef.current?.getTextListTypeForSelection() === 'ORDERED_LIST') {
-          editorRef.current?.setTextList("PLAIN")
-        } else {
-          editorRef.current?.setTextList("ORDERED_LIST")
-        }
-        e.preventDefault()
-        return
-      }
-      if (e.metaKey && e.shiftKey && e.key === '8') {
-        if (editorRef.current?.getTextListTypeForSelection() === 'UNORDERED_LIST') {
-          editorRef.current?.setTextList("PLAIN")
-        } else {
-          editorRef.current?.setTextList("UNORDERED_LIST")
-        }
-        e.preventDefault()
-        return
-      }
-      if (e.key === 'Tab' && e.shiftKey) {
-        editorRef.current?.reduceIndent()
-        e.preventDefault()
-        return
-      }
-      if (e.key === 'Tab' && !e.shiftKey) {
-        editorRef.current?.addIndent()
-        e.preventDefault()
-        return
-      }
-      if (e.key === 'ArrowRight') {
-        e.preventDefault()
-        return
-      }
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault()
-        return
-      }
-      if (e.key === 'Backspace') {
-        editorRef.current?.deleteText()
-        updateRender()
-        e.preventDefault()
-        return
-      }
-      if (e.key === 'Enter') {
-        editorRef.current?.insertText('\n')
-        updateRender()
-        e.preventDefault()
-        return
+      switch (e.inputType) {
+        case 'insertCompositionText':
+        case 'insertFromComposition':
+        case 'deleteByComposition':
+          // 输入法相关输入由 composition 事件负责处理，直接 break
+          break;
+        case 'insertLineBreak':
+          // 如果有修改, 请测试插入链接
+          break;
+        case 'insertParagraph':
+          break;
+        case 'insertText':
+          // 普通插入文字
+          if (e.data) {
+            editorRef.current!.insertText(e.data);
+          }
+          break;
+        case 'deleteWordBackward':
+        case 'deleteWordForward':
+        case 'deleteContent':
+        case 'deleteContentBackward':
+        case 'deleteContentForward':
+        case 'deleteSoftLineBackward':
+        case 'deleteSoftLineForward':
+          // 执行删除相关的行为时，Safari 在空 Input 上不会触发 beforeInput
+          // 因此交由 keydown 处理
+          e.preventDefault();
+          break;
+        case 'historyUndo':
+        case 'historyRedo':
+          // 撤销重做由 keydown 事件负责处理
+          e.preventDefault();
+          break;
+        default:
+          break;
       }
     }
+
+    const onKeydown = (e: KeyboardEvent) => {
+      // 处于输入法时交由浏览器处理
+      if (isCompositionRef.current) {
+        return;
+      }
+      const { shiftKey, metaKey } = e;
+
+      switch (e.key) {
+        case 'a':
+          // 全选
+          if (metaKey) {
+            editorRef.current!.selectAll();
+          }
+          break;
+        case 'Tab':
+          // 缩进
+          if (shiftKey) {
+            editorRef.current!.reduceIndent();
+            return;
+          }
+          editorRef.current!.addIndent();
+          break;
+        case '7':
+          // 有序列表
+          if (shiftKey && metaKey) {
+            const type = editorRef.current!.getTextListTypeForSelection();
+            if (type === 'ORDERED_LIST') {
+              editorRef.current!.setTextList('PLAIN');
+            } else {
+              editorRef.current!.setTextList('ORDERED_LIST');
+            }
+          }
+          break;
+        case '8':
+          // 无序列表
+          if (shiftKey && metaKey) {
+            const type = editorRef.current!.getTextListTypeForSelection();
+            if (type === 'UNORDERED_LIST') {
+              editorRef.current!.setTextList('PLAIN');
+            } else {
+              editorRef.current!.setTextList('UNORDERED_LIST');
+            }
+          }
+          break;
+        case 'Backspace':
+          // 删除
+          editorRef.current!.deleteText();
+          break;
+        case 'Enter':
+          // 换行
+          editorRef.current!.insertText('\n');
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    const onCompositionStart = () => {
+      isCompositionRef.current = true;
+      if (!editorRef.current!.isCollapse()) {
+        editorRef.current!.deleteText()
+      }
+      const selection = editorRef.current!.getSelection()
+      compositionAnchorRef.current = [selection.anchor, selection.anchorOffset];
+    }
+    const onCompositionUpdate = (e: CompositionEvent) => {
+      editorRef.current!.setSelection({
+        anchor: compositionAnchorRef.current[0],
+        anchorOffset: compositionAnchorRef.current[1],
+      })
+      if (!editorRef.current!.isCollapse()) {
+        editorRef.current!.deleteText()
+      }
+      editorRef.current!.insertText(e.data);
+      updateInputPosition()
+    }
+    const onCompositionEnd = (e: CompositionEvent) => {
+      onCompositionUpdate(e)
+      isCompositionRef.current = false;
+    }
+
+    const updateInputPosition = () => {
+      inputRef.current!.value = ""
+      const [x, y] = editorRef.current!.getSelectionXY()
+      const fontsize = editorRef.current?.getStyle().fontSize || 0;
+      inputRef.current!.style.fontSize = `${fontsize}px`;
+      inputRef.current!.style.height = `${fontsize}px`;
+      inputRef.current!.style.lineHeight = `${fontsize}px`;
+      const tx = canvasRef.current!.offsetLeft + x + CANVAS_MARING
+      const ty = canvasRef.current!.offsetTop + y + CANVAS_MARING - fontsize
+      inputRef.current!.style.transform = `translate3d(${tx}px,${ty}px,0)`
+    }
+
     canvasRef.current?.addEventListener('mousedown', handleCanvasMouseDown)
     canvasRef.current?.addEventListener('mousemove', handleCanvasMouseMove)
     canvasRef.current?.addEventListener('mouseup', handleCanvasMouseUp)
-    textareaRef.current?.addEventListener('input', hanldeInsertText)
-    textareaRef.current?.addEventListener('keydown', handleTextareaKeyDown)
-    textareaRef.current?.addEventListener('compositionstart', handleTextareaCompositionstart)
-    textareaRef.current?.addEventListener('compositionend', handleTextareaCompositionend)
+    inputRef.current?.addEventListener('beforeinput', onBeforeInput)
+    inputRef.current?.addEventListener('keydown', onKeydown)
+    inputRef.current?.addEventListener('compositionstart', onCompositionStart)
+    inputRef.current?.addEventListener('compositionupdate', onCompositionUpdate)
+    inputRef.current?.addEventListener('compositionend', onCompositionEnd)
     return () => {
       canvasRef.current?.removeEventListener('mousedown', handleCanvasMouseDown)
       canvasRef.current?.removeEventListener('mousemove', handleCanvasMouseMove)
       canvasRef.current?.removeEventListener('mouseup', handleCanvasMouseUp)
-      textareaRef.current?.removeEventListener('input', hanldeInsertText)
-      textareaRef.current?.removeEventListener('keydown', handleTextareaKeyDown)
-      textareaRef.current?.removeEventListener('compositionstart', handleTextareaCompositionstart)
-      textareaRef.current?.removeEventListener('compositionend', handleTextareaCompositionend)
+      inputRef.current?.removeEventListener('beforeinput', onBeforeInput)
+      inputRef.current?.removeEventListener('keydown', onKeydown)
+      inputRef.current?.removeEventListener('compositionstart', onCompositionStart)
+      inputRef.current?.removeEventListener('compositionupdate', onCompositionUpdate)
+      inputRef.current?.removeEventListener('compositionend', onCompositionEnd)
     }
   }, [])
 
@@ -228,8 +302,7 @@ export default function App() {
       <Spin spinning={spinning} fullscreen />
       <div className='page'>
         <canvas ref={canvasRef} style={{ width: CANVAS_W, height: CANVAS_H }}></canvas>
-        <textarea
-          ref={textareaRef} tabIndex={-1} wrap="off" aria-hidden="true" spellCheck="false" autoCorrect="off" className="focus-target"></textarea>
+        <input type="text" tabIndex={-1} id="_textEditorInput" autoComplete="off" autoCorrect="off" ref={inputRef} />
         <div className='page-pannel' style={{ maxHeight: CANVAS_H }}>
           {editorRef.current && <AutoResizeComp editorRef={editorRef} updateRender={updateRender} />}
           {editorRef.current && <TypographyComp editorRef={editorRef} />}

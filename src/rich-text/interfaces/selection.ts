@@ -18,5 +18,6 @@ export interface SelectionInterface {
     hasSelection: (editor: Editor) => boolean
     deselection: (editor: Editor) => void
     selectAll: (editor: Editor) => void
+    getSelectionXY: (editor: Editor) => number[]
 }
 

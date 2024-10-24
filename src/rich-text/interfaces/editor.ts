@@ -104,6 +104,8 @@ export type Editor = {
     getSelectionRects: OmitFirstArg<SelectionInterface['getSelectionRects']>
     /** 全选 */
     selectAll: OmitFirstArg<SelectionInterface['selectAll']>
+    /** 获取光标选区的位置 */
+    getSelectionXY: OmitFirstArg<SelectionInterface['getSelectionXY']>
 }
 
 export type EditorInterface = {

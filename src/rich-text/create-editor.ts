@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyphs, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getTextListTypeForSelection, setTextList, loadDefaultFont, getStyleForStyleID, addIndent, reduceIndent, selectAll } from './'
+import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyphs, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getTextListTypeForSelection, setTextList, loadDefaultFont, getStyleForStyleID, addIndent, reduceIndent, selectAll, getSelectionXY } from './'
 import detectLangModel from './detect-lang/pkg/detect_lang'
 import wasmURL from './detect-lang/pkg/detect_lang_bg.wasm?url'
 export const createEditor = async (): Promise<Editor> => {
@@ -61,8 +61,7 @@ export const createEditor = async (): Promise<Editor> => {
         isEditor: false,
         derivedTextData: {},
         textData: {
-            characters: "emoji: 👩‍❤️‍👩😁🫣😶‍🌫️👨‍👩‍👧‍👦👻🙃😍😠🥳👦🏾\nEnglish: helloworld\nChinese: 我们的时代妳時代\nKorean: 한국어안녕하세요\nJapanese: こんにちは",
-            lines: [
+            characters: "emoji: 👩‍❤️‍👩😁🫣😶‍🌫️👨‍👩‍👧‍👦👻🙃😍😠🥳👦🏾\nEnglish: helloworld\nChinese: 我们的时代妳時代\nKorean: 한국어안녕하세요\nJapanese: こんにちは", lines: [
                 {
                     "lineType": "ORDERED_LIST",
                     "indentationLevel": 1,
@@ -140,6 +139,7 @@ export const createEditor = async (): Promise<Editor> => {
         deselection: (...args) => deselection(editor, ...args),
         getSelectionRects: (...args) => getSelectionRects(editor, ...args),
         selectAll: (...args) => selectAll(editor, ...args),
+        getSelectionXY: (...args) => getSelectionXY(editor, ...args),
     }
 
     await loadDefaultFont(editor)
