@@ -76,7 +76,7 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
             let isLigature = glyph.isLigature
             let codePoints = glyph.codePoints
             const height = ((glyph as any).advanceHeight || (font.ascent - font.descent)) * unitsPerPx
-            const ascent = font.ascent * unitsPerPx
+            let ascent = font.ascent * unitsPerPx
             const capHeight = font.capHeight * unitsPerPx
             let path = (isWrap || !supportLang) ? '' : glyph.path.scale(unitsPerPx, -unitsPerPx).toSVG()
             if (!isWrap) {
@@ -89,6 +89,8 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
                 path = ''
                 codePoints = getCodePoints(token)
                 isLigature = false
+                xAdvance = fontSize
+                ascent = fontSize
             }
 
             editor.__metrices.push({

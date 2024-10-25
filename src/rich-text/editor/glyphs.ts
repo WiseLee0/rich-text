@@ -64,7 +64,7 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
                         fontSize: metrice.fontSize,
                         firstCharacter: baseline.firstCharacter + count,
                         emojiCodePoints: metrice.codePoints,
-                        emojiRect: [x, y - metrice.ascent + (metrice.height - metrice.ascent) / 3, x + metrice.xAdvance, y + (metrice.height - metrice.ascent) / 3]
+                        emojiRect: [x, y - metrice.fontSize * 0.9, x + metrice.xAdvance, y + metrice.fontSize * 0.1]
                     })
                 } else {
                     glyphs.push({
