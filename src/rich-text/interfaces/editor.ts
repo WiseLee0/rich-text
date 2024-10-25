@@ -42,6 +42,8 @@ export type Editor = {
     getStyleForStyleID: OmitFirstArg<EditorInterface['getStyleForStyleID']>
     /** 获取选区样式 */
     getStyleForSelection: OmitFirstArg<EditorInterface['getStyleForSelection']>
+    /** 碰撞检测 */
+    isHoverForQuadrant: OmitFirstArg<EditorInterface['isHoverForQuadrant']>
     /** 获取文本内容 */
     getText: OmitFirstArg<EditorInterface['getText']>
     /** 插入文本 */
@@ -144,6 +146,7 @@ export type EditorInterface = {
     getStyleForStyleID: (editor: Editor, styleID?: number, needClone?: boolean) => StyleInterface
     addIndent: (editor: Editor) => void
     reduceIndent: (editor: Editor) => void
+    isHoverForQuadrant: (editor: Editor, x: number, y: number, radius: number) => boolean
 }
 
 export type Rect = [number, number, number, number]

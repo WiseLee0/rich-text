@@ -1,4 +1,4 @@
-import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyphs, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getTextListTypeForSelection, setTextList, loadDefaultFont, getStyleForStyleID, addIndent, reduceIndent, selectAll, getSelectionXY } from './'
+import { Editor, fontMgrFromData, setStyle, layout, setSelection, getMetrices, insertText, getSelection, getFonts, getText, getBaselines, getGlyphs, selectForXY, isCollapse, hasSelection, deselection, getBaseLineCharacterOffset, apply, deleteText, getSelectionRects, replaceText, selectForCharacterOffset, getFont, getSelectCharacterOffset, getStyleForSelection, getTextDecorationRects, getFillPaintsForGlyphs, addEventListener, removeEventListener, layoutW, layoutH, getStyle, getTextListTypeForSelection, setTextList, loadDefaultFont, getStyleForStyleID, addIndent, reduceIndent, selectAll, getSelectionXY, isHoverForQuadrant } from './'
 import detectLangModel from './detect-lang/pkg/detect_lang'
 import wasmURL from './detect-lang/pkg/detect_lang_bg.wasm?url'
 export const createEditor = async (): Promise<Editor> => {
@@ -122,6 +122,7 @@ export const createEditor = async (): Promise<Editor> => {
         getStyleForStyleID: (...args) => getStyleForStyleID(editor, ...args),
         addIndent: (...args) => addIndent(editor, ...args),
         reduceIndent: (...args) => reduceIndent(editor, ...args),
+        isHoverForQuadrant: (...args) => isHoverForQuadrant(editor, ...args),
 
         // Font
         fontMgrFromData: (...args) => fontMgrFromData(editor, ...args),
