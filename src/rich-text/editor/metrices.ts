@@ -20,7 +20,7 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
         let family = style.fontName.family
         let fontStyle = style.fontName.style
         const fontVariations = style.fontVariations
-        let originFont = editor.getFont(family, fontStyle)
+        let originFont = editor.getFont(family, fontStyle) ?? editor.getFont('Inter', 'Regular')
         if (Object.keys(fontVariations)?.length) originFont = originFont?.getVariation(fontVariations)
 
         if (!originFont) continue

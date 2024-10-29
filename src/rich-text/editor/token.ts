@@ -101,9 +101,8 @@ export function fontTokenize(textData: Record<string, any>, characters: string) 
 
     let str = ''
     const token: string[] = []
-    const { charArr, codePoints } = splitString(characters)
+    const { charArr } = splitString(characters)
 
-    let charIdx = 0
     for (let i = 0; i < charArr?.length; i++) {
         const char = charArr[i];
         if (char === '\n' || detectEmoji(char)) {
@@ -121,13 +120,11 @@ export function fontTokenize(textData: Record<string, any>, characters: string) 
             continue
         }
 
-        if (characterStyleIDs && modifySet.has(characterStyleIDs[charIdx])) {
+        if (characterStyleIDs && modifySet.has(characterStyleIDs[i])) {
             if (str.length) token.push(str)
             str = char
-            let idx = charIdx
-            while (charArr[i + 1] && characterStyleIDs[idx + 1] === characterStyleIDs[idx] && charArr[i + 1] !== '\n') {
+            while (charArr[i + 1] && characterStyleIDs[i + 1] === characterStyleIDs[i] && charArr[i + 1] !== '\n') {
                 str += charArr[i + 1]
-                charIdx += codePoints[i].length
                 i++
             }
             token.push(str)
@@ -135,7 +132,6 @@ export function fontTokenize(textData: Record<string, any>, characters: string) 
             continue
         }
         str += char
-        charIdx += codePoints[i].length
     }
     if (str.length) token.push(str)
     return token
