@@ -3,7 +3,7 @@ import { SelectionInterface } from ".."
 export const getSelectionXY: SelectionInterface['getSelectionXY'] = (editor) => {
     const { anchor, focus, anchorOffset, focusOffset } = editor.getSelection()
     const baseline = editor.getBaselines()
-    if (!baseline) return [];
+    if (!baseline?.length) return [];
     const offsetAnchor = editor.getBaseLineCharacterOffset(anchor)![anchorOffset]
     const offsetFocus = editor.getBaseLineCharacterOffset(focus)![focusOffset]
 

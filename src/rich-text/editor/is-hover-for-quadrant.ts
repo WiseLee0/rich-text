@@ -2,7 +2,7 @@ import { EditorInterface } from "..";
 
 export const isHoverForQuadrant: EditorInterface['isHoverForQuadrant'] = (editor, px, py, radius) => {
     const baselines = editor.getBaselines()
-    if (!baselines) {
+    if (!baselines?.length) {
         return false;
     }
 

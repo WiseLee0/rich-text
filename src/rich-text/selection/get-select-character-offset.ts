@@ -6,7 +6,7 @@ export const getSelectCharacterOffset: SelectionInterface['getSelectCharacterOff
     const baselines = editor.getBaselines()
     const textArr = getTextArr(editor)
     const { anchor, focus, anchorOffset, focusOffset } = selection
-    if (!baselines) return { anchor: 0, focus: 0 }
+    if (!baselines?.length) return { anchor: 0, focus: 0 }
 
     let r_anchor = 0
     let r_focus = 0

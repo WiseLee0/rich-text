@@ -76,8 +76,8 @@ export const createEditor = async (): Promise<Editor> => {
                 },
                 {
                     "lineType": "ORDERED_LIST",
-                    "indentationLevel": 1,
-                    "isFirstLineOfList": false,
+                    "indentationLevel": 2,
+                    "isFirstLineOfList": true,
                     "listStartOffset": 0
                 },
                 {

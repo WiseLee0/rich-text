@@ -218,7 +218,7 @@ export const getLineStyleID = (editor: Editor, firstCharacter: number) => {
     const { lines, characterStyleIDs } = editor.textData
     if (!lines?.length) return 0
     let lineIdx = getLineIndexForCharacterOffset(editor, firstCharacter)
-    while (!lines[lineIdx].isFirstLineOfList && lineIdx >= 0) {
+    while (lineIdx >= 0 && !lines[lineIdx]?.isFirstLineOfList) {
         lineIdx--
     }
     if (lineIdx < 0) {
