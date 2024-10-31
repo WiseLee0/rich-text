@@ -1,6 +1,6 @@
 import { findClosestIndex, SelectionInterface } from ".."
 
-export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y, isAnchor) => {
+export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y, { move, shift, click }) => {
     editor.isEditor = true
     const baselines = editor.getBaselines()
     if (!baselines?.length) {
@@ -44,7 +44,33 @@ export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y, isA
         }
     }
 
-    if (isAnchor === undefined) {
+    if (shift) {
+        if (!editor.hasSelection()) {
+            editor.setSelection({
+                anchor: yIdx,
+                focus: yIdx,
+                anchorOffset: xIdx,
+                focusOffset: xIdx
+            })
+            return
+        }
+        const { anchor, anchorOffset, focus, focusOffset } = editor.getSelection()
+        if (yIdx < anchor || (yIdx === anchor && xIdx < anchorOffset)) {
+            editor.setSelection({
+                anchor: yIdx,
+                anchorOffset: xIdx,
+            })
+            return;
+        } else if (yIdx > focus || (yIdx === focus && xIdx > focusOffset)) {
+            editor.setSelection({
+                focus: yIdx,
+                focusOffset: xIdx,
+            })
+            return;
+        }
+        return;
+    }
+    if (click) {
         editor.setSelection({
             anchor: yIdx,
             focus: yIdx,
@@ -53,16 +79,11 @@ export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y, isA
         })
         return
     }
-
-    if (isAnchor) {
-        editor.setSelection({
-            anchor: yIdx,
-            anchorOffset: xIdx,
-        })
-    } else {
+    if (move) {
         editor.setSelection({
             focus: yIdx,
             focusOffset: xIdx,
         })
+        return
     }
 }

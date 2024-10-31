@@ -98,6 +98,7 @@ export default function App() {
       }
     }
     const handleCanvasMouseDown = (e: MouseEvent) => {
+      const { shiftKey } = e;
       const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
       mouseRef.current.isDown = true
       setCursor(x, y)
@@ -106,14 +107,15 @@ export default function App() {
         editorRef.current?.deselection()
         return
       }
-      editorRef.current?.selectForXY(x, y)
+      editorRef.current?.selectForXY(x, y, { shift: shiftKey, click: true })
       updateInputPosition()
     }
     const handleCanvasMouseMove = (e: MouseEvent) => {
+      const { shiftKey } = e;
       const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
       setCanvasStyleCursor(x, y)
       const editor = editorRef.current!
-      if (mouseRef.current.isDown && editor.hasSelection()) editor.selectForXY(x, y, false)
+      if (mouseRef.current.isDown && editor.hasSelection()) editor.selectForXY(x, y, { shift: shiftKey, move: true })
       if (mouseRef.current.isDown) {
         if (mouseRef.current.cursor === 'nwse-resize') {
           editor.layout(x, y)
