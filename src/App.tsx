@@ -22,7 +22,9 @@ export default function App() {
   const compositionAnchorRef = useRef([0, 0])
   const mouseRef = useRef({
     cursor: 'defalut',
-    isDown: false
+    isDown: false,
+    count: 0,
+    time: 0
   })
 
   const render = async () => {
@@ -101,13 +103,24 @@ export default function App() {
       const { shiftKey } = e;
       const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
       mouseRef.current.isDown = true
+      if (Date.now() - mouseRef.current.time > 300) {
+        mouseRef.current.count = 1
+      } else {
+        if (mouseRef.current.count === 4) {
+          mouseRef.current.count = 1
+        } else {
+          mouseRef.current.count++
+        }
+      }
+      mouseRef.current.time = Date.now()
+
       setCursor(x, y)
       const editor = editorRef.current!
       if (mouseRef.current.cursor !== 'default' || x > editor.width || y > editor.height || x < 0 || y < 0) {
         editorRef.current?.deselection()
         return
       }
-      editorRef.current?.selectForXY(x, y, { shift: shiftKey, click: true })
+      editorRef.current?.selectForXY(x, y, { shift: shiftKey, click: true, clickCount: mouseRef.current.count })
       updateInputPosition()
     }
     const handleCanvasMouseMove = (e: MouseEvent) => {

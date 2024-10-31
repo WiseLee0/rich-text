@@ -1,6 +1,6 @@
-import { findClosestIndex, SelectionInterface } from ".."
+import { findClosestIndex, getLineFirstCharacterList, getLineIndexForCharacterOffset, getTextArr, SelectionInterface, wordTokenize } from ".."
 
-export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y, { move, shift, click }) => {
+export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y, { move, shift, click, clickCount }) => {
     editor.isEditor = true
     const baselines = editor.getBaselines()
     if (!baselines?.length) {
@@ -43,6 +43,65 @@ export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y, { m
             xIdx = 0
         }
     }
+
+    // 双击选区
+    if (clickCount === 2 && baselines[yIdx]) {
+        const text = getTextArr(editor);
+        const lineList = getLineFirstCharacterList(editor)
+        const lineIdx = getLineIndexForCharacterOffset(editor, baselines[yIdx].firstCharacter + xIdx)
+        const offset = baselines[yIdx].firstCharacter + xIdx - lineList[lineIdx]
+        const lineText = text.slice(lineList[lineIdx], lineList[lineIdx + 1]).join('')
+        const wordArr = wordTokenize(lineText)
+        let len = 0
+        for (let i = 0; i < wordArr.length; i++) {
+            const wordLen = Array.from(wordArr[i]).length
+            len += wordLen;
+            if (offset <= len) {
+                const startIdx = lineList[lineIdx] + len - wordLen
+                const endIdx = lineList[lineIdx] + len
+
+                let startBaselineIdx = baselines.findIndex(item => item.firstCharacter <= startIdx && item.endCharacter > startIdx)
+                let endBaselineIdx = baselines.findIndex(item => item.firstCharacter <= endIdx && item.endCharacter >= endIdx)
+
+                editor.setSelection({
+                    anchor: startBaselineIdx,
+                    focus: endBaselineIdx,
+                    anchorOffset: startIdx - baselines[startBaselineIdx].firstCharacter,
+                    focusOffset: endIdx - baselines[endBaselineIdx].firstCharacter
+                })
+                return
+            }
+        }
+
+        return;
+    }
+
+    // 三击选区
+    if (clickCount === 3 && baselines[yIdx]) {
+        const text = getTextArr(editor);
+        const lineList = getLineFirstCharacterList(editor)
+        const lineIdx = getLineIndexForCharacterOffset(editor, baselines[yIdx].firstCharacter + xIdx)
+        const startIdx = lineList[lineIdx]
+        const endIdx = lineList[lineIdx + 1] ?? baselines[baselines.length - 1].endCharacter
+        let startBaselineIdx = baselines.findIndex(item => item.firstCharacter <= startIdx && item.endCharacter > startIdx)
+        let endBaselineIdx = baselines.findIndex(item => item.firstCharacter <= endIdx && item.endCharacter >= endIdx)
+
+        editor.setSelection({
+            anchor: startBaselineIdx,
+            focus: endBaselineIdx,
+            anchorOffset: startIdx - baselines[startBaselineIdx].firstCharacter,
+            focusOffset: endIdx - baselines[endBaselineIdx].firstCharacter
+        })
+        return;
+    }
+
+    // 四击选区
+    if (clickCount === 4 && baselines[yIdx]) {
+        editor.selectAll()
+        return;
+    }
+
+    // 单击选区
 
     if (shift) {
         if (!editor.hasSelection()) {

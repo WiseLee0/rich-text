@@ -10,7 +10,7 @@ export interface Range {
 export interface SelectionInterface {
     getSelection: (editor: Editor) => Selection
     setSelection: (editor: Editor, selection: Partial<Range>) => void
-    selectForXY: (editor: Editor, x: number, y: number, options: { shift?: boolean, click?: boolean, move?: boolean }) => void
+    selectForXY: (editor: Editor, x: number, y: number, options: { shift?: boolean, click?: boolean, move?: boolean, clickCount?: number }) => void
     selectForCharacterOffset: (editor: Editor, characterOffset: number) => void
     getSelectCharacterOffset: (editor: Editor) => { anchor: number, focus: number } | undefined
     getSelectionRects: (editor: Editor) => Rect[]

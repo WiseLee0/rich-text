@@ -51,6 +51,7 @@ export function wordTokenize(input: string) {
 
     for (let i = 0; i < input.length; i++) {
         const ch = input[i];
+        if (ch === '\n') continue;
         let newType;
 
         if (ch === ' ') {
