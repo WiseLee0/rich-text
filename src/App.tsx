@@ -11,6 +11,8 @@ import { DebugComp } from './components/debug';
 import { FillsComp } from './components/fills';
 import { OpenTypeComp } from './components/openType';
 import { ParagraphComp } from './components/paragraph';
+import InterFont from './assets/Inter_1.ttf';
+
 
 export default function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -46,7 +48,7 @@ export default function App() {
   }
 
   const initRichData = async () => {
-    const data1 = await (await fetch(`https://static.figma.com/font/Inter_1`)).arrayBuffer()
+    const data1 = await (await fetch(InterFont)).arrayBuffer()
     const editor = await createEditor()
     editor.fontMgrFromData([data1])
     editorRef.current = editor;
