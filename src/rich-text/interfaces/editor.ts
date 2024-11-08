@@ -58,6 +58,8 @@ export type Editor = {
     addIndent: OmitFirstArg<EditorInterface['addIndent']>
     /** 减少缩进 */
     reduceIndent: OmitFirstArg<EditorInterface['reduceIndent']>
+    /** 光标方向移动 */
+    arrowMove: OmitFirstArg<EditorInterface['arrowMove']>
     /** 获取选区文本列表类型 */
     getTextListTypeForSelection: OmitFirstArg<EditorInterface['getTextListTypeForSelection']>
     /** 获取当前行逻辑字符的偏移值（逻辑字符指的是输入的文本字符） */
@@ -147,6 +149,7 @@ export type EditorInterface = {
     addIndent: (editor: Editor) => void
     reduceIndent: (editor: Editor) => void
     isHoverForQuadrant: (editor: Editor, x: number, y: number, radius: number) => boolean
+    arrowMove: (editor: Editor, type: 'left' | 'right' | 'top' | 'bottom') => void
 }
 
 export type Rect = [number, number, number, number]

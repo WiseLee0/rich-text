@@ -54,6 +54,10 @@ export default function App() {
     editorRef.current = editor;
     editor.layout(500);
 
+    editor.addEventListener('setStyle', () => {
+      inputRef.current?.focus()
+    });
+
     (window as any).getEditor = () => {
       return editorRef.current
     }
@@ -250,7 +254,22 @@ export default function App() {
           // 换行
           editorRef.current!.insertText('\n');
           break;
-
+        case 'ArrowLeft':
+          // 左键
+          editorRef.current?.arrowMove('left')
+          break;
+        case 'ArrowRight':
+          // 右键
+          editorRef.current?.arrowMove('right')
+          break;
+        case 'ArrowUp':
+          // 上键
+          editorRef.current?.arrowMove('top')
+          break;
+        case 'ArrowDown':
+          // 下键
+          editorRef.current?.arrowMove('bottom')
+          break;
         default:
           break;
       }

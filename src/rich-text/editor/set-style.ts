@@ -1,4 +1,4 @@
-import { clearGetStyleCache, deepEqual, Editor, EditorInterface, execEvent, getTextArr, StyleInterface } from "..";
+import { deepEqual, Editor, EditorInterface, execEvent, getTextArr, StyleInterface } from "..";
 
 /**
  * 修改样式
@@ -7,9 +7,6 @@ import { clearGetStyleCache, deepEqual, Editor, EditorInterface, execEvent, getT
  * 使用editor.style.xxx的方式直接修改即可
  */
 export const setStyle: EditorInterface['setStyle'] = (editor, styles) => {
-
-    clearGetStyleCache(editor)  // 清除获取样式缓存
-
     if (styles.fontName) {
         styles.fontVariations = {}
     }
@@ -95,6 +92,22 @@ const handleStyleOverride: EditorInterface['setStyle'] = (editor, styles) => {
 
     const changeStyles = getChangeStyles(editor, styles, isAllSelectModify)
     if (!Object.keys(changeStyles).length) return
+
+    // 无选区，则设置到临时样式中，插入文本时应用
+    if (editor.isCollapse()) {
+        const characterOffset = editor.getSelectCharacterOffset()
+        const anchor = characterOffset?.anchor ?? 0
+        const focus = characterOffset?.focus ?? getTextArr(editor).length;
+        editor.__select_styles = {
+            focus,
+            anchor,
+            styles: {
+                ...editor.__select_styles.styles,
+                ...(changeStyles as StyleInterface)
+            }
+        }
+        return;
+    }
 
     // 第一次局部修改
     if (!characterStyleIDs?.length || !styleOverrideTable?.length) {

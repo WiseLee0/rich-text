@@ -1,6 +1,9 @@
-import { execEvent, SelectionInterface } from '..'
+import { clearGetStyleCache, execEvent, SelectionInterface } from '..'
 
 export const setSelection: SelectionInterface['setSelection'] = (editor, range) => {
+
+    clearGetStyleCache(editor)
+
     editor.__selection = {
         ...editor.__selection,
         ...range
@@ -18,5 +21,5 @@ export const getSelection: SelectionInterface['getSelection'] = (editor) => {
             focusOffset: temp.anchorOffset
         }
     }
-    return temp
+    return { ...temp }
 }
