@@ -44,8 +44,8 @@ export const selectForCharacterOffset: SelectionInterface['selectForCharacterOff
             return;
         }
     } else {
-        const startBaselineIdx = baselines.findIndex(item => item.firstCharacter <= startOffset && item.endCharacter > startOffset)
-        const endBaselineIdx = baselines.findIndex(item => item.firstCharacter <= startOffset && item.endCharacter > startOffset)
+        const startBaselineIdx = baselines.findIndex(item => item.firstCharacter <= startOffset && item.endCharacter >= startOffset)
+        const endBaselineIdx = baselines.findIndex(item => item.firstCharacter <= endOffset && item.endCharacter > endOffset)
         if (startBaselineIdx > -1 && endBaselineIdx > -1) {
             editor.setSelection({
                 anchor: startBaselineIdx,
@@ -53,6 +53,7 @@ export const selectForCharacterOffset: SelectionInterface['selectForCharacterOff
                 anchorOffset: startOffset - baselines[startBaselineIdx].firstCharacter,
                 focusOffset: endOffset - baselines[endBaselineIdx].firstCharacter,
             })
+            return;
         }
         if (endOffset === textArr.length) {
             if (textArr[textArr.length - 1] === '\n') {
@@ -62,14 +63,14 @@ export const selectForCharacterOffset: SelectionInterface['selectForCharacterOff
                     anchorOffset: startOffset - baselines[startBaselineIdx].firstCharacter,
                     focusOffset: 0,
                 })
-                return
+                return;
             }
             const baseline = baselines[baselines.length - 1];
             editor.setSelection({
                 anchor: startBaselineIdx,
                 focus: baselines.length - 1,
                 anchorOffset: startOffset - baselines[startBaselineIdx].firstCharacter,
-                focusOffset: baseline.endCharacter - baseline.firstCharacter,
+                focusOffset: endOffset - baseline.firstCharacter,
             })
             return;
         }

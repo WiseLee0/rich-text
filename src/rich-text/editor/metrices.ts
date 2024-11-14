@@ -1,4 +1,4 @@
-import { checkFontSupport, EditorInterface, getLangFont, fontTokenize, getStyleForStyleID, setFontFeatures, StyleInterface, loadLangFont, detectEmoji, getCodePoints } from "..";
+import { checkFontSupport, EditorInterface, getLangFont, fontTokenize, getStyleForStyleID, setFontFeatures, StyleInterface, loadLangFont, detectEmoji, getCodePoints, loadFontMetaURL } from "..";
 
 const allLackURLSet = new Set<string>()
 export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
@@ -20,10 +20,13 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
         let family = style.fontName.family
         let fontStyle = style.fontName.style
         const fontVariations = style.fontVariations
-        let originFont = editor.getFont(family, fontStyle) ?? editor.getFont('Inter', 'Regular')
+        let originFont = editor.getFont(family, fontStyle)
         if (Object.keys(fontVariations)?.length) originFont = originFont?.getVariation(fontVariations)
 
-        if (!originFont) continue
+        if (!originFont) {
+            loadFontMetaURL(editor, style.fontName)
+            originFont = editor.getFont('Inter', 'Regular')!;
+        }
 
         const features = setFontFeatures(editor, firstCharacter)
         const { glyphs, positions } = originFont.layout(token, features)

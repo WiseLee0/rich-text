@@ -1,4 +1,4 @@
-export type OPFSFileName = '__default_font' | 'detect_lang_wasm' | 'Noto Sans SC' | 'Noto Sans JP' | 'Noto Sans KR';
+export type OPFSFileName = string;
 
 const rootDirectoryPromise = navigator.storage?.getDirectory?.();
 

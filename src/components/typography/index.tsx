@@ -144,10 +144,9 @@ export const TypographyComp = (props: TypographyCompProps) => {
 
 
     const loadFontAsset = async (family: string, style: string) => {
-        const asset = fontList[`${family}#${style}`]?.assetUrl
-        if (asset) {
-            const fontData = await (await fetch(asset)).arrayBuffer()
-            editor?.fontMgrFromData([fontData])
+        const font = fontList[`${family}#${style}`]
+        if (font) {
+            await editor?.fontMgrFromURL({ family, style, postscript: font.postscriptName }, font.assetUrl)
         }
     }
 
@@ -367,9 +366,11 @@ export const TypographyComp = (props: TypographyCompProps) => {
             if (style?.letterSpacing) setLetterSpacing(getLetterSpacing(editor))
             if (style?.fontVariations) setFontVariations(style.fontVariations)
         }
-        editorRef.current?.addEventListener('selection', watchSelection)
+        editorRef.current!.addEventListener('selection', watchSelection)
+        editorRef.current!.addEventListener('layout', watchSelection)
         return () => {
-            editorRef.current?.removeEventListener('selection', watchSelection)
+            editorRef.current!.removeEventListener('selection', watchSelection)
+            editorRef.current!.removeEventListener('layout', watchSelection)
         }
     }, [])
 

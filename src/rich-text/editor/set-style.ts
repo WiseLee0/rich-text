@@ -94,7 +94,7 @@ const handleStyleOverride: EditorInterface['setStyle'] = (editor, styles) => {
     if (!Object.keys(changeStyles).length) return
 
     // 无选区，则设置到临时样式中，插入文本时应用
-    if (editor.isCollapse()) {
+    if (editor.isCollapse() && editor.hasSelection()) {
         const characterOffset = editor.getSelectCharacterOffset()
         const anchor = characterOffset?.anchor ?? 0
         const focus = characterOffset?.focus ?? getTextArr(editor).length;

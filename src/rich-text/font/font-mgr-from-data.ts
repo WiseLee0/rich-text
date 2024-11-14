@@ -1,6 +1,6 @@
 import * as fontkit from 'fontkit'
 import type { FontCollection, Font } from "fontkit";
-import { Editor, EditorInterface, opfs } from '..';
+import { addFontMeta, Editor, EditorInterface, loadFontMetaURL, opfs } from '..';
 import InterSub from './inter-sub.ttf'
 
 const addFont = (editor: Editor, font: Font) => {
@@ -37,6 +37,15 @@ export const fontMgrFromData: EditorInterface['fontMgrFromData'] = (editor, buff
         }
     }
 }
+
+export const fontMgrFromURL: EditorInterface['fontMgrFromURL'] = async (editor, fontName, url) => {
+    const key = `${fontName.family}#${fontName.style}#${fontName.postscript}`
+    const data = await opfs.read(key, url);
+    if (data.byteLength) {
+        addFontMeta(editor, fontName, url)
+        fontMgrFromData(editor, [data]);
+    }
+};
 
 const DefaultFontGlyphs = '•.0123456789abcdefghijklmnopqrstuvwxyz'
 export const loadDefaultFont = async (editor: Editor) => {

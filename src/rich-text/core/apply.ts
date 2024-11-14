@@ -1,4 +1,4 @@
-import { clearCache, EditorInterface, getH, getLineIndentationLevelPixels, getLogicalCharacterOffset } from ".."
+import { clearCache, EditorInterface, execEvent, getH, getLineIndentationLevelPixels, getLogicalCharacterOffset } from ".."
 
 export const apply: EditorInterface['apply'] = (editor) => {
     clearCache(editor)
@@ -28,5 +28,6 @@ export const apply: EditorInterface['apply'] = (editor) => {
         baselines,
         logicalCharacterOffset
     }
+    execEvent(editor, 'layout');
     return editor.derivedTextData
 }

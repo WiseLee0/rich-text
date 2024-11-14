@@ -1,4 +1,4 @@
-import { EditorInterface, getCodePoints, getTextArr, handleInsertTextOfTextDataLine } from "..";
+import { deepClone, EditorInterface, execEvent, getCodePoints, getTextArr, handleInsertTextOfTextDataLine } from "..";
 
 export const insertText: EditorInterface['insertText'] = (editor, content) => {
     if (!editor.isEditor) return;
@@ -25,7 +25,7 @@ export const insertText: EditorInterface['insertText'] = (editor, content) => {
     const newText = textArr.slice(0, characterIdx).join("") + content + textArr.slice(characterIdx).join("")
     editor.replaceText(newText)
 
-    const contentLen = getCodePoints(content).length
+    const contentLen = Array.from(content).length;
 
     // 更新局部样式表
     const { characterStyleIDs, characters } = editor.textData
@@ -37,6 +37,16 @@ export const insertText: EditorInterface['insertText'] = (editor, content) => {
         const styleIDArr = new Array(contentLen).fill(styleID)
         characterStyleIDs.splice(characterIdx, 0, ...styleIDArr)
     }
+
+    // 是否存在闭合区域样式
+    const characterOffset = editor.getSelectCharacterOffset()
+    if (characterOffset !== undefined && editor.isCollapse() && Object.keys(editor.__select_styles.styles || {}).length) {
+        const styles = deepClone(editor.__select_styles.styles)!
+        editor.selectForCharacterOffset(characterOffset.anchor, characterOffset.anchor + contentLen)
+        editor.setStyle(styles)
+        editor.deselection()
+    }
     editor.apply()
     editor.selectForCharacterOffset(characterIdx + contentLen)
+    execEvent(editor, 'selection');
 }

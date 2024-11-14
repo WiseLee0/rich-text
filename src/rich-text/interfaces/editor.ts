@@ -1,5 +1,5 @@
 import * as fontkit from 'fontkit'
-import { OmitFirstArg, SelectionInterface, StyleInterface, Selection, DerivedTextDataInterface, TextDataInterface, Font, MetricesInterface, BaseLineInterface, GlyphsInterface, FillPaintType, EventType, EventListenerType, TextDataLinesInterface } from "."
+import { OmitFirstArg, SelectionInterface, StyleInterface, Selection, DerivedTextDataInterface, TextDataInterface, Font, MetricesInterface, BaseLineInterface, GlyphsInterface, FillPaintType, EventType, EventListenerType, TextDataLinesInterface, FontMetaDataInterface } from "."
 
 export type Editor = {
     /** 文本宽度 */
@@ -10,6 +10,8 @@ export type Editor = {
     style: StyleInterface
     /** 字体管理 */
     fonMgr: Map<string, fontkit.Font[]>
+    /** 使用的字体信息 */
+    fontMetaData: FontMetaDataInterface[]
     /** 文本排版信息 */
     derivedTextData: Partial<DerivedTextDataInterface>
     /** 文本数据信息 */
@@ -81,7 +83,7 @@ export type Editor = {
 
     // font
     /** 设置字体数据 */
-    fontMgrFromData: OmitFirstArg<EditorInterface['fontMgrFromData']>
+    fontMgrFromURL: OmitFirstArg<EditorInterface['fontMgrFromURL']>
     /** 获取指定字体名称下的字体列表 */
     getFonts: OmitFirstArg<EditorInterface['getFonts']>
     /** 获取指定字体 */
@@ -150,6 +152,7 @@ export type EditorInterface = {
     reduceIndent: (editor: Editor) => void
     isHoverForQuadrant: (editor: Editor, x: number, y: number, radius: number) => boolean
     arrowMove: (editor: Editor, type: 'left' | 'right' | 'top' | 'bottom') => void
+    fontMgrFromURL: (editor: Editor, fontName: StyleInterface['fontName'], ulr: string) => Promise<void>
 }
 
 export type Rect = [number, number, number, number]

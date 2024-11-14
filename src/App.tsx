@@ -3,7 +3,7 @@ import './App.css'
 import { CANVAS_W, CANVAS_H, loadSkia, CANVAS_MARING } from './utils';
 import { Canvas } from 'canvaskit-wasm';
 import { Spin } from 'antd';
-import { createEditor, Editor } from './rich-text';
+import { createEditor, Editor, fontMgrFromData } from './rich-text';
 import { AutoResizeComp } from './components/autoResize/index';
 import { renderBaseLine, renderBorder, renderCursor, renderText } from './render';
 import { TypographyComp } from './components/typography';
@@ -48,11 +48,15 @@ export default function App() {
   }
 
   const initRichData = async () => {
-    const data1 = await (await fetch(InterFont)).arrayBuffer()
     const editor = await createEditor()
-    editor.fontMgrFromData([data1])
     editorRef.current = editor;
-    editor.layout(500);
+
+    await editor.fontMgrFromURL({
+      family: "Inter",
+      style: "Regular",
+      postscript: "Inter-Regular",
+    },
+      "https://static.figma.com/font/Inter_1")
 
     editor.addEventListener('setStyle', () => {
       inputRef.current?.focus()
@@ -75,6 +79,9 @@ export default function App() {
   const main = async () => {
     await initRichData()
     await render()
+    setTimeout(() => {
+      editorRef.current?.layout(500);
+    }, 0);
   }
 
   useEffect(() => {

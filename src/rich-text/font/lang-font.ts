@@ -1,4 +1,4 @@
-import { Editor, Font, opfs, OPFSFileName } from ".."
+import { Editor, Font, fontMgrFromData, opfs, OPFSFileName } from ".."
 import { detect_text } from "../detect-lang/pkg/detect_lang"
 
 export const lackFontTable = {
@@ -82,14 +82,14 @@ export const loadLangFont = (editor: Editor, url: string) => {
     const langItem = Object.values(lackFontTable).find(item => item.url === url)
     if (langItem) {
         opfs.read(langItem.fontFamily as OPFSFileName, url).then(async buffer => {
-            editor.fontMgrFromData([buffer])
+            fontMgrFromData(editor, [buffer])
             editor.apply()
         })
         return;
     }
     fetch(url).then(async res => {
         const buffer = await res.arrayBuffer()
-        editor.fontMgrFromData([buffer])
+        fontMgrFromData(editor, [buffer])
         editor.apply()
     })
 }
