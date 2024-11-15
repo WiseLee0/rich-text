@@ -11,6 +11,7 @@ import { DebugComp } from './components/debug';
 import { FillsComp } from './components/fills';
 import { OpenTypeComp } from './components/openType';
 import { ParagraphComp } from './components/paragraph';
+import InterFont from './assets/Inter_1.ttf?url';
 
 
 export default function App() {
@@ -54,8 +55,7 @@ export default function App() {
       family: "Inter",
       style: "Regular",
       postscript: "Inter-Regular",
-    },
-      "https://static.figma.com/font/Inter_1");
+    }, InterFont);
 
     editor.addEventListener('setStyle', () => {
       inputRef.current?.focus()
@@ -254,8 +254,12 @@ export default function App() {
           }
           break;
         case 'Backspace':
-          // 删除
+          // 向前删除
           editorRef.current!.deleteText();
+          break;
+        case 'Delete':
+          // 向后删除
+          editorRef.current!.deleteText({ fn: true });
           break;
         case 'Enter':
           // 换行

@@ -1,5 +1,7 @@
 import { Editor, Font, fontMgrFromData, opfs, OPFSFileName } from ".."
 import { detect_text } from "../detect-lang/pkg/detect_lang"
+import NotoSansKR from "../../assets/NotoSansKR-VF_1.ttf?url"
+import NotoSansJP from "../../assets/NotoSansJP-VF_1.ttf?url"
 
 export const lackFontTable = {
     'Mandarin': {
@@ -7,11 +9,11 @@ export const lackFontTable = {
         fontFamily: 'Noto Sans SC'
     },
     'Japanese': {
-        url: 'https://static.figma.com/font/NotoSansJP-VF_1',
+        url: NotoSansJP,
         fontFamily: 'Noto Sans JP'
     },
     'Korean': {
-        url: 'https://static.figma.com/font/NotoSansKR-VF_1',
+        url: NotoSansKR,
         fontFamily: 'Noto Sans KR'
     },
     // 'Hindi': {
