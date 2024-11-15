@@ -28,7 +28,7 @@ export const FillsComp = (props: FillsCompProps) => {
             "visible": true,
             "blendMode": "NORMAL"
         } as FillPaintType
-        
+
         if (!fillPaints.length || isFillMix) {
             editor.setStyle({
                 fillPaints: [fill]
@@ -50,25 +50,30 @@ export const FillsComp = (props: FillsCompProps) => {
         updateRender()
     }
 
-    useEffect(() => {
-        const watchSelection = () => {
-            const style = editorRef.current?.getStyleForSelection() as any
-            if (style?.fillPaints) {
-                if (style.fillPaints === 'mix') {
-                    setIsFillMix(true)
-                } else {
-                    setIsFillMix(false)
-                    if (!deepEqual(style?.fillPaints, fillPaints)) {
-                        setFillPaints(deepClone(style?.fillPaints))
-                    }
+    const watchSelection = () => {
+        const style = editorRef.current?.getStyleForSelection() as any
+
+        if (style?.fillPaints) {
+            if (style.fillPaints === 'mix') {
+                setIsFillMix(true)
+            } else {
+                setIsFillMix(false)
+                if (!deepEqual(style?.fillPaints, fillPaints)) {
+                    setFillPaints(deepClone(style?.fillPaints))
                 }
             }
         }
+    }
+
+    useEffect(() => {
+
         editorRef.current?.addEventListener('selection', watchSelection)
         editorRef.current?.addEventListener('setStyle', watchSelection)
+        editorRef.current?.addEventListener('layout', watchSelection)
         return () => {
             editorRef.current?.removeEventListener('selection', watchSelection)
             editorRef.current?.removeEventListener('setStyle', watchSelection)
+            editorRef.current?.removeEventListener('layout', watchSelection)
         }
     }, [fillPaints])
 

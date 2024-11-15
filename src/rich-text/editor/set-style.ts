@@ -1,4 +1,4 @@
-import { deepEqual, Editor, EditorInterface, execEvent, getTextArr, StyleInterface } from "..";
+import { clearGetStyleCache, deepEqual, Editor, EditorInterface, execEvent, getTextArr, StyleInterface } from "..";
 
 /**
  * 修改样式
@@ -108,6 +108,9 @@ const handleStyleOverride: EditorInterface['setStyle'] = (editor, styles) => {
         }
         return;
     }
+
+    // 存在选区则清空临时样式
+    clearGetStyleCache(editor);
 
     // 第一次局部修改
     if (!characterStyleIDs?.length || !styleOverrideTable?.length) {
