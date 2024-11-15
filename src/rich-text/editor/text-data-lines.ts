@@ -218,7 +218,8 @@ export const getLineStyleID = (editor: Editor, firstCharacter: number) => {
     const { lines, characterStyleIDs } = editor.textData
     if (!lines?.length) return 0
     let lineIdx = getLineIndexForCharacterOffset(editor, firstCharacter)
-    while (lineIdx >= 0 && !lines[lineIdx]?.isFirstLineOfList) {
+    const indentationLevel = lines[lineIdx].indentationLevel;
+    while (lineIdx >= 0 && (!lines[lineIdx]?.isFirstLineOfList || lines[lineIdx].indentationLevel > indentationLevel)) {
         lineIdx--
     }
     if (lineIdx < 0) {
