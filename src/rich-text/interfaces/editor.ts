@@ -151,7 +151,7 @@ export type EditorInterface = {
     addIndent: (editor: Editor) => void
     reduceIndent: (editor: Editor) => void
     isHoverForQuadrant: (editor: Editor, x: number, y: number, radius: number) => boolean
-    arrowMove: (editor: Editor, type: 'left' | 'right' | 'top' | 'bottom') => void
+    arrowMove: (editor: Editor, type: 'left' | 'right' | 'top' | 'bottom', options?: Partial<{ shift: boolean, command: boolean }>) => void
     fontMgrFromURL: (editor: Editor, fontName: StyleInterface['fontName'], ulr: string) => Promise<void>
 }
 

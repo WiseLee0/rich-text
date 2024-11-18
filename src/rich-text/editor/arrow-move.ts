@@ -1,10 +1,115 @@
 import { EditorInterface } from "..";
 
-export const arrowMove: EditorInterface['arrowMove'] = (editor, type) => {
+export const arrowMove: EditorInterface['arrowMove'] = (editor, type, options = {}) => {
     const offset = editor.getSelectCharacterOffset();
     const baselines = editor.getBaselines()
 
     if (!offset || !baselines?.length) return
+
+    if (options?.shift) {
+        if (type === 'left') {
+            let { focus, focusOffset } = { ...editor.__selection }
+            focusOffset--;
+            if (focusOffset === -1) {
+                if (focus > 0) {
+                    focus--;
+                    focusOffset = baselines[focus].endCharacter - baselines[focus].firstCharacter - 1
+                } else {
+                    return;
+                }
+            }
+            editor.setSelection({
+                focus,
+                focusOffset
+            })
+            return
+        }
+        if (type === 'right') {
+            let { focus, focusOffset } = { ...editor.__selection }
+            focusOffset++;
+            const limitOffset = baselines[focus].endCharacter - baselines[focus].firstCharacter - 1
+            if (focusOffset > limitOffset) {
+                if (focus < baselines.length - 1) {
+                    focus++;
+                    focusOffset = 0
+                } else {
+                    focusOffset = baselines[focus].endCharacter - baselines[focus].firstCharacter
+                }
+            }
+            editor.setSelection({
+                focus,
+                focusOffset
+            })
+            return
+        }
+        if (type === 'top') {
+            let { focus, focusOffset } = { ...editor.__selection }
+            const baseline = baselines[focus]
+            if (!baseline) return;
+            const y = baseline.lineY - 1;
+            const offsetList = editor.getBaseLineCharacterOffset(focus)
+            if (!offsetList) return;
+            let x = offsetList[focusOffset] + baseline.position.x
+            if (focus === 0) {
+                x = 0
+            }
+            editor.selectForXY(x, y, { move: true })
+            return;
+        }
+        if (type === 'bottom') {
+            let { focus, focusOffset } = { ...editor.__selection }
+            const baseline = baselines[focus]
+            const y = baseline.lineY + baseline.lineHeight + 1;
+            const offsetList = editor.getBaseLineCharacterOffset(focus)
+            if (!offsetList) return;
+            let x = offsetList[focusOffset] + baseline.position.x
+            if (focus === baselines.length - 1) {
+                x = offsetList[offsetList.length - 1]
+            }
+            editor.selectForXY(x, y, { move: true })
+            return;
+        }
+    }
+    if (options?.command) {
+        if (type === 'left') {
+            const selection = editor.getSelection();
+            editor.setSelection({
+                focus: selection.anchor,
+                anchorOffset: 0,
+                focusOffset: 0
+            })
+            return
+        }
+        if (type === 'right') {
+            let { focus } = { ...editor.__selection }
+            const baseline = baselines[focus]
+            const offsetList = editor.getBaseLineCharacterOffset(focus)
+            if (!offsetList) return;
+            const x = offsetList[offsetList.length - 1] + baseline.position.x
+            const y = baseline.lineY + 1;
+            editor.selectForXY(x, y)
+            return
+        }
+        if (type === 'top') {
+            editor.setSelection({
+                focus: 0,
+                anchor: 0,
+                anchorOffset: 0,
+                focusOffset: 0
+            })
+            return;
+        }
+        if (type === 'bottom') {
+            const baseline = baselines[baselines.length - 1]
+            const offsetList = editor.getBaseLineCharacterOffset(baselines.length - 1)
+            if (!offsetList) return;
+            const x = offsetList[offsetList.length - 1] + baseline.position.x
+            const y = baseline.lineY + 1;
+            editor.selectForXY(x, y)
+            return;
+        }
+    }
+
     if (type === 'left') {
         editor.selectForCharacterOffset(offset.anchor - 1);
         return
@@ -21,18 +126,18 @@ export const arrowMove: EditorInterface['arrowMove'] = (editor, type) => {
         const offsetList = editor.getBaseLineCharacterOffset(baselineIdx)
         if (!offsetList) return;
         const x = offsetList[offset.anchor - baseline.firstCharacter] + baseline.position.x
-        editor.selectForXY(x, y, { click: true })
+        editor.selectForXY(x, y)
         return
     }
     if (type === 'bottom') {
-        let baselineIdx = baselines.findIndex(item => item.firstCharacter <= offset.anchor && item.endCharacter > offset.anchor)
+        let baselineIdx = baselines.findIndex(item => item.firstCharacter <= offset.focus && item.endCharacter > offset.focus)
         baselineIdx = baselineIdx < 0 ? baselines.length - 1 : baselineIdx
         const baseline = baselines[baselineIdx]
         const y = baseline.lineY + baseline.lineHeight + 1;
         const offsetList = editor.getBaseLineCharacterOffset(baselineIdx)
         if (!offsetList) return;
         const x = offsetList[offset.anchor - baseline.firstCharacter] + baseline.position.x
-        editor.selectForXY(x, y, { click: true })
+        editor.selectForXY(x, y)
         return
     }
 }

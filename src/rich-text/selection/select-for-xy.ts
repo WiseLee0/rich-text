@@ -1,6 +1,6 @@
 import { findClosestIndex, getLineFirstCharacterList, getLineIndexForCharacterOffset, getTextArr, SelectionInterface, wordTokenize } from ".."
 
-export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y, { move, shift, click, clickCount }) => {
+export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y, { move, shift, clickCount } = {}) => {
     editor.isEditor = true
     const baselines = editor.getBaselines()
     if (!baselines?.length) {
@@ -129,15 +129,6 @@ export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y, { m
         }
         return;
     }
-    if (click) {
-        editor.setSelection({
-            anchor: yIdx,
-            focus: yIdx,
-            anchorOffset: xIdx,
-            focusOffset: xIdx
-        })
-        return
-    }
     if (move) {
         editor.setSelection({
             focus: yIdx,
@@ -145,4 +136,12 @@ export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y, { m
         })
         return
     }
+
+    editor.setSelection({
+        anchor: yIdx,
+        focus: yIdx,
+        anchorOffset: xIdx,
+        focusOffset: xIdx
+    })
+    return
 }

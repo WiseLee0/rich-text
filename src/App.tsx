@@ -267,19 +267,27 @@ export default function App() {
           break;
         case 'ArrowLeft':
           // 左键
-          editorRef.current?.arrowMove('left')
+          editorRef.current?.arrowMove('left', { shift: shiftKey, command: metaKey })
           break;
         case 'ArrowRight':
           // 右键
-          editorRef.current?.arrowMove('right')
+          editorRef.current?.arrowMove('right', { shift: shiftKey, command: metaKey })
           break;
         case 'ArrowUp':
           // 上键
-          editorRef.current?.arrowMove('top')
+          editorRef.current?.arrowMove('top', { shift: shiftKey, command: metaKey })
           break;
         case 'ArrowDown':
           // 下键
-          editorRef.current?.arrowMove('bottom')
+          editorRef.current?.arrowMove('bottom', { shift: shiftKey, command: metaKey })
+          break;
+        case 'Home':
+          // Fn + 左键
+          editorRef.current?.arrowMove('left', { shift: shiftKey, command: true })
+          break;
+        case 'End':
+          // Fn + 右键
+          editorRef.current?.arrowMove('right', { shift: shiftKey, command: true })
           break;
         default:
           break;
