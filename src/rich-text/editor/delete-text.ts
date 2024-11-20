@@ -2,11 +2,18 @@ import { EditorInterface, getTextArr, handleDeleteTextOfTextDataLine, mergeStyle
 
 export const deleteText: EditorInterface['deleteText'] = (editor, options = {}) => {
     if (!editor.hasSelection()) return;
+    const baselines = editor.getBaselines()
+    if (!baselines?.length) return
 
     if (editor.isCollapse()) {
+        const selection = editor.getSelection()
         const offset = editor.getSelectCharacterOffset();
         if (offset === undefined) return;
-        if (options.fn) {
+        if (options.fn && options.command) {
+            editor.selectForCharacterOffset(offset.anchor, baselines[selection.anchor].endCharacter);
+        } else if (options.command) {
+            editor.selectForCharacterOffset(offset.anchor - selection.anchorOffset, offset.anchor);
+        } else if (options.fn) {
             // 向后删除
             editor.selectForCharacterOffset(offset.anchor, offset.anchor + 1);
         } else {
@@ -17,8 +24,6 @@ export const deleteText: EditorInterface['deleteText'] = (editor, options = {}) 
 
     const selection = editor.getSelection()
     const textArr = getTextArr(editor)
-    const baselines = editor.getBaselines()
-    if (!baselines?.length) return
     let { focus, anchor, focusOffset, anchorOffset } = selection
 
     const anchorCharacterIdx = baselines[anchor].firstCharacter + anchorOffset

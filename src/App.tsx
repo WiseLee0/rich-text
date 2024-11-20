@@ -157,7 +157,6 @@ export default function App() {
       const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
       mouseRef.current.isDown = false
       setCursor(x, y)
-      inputRef.current?.focus()
     }
 
     /**
@@ -224,10 +223,12 @@ export default function App() {
           }
           break;
         case 'Tab':
+          e.stopPropagation();
+          e.preventDefault();
           // 缩进
           if (shiftKey) {
             editorRef.current!.reduceIndent();
-            return;
+            break;
           }
           editorRef.current!.addIndent();
           break;
@@ -255,13 +256,15 @@ export default function App() {
           break;
         case 'Backspace':
           // 向前删除
-          editorRef.current!.deleteText();
+          editorRef.current!.deleteText({ command: metaKey });
           break;
         case 'Delete':
           // 向后删除
-          editorRef.current!.deleteText({ fn: true });
+          editorRef.current!.deleteText({ fn: true, command: metaKey });
           break;
         case 'Enter':
+          e.stopPropagation();
+          e.preventDefault();
           // 换行
           editorRef.current!.insertText('\n');
           break;
@@ -292,6 +295,7 @@ export default function App() {
         default:
           break;
       }
+      updateInputPosition();
     }
 
     const onCompositionStart = () => {
@@ -328,6 +332,9 @@ export default function App() {
       const tx = canvasRef.current!.offsetLeft + x + CANVAS_MARING
       const ty = canvasRef.current!.offsetTop + y + CANVAS_MARING - fontsize
       inputRef.current!.style.transform = `translate3d(${tx}px,${ty}px,0)`
+      setTimeout(() => {
+        inputRef.current?.focus()
+      });
     }
 
     canvasRef.current?.addEventListener('mousedown', handleCanvasMouseDown)
