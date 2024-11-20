@@ -2,12 +2,35 @@ import { getLineFirstCharacterList, getLineIndentationLevelPixels, Rect, Selecti
 import { getFontLineHeight } from "..";
 
 export const getSelectionRects: SelectionInterface['getSelectionRects'] = (editor) => {
-    if (!editor.isEditor) return []
+    if (!editor.isEditor || !editor.hasSelection()) return []
     const { anchor, focus, anchorOffset, focusOffset } = editor.getSelection()
-    const baselines = editor.getBaselines()
+    const baselines = editor.getBaselines() ?? []
     const fontLineHeight = getFontLineHeight(editor)
-    if (!editor.hasSelection() || !baselines?.length) {
-        return [[0, 0, 1, fontLineHeight]]
+    if (!editor.textData.characters.length) {
+        const style = editor.getStyle()
+        const indentationLevel = editor.textData.lines?.[editor.textData.lines?.length - 1].indentationLevel ?? 0
+        let startX = 0
+        let startY = 0
+        if (indentationLevel > 0) {
+            startX += indentationLevel * style.fontSize * 1.5
+        }
+        if (style.paragraphIndent > 0) {
+            startX += style.paragraphIndent
+        }
+        if (style.textAlignHorizontal === 'CENTER') {
+            startX = (startX + editor.width) / 2
+        }
+        if (style.textAlignHorizontal === 'RIGHT') {
+            startX = editor.width
+        }
+        if (editor.style.textAlignVertical === 'MIDDLE') {
+            startY = (editor.height + editor.style.fontSize * 0.7) / 2 - editor.style.fontSize
+        }
+        if (editor.style.textAlignVertical === 'BOTTOM') {
+            startY = editor.height - editor.style.fontSize * 0.3 - editor.style.fontSize
+        }
+
+        return [[startX, startY, 1, fontLineHeight]]
     }
     const lineFirstCharacterList = getLineFirstCharacterList(editor)
 

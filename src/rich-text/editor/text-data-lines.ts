@@ -23,8 +23,8 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
     if (!selectCharacterOffset) return false;
     const textArr = getTextArr(editor)
     const { anchor } = selectCharacterOffset
-
-    if (content === ' ') {
+    const lineIdx = getLineIndexForCharacterOffset(editor, anchor)
+    if (content === ' ' && lines[lineIdx].lineType === 'PLAIN') {
         // 看前面是否符合激活列表条件
         let symbolStr = ''
         let charIdx = anchor - 1
@@ -91,12 +91,11 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
         return
     }
 
-    const lineIdx = getLineIndexForCharacterOffset(editor, anchor) - 1
     for (let i = 0; i < wrapNum; i++) {
-        result.push({ ...lines[lineIdx], isFirstLineOfList: false })
+        result.push({ ...lines[lineIdx - 1], isFirstLineOfList: false })
     }
     if (result.length) {
-        lines.splice(lineIdx, 0, ...result)
+        lines.splice(lineIdx - 1, 0, ...result)
         fixTextDataLines(lines)
     }
 }

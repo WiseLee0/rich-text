@@ -3,9 +3,8 @@ import { BaseLineInterface, Editor, EditorInterface, GlyphsInterface, StyleInter
 
 export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
     if (editor.derivedTextData.glyphs) return editor.derivedTextData.glyphs
-    const metrices = editor.getMetrices()
-    const baselines = editor.getBaselines()
-    if (!metrices?.length || !baselines?.length) return;
+    const metrices = editor.getMetrices() ?? []
+    const baselines = editor.getBaselines() ?? []
     const glyphs: GlyphsInterface[] = []
     // 是否需要应用截断文本
     let hasTextTruncation = false
@@ -138,6 +137,40 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
         }
     }
 
+    // 空文本存在列表符号时
+    if (!editor.textData.characters.length && !baselines.length) {
+        if (lineSymbolVisit[0] === 0) {
+            let startX = getLineIndentationLevelPixels(editor, 0) + editor.style.paragraphIndent
+            let startY = editor.style.fontSize
+            if (editor.style.textAlignVertical === 'MIDDLE') {
+                startY = (editor.height + editor.style.fontSize * 0.7) / 2
+            }
+            if (editor.style.textAlignVertical === 'BOTTOM') {
+                startY = editor.height - editor.style.fontSize * 0.3
+            }
+            if (editor.style.textAlignHorizontal === 'CENTER') {
+                startX = (startX + editor.width) / 2
+            }
+            if (editor.style.textAlignHorizontal === 'RIGHT') {
+                startX = editor.width
+            }
+            const endLine = {
+                position: {
+                    x: startX,
+                    y: startY
+                },
+                width: 0,
+                lineY: editor.style.fontSize,
+                lineHeight: editor.style.fontSize,
+                defaultLineHeight: editor.style.fontSize,
+                lineAscent: editor.style.fontSize,
+                firstCharacter: -1,
+                endCharacter: 0
+            }
+            addListSymbol(editor, glyphs, 0, endLine)
+            lineSymbolVisit[0] = 1
+        }
+    }
     // 最后一个字符是换行，存在列表符号时
     if (editor.textData.characters[editor.textData.characters.length - 1] === '\n') {
         const lastLen = getTextArr(editor).length
@@ -158,7 +191,7 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
                     y: lineY + endBaseLine.lineAscent
                 },
                 width: 0,
-                lineY,
+                lineY: editor.style.fontSize,
                 lineHeight: endBaseLine.lineHeight,
                 defaultLineHeight: endBaseLine.defaultLineHeight,
                 lineAscent: endBaseLine.lineAscent,
@@ -171,8 +204,12 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
     }
     // 不需要应用截断文本
     if (!hasTextTruncation) {
-        editor.style.truncatedHeight = -1
-        editor.style.truncationStartIndex = -1
+        if (editor.style.truncatedHeight !== -1) {
+            editor.style.truncatedHeight = -1
+        }
+        if (editor.style.truncationStartIndex !== -1) {
+            editor.style.truncationStartIndex = -1
+        }
     }
     editor.derivedTextData.glyphs = glyphs
     return glyphs

@@ -58,8 +58,8 @@ export const renderBorder = (Skia: CanvasKit, canvas: Canvas, editorRef: React.M
 export const renderText = (Skia: CanvasKit, canvas: Canvas, editorRef: React.MutableRefObject<Editor | undefined>) => {
     const editor = editorRef.current
     if (!editor || !editor.derivedTextData) return;
-    const { glyphs, baselines } = editor.derivedTextData
-    if (!glyphs?.length || !baselines?.length) return;
+    const { glyphs } = editor.derivedTextData
+    if (!glyphs?.length) return;
     const paint = new Skia.Paint()
     paint.setAntiAlias(true)
     const fillPaintsArr = editor.getFillPaintsForGlyphs()

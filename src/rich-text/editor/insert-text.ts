@@ -1,4 +1,4 @@
-import { deepClone, EditorInterface, execEvent, getCodePoints, getTextArr, handleInsertTextOfTextDataLine } from "..";
+import { deepClone, EditorInterface, execEvent, getTextArr, handleInsertTextOfTextDataLine } from "..";
 
 export const insertText: EditorInterface['insertText'] = (editor, content) => {
     if (!editor.isEditor) return;
@@ -12,8 +12,7 @@ export const insertText: EditorInterface['insertText'] = (editor, content) => {
         editor.deleteText()
     }
     const selectCharacterOffset = editor.getSelectCharacterOffset()
-    const baselines = editor.getBaselines()
-    if (!baselines?.length || !selectCharacterOffset) return
+    if (!selectCharacterOffset) return
     const textArr = getTextArr(editor)
     const characterIdx = selectCharacterOffset.anchor
 

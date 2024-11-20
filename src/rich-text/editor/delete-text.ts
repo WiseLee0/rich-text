@@ -1,17 +1,37 @@
 import { EditorInterface, getTextArr, handleDeleteTextOfTextDataLine, mergeStyleOverride } from "..";
 
 export const deleteText: EditorInterface['deleteText'] = (editor, options = {}) => {
-    if (!editor.hasSelection()) return;
-    const baselines = editor.getBaselines()
-    if (!baselines?.length) return
+    if (!editor.textData.characters.length) {
+        editor.textData.lines = [{
+            lineType: 'PLAIN',
+            listStartOffset: 0,
+            isFirstLineOfList: true,
+            indentationLevel: 0
+        }]
+        editor.apply();
+        return;
+    }
+    const baselines = editor.getBaselines() ?? []
 
-    if (editor.isCollapse()) {
+    const isCollapse = editor.isCollapse()
+
+    if (isCollapse) {
         const selection = editor.getSelection()
         const offset = editor.getSelectCharacterOffset();
         if (offset === undefined) return;
         if (options.fn && options.command) {
-            editor.selectForCharacterOffset(offset.anchor, baselines[selection.anchor].endCharacter);
+            let offsetEnd = baselines[selection.anchor].endCharacter - 1;
+            if (selection.anchor === baselines.length - 1) {
+                offsetEnd++;
+            }
+            if (offset.anchor === offsetEnd) {
+                return;
+            }
+            editor.selectForCharacterOffset(offset.anchor, offsetEnd);
         } else if (options.command) {
+            if (offset.anchor - selection.anchorOffset === offset.anchor) {
+                return;
+            }
             editor.selectForCharacterOffset(offset.anchor - selection.anchorOffset, offset.anchor);
         } else if (options.fn) {
             // 向后删除
@@ -41,24 +61,6 @@ export const deleteText: EditorInterface['deleteText'] = (editor, options = {}) 
     }
     const newText = textArr.slice(0, anchorCharacterIdx).join("") + textArr.slice(focusCharacterIdx).join("")
     editor.replaceText(newText)
-
-    // 删除空了
-    if (newText === '') {
-        editor.setSelection({
-            anchor: -1,
-            focus: -1,
-            focusOffset: -1,
-            anchorOffset: -1
-        })
-        editor.textData.lines = [{
-            lineType: 'PLAIN',
-            listStartOffset: 0,
-            isFirstLineOfList: true,
-            indentationLevel: 0
-        }]
-        editor.apply()
-        return
-    }
 
     // 更新局部样式表
     const { characterStyleIDs, styleOverrideTable } = editor.textData

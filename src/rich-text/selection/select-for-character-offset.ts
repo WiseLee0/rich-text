@@ -10,7 +10,7 @@ export const selectForCharacterOffset: SelectionInterface['selectForCharacterOff
     startOffset = Math.min(Math.max(0, startOffset), textArr.length);
     endOffset = endOffset ? Math.min(endOffset, textArr.length) : endOffset;
 
-    if (endOffset === undefined || endOffset < startOffset) {
+    if (endOffset === undefined || endOffset <= startOffset) {
         const baselineIdx = baselines.findIndex(item => item.firstCharacter <= startOffset && item.endCharacter > startOffset)
 
         if (baselineIdx > -1) {
@@ -44,7 +44,7 @@ export const selectForCharacterOffset: SelectionInterface['selectForCharacterOff
             return;
         }
     } else {
-        const startBaselineIdx = baselines.findIndex(item => item.firstCharacter <= startOffset && item.endCharacter >= startOffset)
+        let startBaselineIdx = baselines.findIndex(item => item.firstCharacter <= startOffset && item.endCharacter > startOffset)
         const endBaselineIdx = baselines.findIndex(item => item.firstCharacter <= endOffset && item.endCharacter > endOffset)
         if (startBaselineIdx > -1 && endBaselineIdx > -1) {
             editor.setSelection({
@@ -54,6 +54,9 @@ export const selectForCharacterOffset: SelectionInterface['selectForCharacterOff
                 focusOffset: endOffset - baselines[endBaselineIdx].firstCharacter,
             })
             return;
+        }
+        if (startBaselineIdx === -1) {
+            startBaselineIdx = baselines.length - 1
         }
         if (endOffset === textArr.length) {
             if (textArr[textArr.length - 1] === '\n') {
