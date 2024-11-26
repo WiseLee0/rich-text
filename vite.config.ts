@@ -4,7 +4,6 @@ import wasm from "vite-plugin-wasm";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: "/rich-text/",
   assetsInclude: ["**/*.wasm"],
   server: {
     headers: {
@@ -15,8 +14,5 @@ export default defineConfig({
   plugins: [
     wasm(),
     react()
-  ],
-  build: {
-    outDir: 'build'
-  }
+  ]
 })
