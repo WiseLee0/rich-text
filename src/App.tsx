@@ -303,6 +303,10 @@ export default function App() {
       if (!editorRef.current!.isCollapse()) {
         editorRef.current!.deleteText()
       }
+      if (!editorRef.current!.hasSelection()) {
+        compositionAnchorRef.current = [0, 0]
+        return
+      }
       const selection = editorRef.current!.getSelection()
       compositionAnchorRef.current = [selection.anchor, selection.anchorOffset];
     }
