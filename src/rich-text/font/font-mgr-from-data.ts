@@ -1,6 +1,6 @@
 import * as fontkit from 'fontkit'
 import type { FontCollection, Font } from "fontkit";
-import { addFontMeta, Editor, EditorInterface, loadFontMetaURL, opfs } from '..';
+import { addFontMeta, Editor, EditorInterface, opfs } from '..';
 import InterSub from './inter-sub.ttf'
 
 const addFont = (editor: Editor, font: Font) => {

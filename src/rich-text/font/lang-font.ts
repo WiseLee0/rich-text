@@ -1,12 +1,13 @@
 import { Editor, Font, fontMgrFromData, opfs, OPFSFileName } from ".."
 import { detect_text } from "../detect-lang/pkg/detect_lang"
-import NotoSansKR from "../../assets/NotoSansKR-VF_1.ttf?url"
-import NotoSansJP from "../../assets/NotoSansJP-VF_1.ttf?url"
+import NotoSansKR from "../../assets/NotoSansKR-VF_1.otf?url"
+import NotoSansJP from "../../assets/NotoSansJP-VF_1.otf?url"
+import NotoSansSC from "../../assets/NotoSansSC-VF_1.otf?url"
 
 const loadURLSet = new Set()
 export const lackFontTable = {
     'Mandarin': {
-        url: 'https://static.figma.com/font/NotoSansSC-VF_1',
+        url: NotoSansSC,
         fontFamily: 'Noto Sans SC'
     },
     'Japanese': {
