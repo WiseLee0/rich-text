@@ -1,11 +1,14 @@
 import { Editor, StyleInterface } from "..";
 
+const loadURLSet = new Set()
 export const loadFontMetaURL = (editor: Editor, fontName: StyleInterface['fontName']) => {
     const key = `${fontName.family}#${fontName.style}#${fontName.postscript}`
     const metaData = editor.fontMetaData.find(item => item.key === key)
-    if (metaData?.assetURL) {
+    if (metaData?.assetURL && !loadURLSet.has(metaData.assetURL)) {
+        loadURLSet.add(metaData.assetURL)
         editor.fontMgrFromURL(fontName, metaData.assetURL).then(() => {
             editor.apply()
+            loadURLSet.delete(metaData.assetURL)
         })
     }
 }

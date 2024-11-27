@@ -3,6 +3,7 @@ import { detect_text } from "../detect-lang/pkg/detect_lang"
 import NotoSansKR from "../../assets/NotoSansKR-VF_1.ttf?url"
 import NotoSansJP from "../../assets/NotoSansJP-VF_1.ttf?url"
 
+const loadURLSet = new Set()
 export const lackFontTable = {
     'Mandarin': {
         url: 'https://static.figma.com/font/NotoSansSC-VF_1',
@@ -80,10 +81,12 @@ export const getLangFont = (editor: Editor, char: string, originFontInfo: Origin
 }
 
 export const loadLangFont = (editor: Editor, url: string) => {
-    if (!url) return
+    if (!url || loadURLSet.has(url)) return
+    loadURLSet.add(url)
     const langItem = Object.values(lackFontTable).find(item => item.url === url)
     if (langItem) {
         opfs.read(langItem.fontFamily as OPFSFileName, url).then(async buffer => {
+            loadURLSet.delete(url)
             fontMgrFromData(editor, [buffer])
             editor.apply()
         })
@@ -91,6 +94,7 @@ export const loadLangFont = (editor: Editor, url: string) => {
     }
     fetch(url).then(async res => {
         const buffer = await res.arrayBuffer()
+        loadURLSet.delete(url)
         fontMgrFromData(editor, [buffer])
         editor.apply()
     })
