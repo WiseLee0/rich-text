@@ -22,10 +22,10 @@ export const getTextDecorationRects: EditorInterface['getTextDecorationRects'] =
 
         if (textDecoration === 'NONE') rects.push([0, 0, 0, 0])
         if (textDecoration === 'UNDERLINE') {
-            rects.push([glyph.position.x, glyph.position.y + metrice.height * 0.1, metrice.xAdvance, metrice.height / 24])
+            rects.push([glyph.position.x, glyph.position.y + glyph.fontSize * 0.1, metrice.xAdvance, metrice.height / 24])
         }
         if (textDecoration === 'STRIKETHROUGH') {
-            rects.push([glyph.position.x, glyph.position.y - metrice.height * 0.2, metrice.xAdvance, metrice.height / 24])
+            rects.push([glyph.position.x, glyph.position.y - glyph.fontSize * 0.3, metrice.xAdvance, metrice.height / 24])
         }
     }
 
