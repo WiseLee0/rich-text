@@ -1,4 +1,4 @@
-import { EditorInterface } from "..";
+import { EditorInterface, getLineFirstCharacterList } from "..";
 
 export const arrowMove: EditorInterface['arrowMove'] = (editor, type, options = {}) => {
     const offset = editor.getSelectCharacterOffset();
@@ -91,22 +91,53 @@ export const arrowMove: EditorInterface['arrowMove'] = (editor, type, options = 
             return
         }
         if (type === 'top') {
-            editor.setSelection({
-                focus: 0,
-                anchor: 0,
-                anchorOffset: 0,
-                focusOffset: 0
-            })
-            return;
+            let { anchor } = { ...editor.__selection }
+            const baseline = baselines[anchor]
+            const lineList = getLineFirstCharacterList(editor)
+            let idx = lineList.findIndex(item => item > baseline.firstCharacter) - 1;
+            if (idx === -1) {
+                idx = 0
+            }
+            if (idx < 0) {
+                idx = lineList.length - 1
+            }
+            const character = lineList[idx]
+            const baselineIdx = baselines.findIndex(item => item.firstCharacter <= character && item.endCharacter > character)
+            if (baselineIdx > -1) {
+                editor.setSelection({
+                    focus: baselineIdx,
+                    anchor: baselineIdx,
+                    anchorOffset: 0,
+                    focusOffset: 0
+                })
+            }
+            return
         }
         if (type === 'bottom') {
-            const baseline = baselines[baselines.length - 1]
-            const offsetList = editor.getBaseLineCharacterOffset(baselines.length - 1)
-            if (!offsetList) return;
-            const x = offsetList[offsetList.length - 1] + baseline.position.x
-            const y = baseline.lineY + 1;
-            editor.selectForXY(x, y)
-            return;
+            let { focus } = { ...editor.__selection }
+            const baseline = baselines[focus]
+            const lineList = getLineFirstCharacterList(editor)
+            let idx = lineList.findIndex(item => item > baseline.firstCharacter);
+            let character = 0
+            if (idx === -1) {
+                character = baselines[baselines.length - 1].endCharacter - 1;
+            } else {
+                character = lineList[idx] - 1;
+            }
+            let baselineIdx = baselines.findIndex(item => item.firstCharacter <= character && item.endCharacter > character)
+            if (baselineIdx > -1) {
+                let offset = baselines[baselineIdx].endCharacter - baselines[baselineIdx].firstCharacter - 1
+                if (baselineIdx === baselines.length - 1) {
+                    offset = baselines[baselineIdx].endCharacter - baselines[baselineIdx].firstCharacter
+                }
+                editor.setSelection({
+                    focus: baselineIdx,
+                    anchor: baselineIdx,
+                    anchorOffset: offset,
+                    focusOffset: offset
+                })
+            }
+            return
         }
     }
 
