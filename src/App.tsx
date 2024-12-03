@@ -214,12 +214,46 @@ export default function App() {
         return;
       }
       const { shiftKey, metaKey } = e;
+      
+      const editor = editorRef.current!;
 
       switch (e.key) {
         case 'a':
           // 全选
           if (metaKey) {
-            editorRef.current!.selectAll();
+            editor.selectAll();
+          }
+          break;
+        case 'u':
+          // 下划线
+          if (metaKey) {
+            const styles = editor.getStyleForSelection();
+            if (styles.textDecoration === 'UNDERLINE') {
+              editor.setStyle({
+                textDecoration: 'NONE'
+              });
+            } else {
+              editor.setStyle({
+                textDecoration: 'UNDERLINE'
+              });
+            }
+            editor.apply();
+          }
+          break;
+        case 'x':
+          // 删除线
+          if (metaKey && shiftKey) {
+            const styles = editor.getStyleForSelection();
+            if (styles.textDecoration === 'STRIKETHROUGH') {
+              editor.setStyle({
+                textDecoration: 'NONE'
+              });
+            } else {
+              editor.setStyle({
+                textDecoration: 'STRIKETHROUGH'
+              });
+            }
+            editor.apply();
           }
           break;
         case 'Tab':
@@ -227,70 +261,70 @@ export default function App() {
           e.preventDefault();
           // 缩进
           if (shiftKey) {
-            editorRef.current!.reduceIndent();
+            editor!.reduceIndent();
             break;
           }
-          editorRef.current!.addIndent();
+          editor!.addIndent();
           break;
         case '7':
           // 有序列表
           if (shiftKey && metaKey) {
-            const type = editorRef.current!.getTextListTypeForSelection();
+            const type = editor!.getTextListTypeForSelection();
             if (type === 'ORDERED_LIST') {
-              editorRef.current!.setTextList('PLAIN');
+              editor!.setTextList('PLAIN');
             } else {
-              editorRef.current!.setTextList('ORDERED_LIST');
+              editor!.setTextList('ORDERED_LIST');
             }
           }
           break;
         case '8':
           // 无序列表
           if (shiftKey && metaKey) {
-            const type = editorRef.current!.getTextListTypeForSelection();
+            const type = editor!.getTextListTypeForSelection();
             if (type === 'UNORDERED_LIST') {
-              editorRef.current!.setTextList('PLAIN');
+              editor!.setTextList('PLAIN');
             } else {
-              editorRef.current!.setTextList('UNORDERED_LIST');
+              editor!.setTextList('UNORDERED_LIST');
             }
           }
           break;
         case 'Backspace':
           // 向前删除
-          editorRef.current!.deleteText({ command: metaKey });
+          editor!.deleteText({ command: metaKey });
           break;
         case 'Delete':
           // 向后删除
-          editorRef.current!.deleteText({ fn: true, command: metaKey });
+          editor!.deleteText({ fn: true, command: metaKey });
           break;
         case 'Enter':
           e.stopPropagation();
           e.preventDefault();
           // 换行
-          editorRef.current!.insertText('\n');
+          editor!.insertText('\n');
           break;
         case 'ArrowLeft':
           // 左键
-          editorRef.current?.arrowMove('left', { shift: shiftKey, command: metaKey })
+          editor?.arrowMove('left', { shift: shiftKey, command: metaKey })
           break;
         case 'ArrowRight':
           // 右键
-          editorRef.current?.arrowMove('right', { shift: shiftKey, command: metaKey })
+          editor?.arrowMove('right', { shift: shiftKey, command: metaKey })
           break;
         case 'ArrowUp':
           // 上键
-          editorRef.current?.arrowMove('top', { shift: shiftKey, command: metaKey })
+          editor?.arrowMove('top', { shift: shiftKey, command: metaKey })
           break;
         case 'ArrowDown':
           // 下键
-          editorRef.current?.arrowMove('bottom', { shift: shiftKey, command: metaKey })
+          editor?.arrowMove('bottom', { shift: shiftKey, command: metaKey })
           break;
         case 'Home':
           // Fn + 左键
-          editorRef.current?.arrowMove('left', { shift: shiftKey, command: true })
+          editor?.arrowMove('left', { shift: shiftKey, command: true })
           break;
         case 'End':
           // Fn + 右键
-          editorRef.current?.arrowMove('right', { shift: shiftKey, command: true })
+          editor?.arrowMove('right', { shift: shiftKey, command: true })
           break;
         default:
           break;
