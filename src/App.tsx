@@ -214,17 +214,17 @@ export default function App() {
         return;
       }
       const { shiftKey, metaKey } = e;
-      
+
       const editor = editorRef.current!;
 
-      switch (e.key) {
-        case 'a':
+      switch (e.code) {
+        case 'KeyA':
           // 全选
           if (metaKey) {
             editor.selectAll();
           }
           break;
-        case 'u':
+        case 'KeyU':
           // 下划线
           if (metaKey) {
             const styles = editor.getStyleForSelection();
@@ -240,7 +240,7 @@ export default function App() {
             editor.apply();
           }
           break;
-        case 'x':
+        case 'KeyX':
           // 删除线
           if (metaKey && shiftKey) {
             const styles = editor.getStyleForSelection();
@@ -266,7 +266,7 @@ export default function App() {
           }
           editor!.addIndent();
           break;
-        case '7':
+        case 'Digit7':
           // 有序列表
           if (shiftKey && metaKey) {
             const type = editor!.getTextListTypeForSelection();
@@ -277,7 +277,7 @@ export default function App() {
             }
           }
           break;
-        case '8':
+        case 'Digit8':
           // 无序列表
           if (shiftKey && metaKey) {
             const type = editor!.getTextListTypeForSelection();
@@ -318,6 +318,20 @@ export default function App() {
           // 下键
           editor?.arrowMove('bottom', { shift: shiftKey, command: metaKey })
           break;
+        case 'Period':
+          // 增加字号
+          if (metaKey && shiftKey) {
+            editor.addFontSize()
+            editor.apply()
+          }
+          break
+        case 'Comma':
+          // 减少字号
+          if (metaKey && shiftKey) {
+            editor.reduceFontSize()
+            editor.apply()
+          }
+          break
         case 'Home':
           // Fn + 左键
           editor?.arrowMove('left', { shift: shiftKey, command: true })

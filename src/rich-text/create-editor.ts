@@ -41,6 +41,8 @@ import {
     isHoverForQuadrant,
     arrowMove,
     fontMgrFromURL,
+    addFontSize,
+    reduceFontSize,
 } from "./";
 import detectLangModel from "./detect-lang/pkg/detect_lang";
 import wasmURL from "./detect-lang/pkg/detect_lang_bg.wasm?url";
@@ -260,6 +262,8 @@ export const createEditor = async (): Promise<Editor> => {
         getStyleForSelection: (...args) => getStyleForSelection(editor, ...args),
         insertText: (...args) => insertText(editor, ...args),
         replaceText: (...args) => replaceText(editor, ...args),
+        addFontSize: (...args) => addFontSize(editor, ...args),
+        reduceFontSize: (...args) => reduceFontSize(editor, ...args),
         getText: (...args) => getText(editor, ...args),
         getMetrices: (...args) => getMetrices(editor, ...args),
         getBaselines: (...args) => getBaselines(editor, ...args),

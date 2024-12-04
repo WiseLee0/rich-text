@@ -60,6 +60,10 @@ export type Editor = {
     addIndent: OmitFirstArg<EditorInterface['addIndent']>
     /** 减少缩进 */
     reduceIndent: OmitFirstArg<EditorInterface['reduceIndent']>
+    /** 增加字体大小 */
+    addFontSize: OmitFirstArg<EditorInterface['addFontSize']>
+    /** 减少字体大小 */
+    reduceFontSize: OmitFirstArg<EditorInterface['reduceFontSize']>
     /** 光标方向移动 */
     arrowMove: OmitFirstArg<EditorInterface['arrowMove']>
     /** 获取选区文本列表类型 */
@@ -153,6 +157,8 @@ export type EditorInterface = {
     isHoverForQuadrant: (editor: Editor, x: number, y: number, radius: number) => boolean
     arrowMove: (editor: Editor, type: 'left' | 'right' | 'top' | 'bottom', options?: Partial<{ shift: boolean, command: boolean }>) => void
     fontMgrFromURL: (editor: Editor, fontName: StyleInterface['fontName'], ulr: string) => Promise<void>
+    addFontSize: (editor: Editor) => void
+    reduceFontSize: (editor: Editor) => void
 }
 
 export type Rect = [number, number, number, number]
