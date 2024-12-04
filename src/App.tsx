@@ -214,7 +214,11 @@ export default function App() {
       if (isCompositionRef.current) {
         return;
       }
-      const { shiftKey, metaKey } = e;
+      const { shiftKey, metaKey, altKey } = e;
+      if (metaKey || shiftKey || altKey) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
 
       const editor = editorRef.current!;
 
@@ -223,6 +227,34 @@ export default function App() {
           // 全选
           if (metaKey) {
             editor.selectAll();
+          }
+          break;
+        case 'KeyJ':
+          // 两端对齐
+          if (metaKey && altKey) {
+            editor.style.textAlignHorizontal = 'JUSTIFIED';
+            editor.apply();
+          }
+          break;
+        case 'KeyL':
+          // 左对齐
+          if (metaKey && altKey) {
+            editor.style.textAlignHorizontal = 'LEFT';
+            editor.apply();
+          }
+          break;
+        case 'KeyR':
+          // 右对齐
+          if (metaKey && altKey) {
+            editor.style.textAlignHorizontal = 'RIGHT';
+            editor.apply();
+          }
+          break;
+        case 'KeyT':
+          // 居中对齐
+          if (metaKey && altKey) {
+            editor.style.textAlignHorizontal = 'CENTER';
+            editor.apply();
           }
           break;
         case 'KeyU':
