@@ -12,6 +12,7 @@ import { FillsComp } from './components/fills';
 import { OpenTypeComp } from './components/openType';
 import { ParagraphComp } from './components/paragraph';
 import InterFont from './assets/Inter_1.ttf?url';
+import { KeyBoardComp } from './components/keyboard';
 
 
 export default function App() {
@@ -424,6 +425,9 @@ export default function App() {
           {editorRef.current && <FillsComp editorRef={editorRef} />}
           {editorRef.current && <OpenTypeComp editorRef={editorRef} />}
           {editorRef.current && <DebugComp editorRef={editorRef} updateRender={updateRender} />}
+        </div>
+        <div className='page-pannel' style={{ maxHeight: CANVAS_H }}>
+          {editorRef.current && <KeyBoardComp />}
         </div>
       </div>
     </div>

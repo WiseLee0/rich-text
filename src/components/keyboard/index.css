@@ -1,0 +1,33 @@
+.keyboard-container {
+  width: 300px;
+  padding: 12px 20px;
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  border: 1px solid #e5e5e5;
+}
+
+.keyboard-container .title {
+  font-weight: 550;
+  font-size: 12px;
+}
+
+.keyboard-container .row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #00000080;
+  margin-top: 10px;
+}
+
+.keyboard-container .keyboard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  background-color: rgb(245, 245, 245);
+  border-radius: 4px;
+}
