@@ -45,6 +45,8 @@ import {
     reduceFontSize,
     addLineHeight,
     reduceLineHeight,
+    addLetterSpacing,
+    reduceLetterSpacing,
 } from "./";
 import detectLangModel from "./detect-lang/pkg/detect_lang";
 import wasmURL from "./detect-lang/pkg/detect_lang_bg.wasm?url";
@@ -289,6 +291,8 @@ export const createEditor = async (): Promise<Editor> => {
         arrowMove: (...args) => arrowMove(editor, ...args),
         addLineHeight: (...args) => addLineHeight(editor, ...args),
         reduceLineHeight: (...args) => reduceLineHeight(editor, ...args),
+        addLetterSpacing: (...args) => addLetterSpacing(editor, ...args),
+        reduceLetterSpacing: (...args) => reduceLetterSpacing(editor, ...args),
 
         // Font
         fontMgrFromURL: (...args) => fontMgrFromURL(editor, ...args),

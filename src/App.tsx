@@ -364,6 +364,12 @@ export default function App() {
             editor.apply()
             break
           }
+          // 增加字间距
+          if (altKey) {
+            editor.addLetterSpacing()
+            editor.apply()
+            break
+          }
           break
         case 'Comma':
           // 减少字号
@@ -375,6 +381,12 @@ export default function App() {
           // 减少行高
           if (altKey && shiftKey) {
             editor.reduceLineHeight()
+            editor.apply()
+            break
+          }
+          // 增加字间距
+          if (altKey) {
+            editor.reduceLetterSpacing()
             editor.apply()
             break
           }

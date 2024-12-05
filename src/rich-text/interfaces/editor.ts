@@ -68,6 +68,10 @@ export type Editor = {
     addLineHeight: OmitFirstArg<EditorInterface['addLineHeight']>
     /** 减少行高 */
     reduceLineHeight: OmitFirstArg<EditorInterface['reduceLineHeight']>
+    /** 增加字间距 */
+    addLetterSpacing: OmitFirstArg<EditorInterface['addLetterSpacing']>
+    /** 减少字间距 */
+    reduceLetterSpacing: OmitFirstArg<EditorInterface['reduceLetterSpacing']>
     /** 光标方向移动 */
     arrowMove: OmitFirstArg<EditorInterface['arrowMove']>
     /** 获取选区文本列表类型 */
@@ -165,6 +169,8 @@ export type EditorInterface = {
     reduceFontSize: (editor: Editor) => void
     addLineHeight: (editor: Editor) => void
     reduceLineHeight: (editor: Editor) => void
+    addLetterSpacing: (editor: Editor) => void
+    reduceLetterSpacing: (editor: Editor) => void
 }
 
 export type Rect = [number, number, number, number]
