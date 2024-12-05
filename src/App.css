@@ -26,7 +26,6 @@ body {
   flex-direction: column;
   overflow-x: hidden;
   overflow: scroll;
-  padding-right: 10px;
 }
 
 .ant-tooltip-content {
