@@ -64,6 +64,10 @@ export type Editor = {
     addFontSize: OmitFirstArg<EditorInterface['addFontSize']>
     /** 减少字体大小 */
     reduceFontSize: OmitFirstArg<EditorInterface['reduceFontSize']>
+    /** 增加行高 */
+    addLineHeight: OmitFirstArg<EditorInterface['addLineHeight']>
+    /** 减少行高 */
+    reduceLineHeight: OmitFirstArg<EditorInterface['reduceLineHeight']>
     /** 光标方向移动 */
     arrowMove: OmitFirstArg<EditorInterface['arrowMove']>
     /** 获取选区文本列表类型 */
@@ -159,6 +163,8 @@ export type EditorInterface = {
     fontMgrFromURL: (editor: Editor, fontName: StyleInterface['fontName'], ulr: string) => Promise<void>
     addFontSize: (editor: Editor) => void
     reduceFontSize: (editor: Editor) => void
+    addLineHeight: (editor: Editor) => void
+    reduceLineHeight: (editor: Editor) => void
 }
 
 export type Rect = [number, number, number, number]

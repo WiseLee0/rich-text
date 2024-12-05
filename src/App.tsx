@@ -356,6 +356,13 @@ export default function App() {
           if (metaKey && shiftKey) {
             editor.addFontSize()
             editor.apply()
+            break
+          }
+          // 增加行高
+          if (altKey && shiftKey) {
+            editor.addLineHeight()
+            editor.apply()
+            break
           }
           break
         case 'Comma':
@@ -363,6 +370,13 @@ export default function App() {
           if (metaKey && shiftKey) {
             editor.reduceFontSize()
             editor.apply()
+            break
+          }
+          // 减少行高
+          if (altKey && shiftKey) {
+            editor.reduceLineHeight()
+            editor.apply()
+            break
           }
           break
         case 'Home':

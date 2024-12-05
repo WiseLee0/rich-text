@@ -1,4 +1,4 @@
-import { deepClone, EditorInterface, execEvent, mergeStyleOverride } from "..";
+import { clearGetStyleCache, deepClone, EditorInterface, execEvent, mergeStyleOverride } from "..";
 
 export const addFontSize: EditorInterface['addFontSize'] = (editor) => {
     const { textData } = editor
@@ -6,6 +6,9 @@ export const addFontSize: EditorInterface['addFontSize'] = (editor) => {
     const styleOverrideTable = deepClone(textData.styleOverrideTable)
     const offset = editor.getSelectCharacterOffset()
     if (!offset) return
+
+    // 存在选区则清空临时样式
+    clearGetStyleCache(editor);
 
     const limit = editor.style.fontSize < 25600
 

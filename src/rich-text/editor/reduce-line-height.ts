@@ -1,6 +1,6 @@
-import { clearGetStyleCache, deepClone, EditorInterface, execEvent, mergeStyleOverride } from "..";
+import { clearGetStyleCache, deepClone, EditorInterface, execEvent, mergeStyleOverride, StyleInterface } from "..";
 
-export const reduceFontSize: EditorInterface['reduceFontSize'] = (editor) => {
+export const reduceLineHeight: EditorInterface['reduceLineHeight'] = (editor) => {
     const { textData } = editor
     const characterStyleIDs = [...(textData?.characterStyleIDs ?? [])]
     const styleOverrideTable = deepClone(textData.styleOverrideTable)
@@ -10,7 +10,8 @@ export const reduceFontSize: EditorInterface['reduceFontSize'] = (editor) => {
     // 存在选区则清空临时样式
     clearGetStyleCache(editor);
 
-    const limit = editor.style.fontSize > 0
+    const addNum = editor.style.lineHeight.units === 'PERCENT' ? -5 : -1
+    const limit = editor.style.lineHeight.value + addNum >= 0
 
     const sliceIds = characterStyleIDs?.slice(offset.anchor, offset.focus);
     const idSet = new Set(sliceIds);
@@ -18,7 +19,10 @@ export const reduceFontSize: EditorInterface['reduceFontSize'] = (editor) => {
     if (!idSet.size) {
         if (limit) {
             editor.setStyle({
-                fontSize: editor.style.fontSize - 1
+                lineHeight: {
+                    value: editor.style.lineHeight.value + addNum,
+                    units: editor.style.lineHeight.units
+                }
             })
         }
         return;
@@ -31,12 +35,12 @@ export const reduceFontSize: EditorInterface['reduceFontSize'] = (editor) => {
     let maxStyleID = Math.max(...characterStyleIDs)
     const newStyleOverrideTable: any[] = []
 
-    const addFontSizeRecord = (override: Record<string, any>, styleId: number, fontSize: number) => {
+    const addLineHeightRecord = (override: Record<string, any>, styleId: number, lineHeight: StyleInterface['lineHeight']) => {
         maxStyleID++
         newStyleOverrideTable.push({
             ...deepClone(override),
             styleID: maxStyleID,
-            fontSize
+            lineHeight
         })
         for (let j = offset.anchor; j < offset.focus; j++) {
             const id = characterStyleIDs[j]
@@ -50,9 +54,11 @@ export const reduceFontSize: EditorInterface['reduceFontSize'] = (editor) => {
         for (let i = 0; i < styleOverrideTable.length; i++) {
             const override = styleOverrideTable[i];
             if (!idSet.has(override.styleID)) continue;
-            if (override?.fontSize !== undefined) {
-                if (override.fontSize > 0) {
-                    addFontSizeRecord(override, override.styleID, override.fontSize - 1)
+            if (override?.lineHeight !== undefined) {
+                const addNum = override.lineHeight.units === 'PERCENT' ? -5 : -1
+                if (override.lineHeight.value + addNum >= 0) {
+                    const lineHeight = { value: override.lineHeight.value + addNum, units: override.lineHeight.units } as StyleInterface['lineHeight']
+                    addLineHeightRecord(override, override.styleID, lineHeight)
                 }
                 visitIdSet.add(override.styleID)
             }
@@ -64,7 +70,8 @@ export const reduceFontSize: EditorInterface['reduceFontSize'] = (editor) => {
             const override = styleOverrideTable[i];
             if (!idSet.has(override.styleID)) continue;
             if (limit) {
-                addFontSizeRecord(override, override.styleID, editor.style.fontSize - 1)
+                const lineHeight = { value: editor.style.lineHeight.value + addNum, units: editor.style.lineHeight.units } as StyleInterface['lineHeight']
+                addLineHeightRecord(override, override.styleID, lineHeight)
             }
         }
         for (const item of newStyleOverrideTable) {
@@ -83,9 +90,10 @@ export const reduceFontSize: EditorInterface['reduceFontSize'] = (editor) => {
     }
 
     if (hasModify && limit) {
+        const lineHeight = { value: editor.style.lineHeight.value + addNum, units: editor.style.lineHeight.units } as StyleInterface['lineHeight']
         styleOverrideTable.push({
             styleID: maxStyleID,
-            fontSize: editor.style.fontSize - 1
+            lineHeight
         })
     }
 
