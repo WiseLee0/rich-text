@@ -4,6 +4,7 @@ export const getH = (editor: Editor) => {
     const baselines = editor.getBaselines()
     if (!baselines?.length) return getFontLineHeight(editor);
 
+    const firstBaseLine = baselines[0]
     const lastBaseLine = baselines[baselines.length - 1]
     // 最后一个字符是换行符，则需要添加一段高度
     const characters = editor.getText()
@@ -14,13 +15,18 @@ export const getH = (editor: Editor) => {
 
     let leadingH = 0
     if (editor.style.leadingTrim === 'CAP_HEIGHT') {
-        leadingH = -(lastBaseLine.lineHeight - lastBaseLine.lineAscent)
+        leadingH -= Math.abs(firstBaseLine.lineY);
+        leadingH -= (lastBaseLine.lineHeight - lastBaseLine.lineAscent)
     }
-    const height = lastBaseLine.lineY + Math.max(lastBaseLine.lineHeight, lastBaseLine.defaultLineHeight) + wrapHeight + leadingH
 
     // 省略文本
     if (editor.style.textTruncation === 'ENABLE' && editor.style.truncatedHeight > -1) {
         return editor.style.truncatedHeight + leadingH
+    }
+
+    let height = wrapHeight + leadingH
+    for (let i = 0; i < baselines.length; i++) {
+        height += baselines[i].lineHeight;
     }
 
     return height

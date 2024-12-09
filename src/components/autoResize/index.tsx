@@ -1,19 +1,30 @@
 import { InputNumber, Radio, Space, Tooltip } from "antd"
 import { Editor } from "../../rich-text"
 import './index.css'
+import { useEffect, useReducer } from "react"
 
 type AutoResizeCompProps = {
     editorRef: React.MutableRefObject<Editor | undefined>
     updateRender: () => void
 }
 export const AutoResizeComp = (props: AutoResizeCompProps) => {
-    const { editorRef, updateRender } = props
+    const { editorRef } = props
+    const [, updateRender] = useReducer(i => i + 1, 0)
+
+    useEffect(() => {
+        const update = () => {
+            updateRender()
+        }
+        editorRef.current?.addEventListener('layout', update)
+        return () => {
+            editorRef.current?.removeEventListener('layout', update)
+        }
+    }, [])
 
     const layout = (w?: number, h?: number) => {
         const editor = editorRef.current;
         editor?.deselection()
         editor?.layout(w, h)
-        updateRender()
     }
 
     const handleChange = (e: any) => {

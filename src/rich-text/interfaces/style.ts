@@ -30,7 +30,7 @@ export interface StyleInterface {
     /** 行高 */
     lineHeight: {
         value: number,
-        units: "PERCENT" | "PIXELS"
+        units: "PERCENT" | "PIXELS" | "RAW"
     },
     hyperlink?: {
         url: string

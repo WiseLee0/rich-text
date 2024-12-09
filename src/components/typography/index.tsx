@@ -30,7 +30,9 @@ const getLineHeight = (editor: Editor) => {
     const style = editor.getStyleForSelection()
     if ((style as any).lineHeight === 'mix') return 'mix'
     if (style.lineHeight?.units === 'PERCENT') {
-        if (style.lineHeight.value === 100) return 'Auto';
+        return 'Auto';
+    }
+    if (style.lineHeight?.units === 'RAW') {
         return `${style.lineHeight.value}%`
     }
     return style.lineHeight.value.toString()
@@ -43,6 +45,17 @@ const getLetterSpacing = (editor: Editor) => {
         return `${style.letterSpacing.value}%`
     }
     return `${style.letterSpacing.value}px`
+}
+
+const isAuto = (_str: string) => {
+    const str = _str.toLowerCase()
+    if (str === 'a' || str === 'au' || str === 'aut' || str === 'auto') {
+        return true
+    }
+    if (str === '自' || str === '自动') {
+        return true
+    }
+    return false
 }
 
 export const TypographyComp = (props: TypographyCompProps) => {
@@ -151,12 +164,21 @@ export const TypographyComp = (props: TypographyCompProps) => {
     }
 
     const handleLineHeightChange = () => {
+        if (isAuto(lineHeight)) {
+            editor.setStyle({
+                lineHeight: {
+                    units: "PERCENT",
+                    value: 100
+                }
+            })
+            return;
+        }
         if (/^[0-9]+%?$/.test(lineHeight)) {
             const hasPercent = lineHeight.includes('%')
             if (hasPercent) {
                 editor.setStyle({
                     lineHeight: {
-                        units: "PERCENT",
+                        units: "RAW",
                         value: parseInt(lineHeight.slice(0, -1))
                     }
                 })

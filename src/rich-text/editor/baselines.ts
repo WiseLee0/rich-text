@@ -1,4 +1,4 @@
-import { calcJustifiedBaseLineWidth, Editor, EditorInterface, getLineFirstCharacterList, getLineIndentationLevelPixels, getLineStyleID, MetricesInterface, splitBaseLines } from "..";
+import { calcJustifiedBaseLineWidth, Editor, EditorInterface, getLineFirstCharacterList, getLineIndentationLevelPixels, getLineStyleID, MetricesInterface, splitBaseLines, StyleInterface } from "..";
 
 export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     if (editor.derivedTextData.baselines) return editor.derivedTextData.baselines
@@ -161,7 +161,11 @@ const getLineHeight = (editor: Editor, metrice: MetricesInterface) => {
     const { characterStyleIDs, styleOverrideTable } = editor.textData
     const styleID = characterStyleIDs?.[metrice.firstCharacter]
     const style = styleOverrideTable?.find(item => item.styleID === styleID);
-    const lineHeight = style?.lineHeight ?? editor.style.lineHeight
+    const lineHeight = (style?.lineHeight ?? editor.style.lineHeight) as StyleInterface['lineHeight'];
+    if (lineHeight.units === "RAW") {
+        return (lineHeight.value / 100) * metrice.fontSize
+    }
+
     if (lineHeight.units === "PERCENT") {
         return (lineHeight.value / 100) * metrice.height
     }
