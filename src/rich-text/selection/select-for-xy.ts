@@ -78,7 +78,6 @@ export const selectForXY: SelectionInterface['selectForXY'] = (editor, x, y, { m
 
     // 三击选区
     if (clickCount === 3 && baselines[yIdx]) {
-        const text = getTextArr(editor);
         const lineList = getLineFirstCharacterList(editor)
         const lineIdx = getLineIndexForCharacterOffset(editor, baselines[yIdx].firstCharacter + xIdx)
         const startIdx = lineList[lineIdx]

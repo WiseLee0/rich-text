@@ -70,7 +70,21 @@ const getChangeStyles = (editor: Editor, styles: Partial<StyleInterface>, isAllS
         changeStyles['letterSpacing'] = styles['letterSpacing']
         if (!isAllSelectModify) delete styles['letterSpacing']
     }
-    return changeStyles
+    if (styles['textCase']) {
+        changeStyles['textCase'] = styles['textCase']
+        if (!isAllSelectModify) delete styles['textCase']
+    }
+
+    // 如果和整体样式一致，则移除
+    const result: Partial<StyleInterface> = {}
+    for (const _key in changeStyles) {
+        const key = _key as keyof StyleInterface
+        if (!deepEqual(changeStyles[key as keyof StyleInterface], editor.style[key as keyof StyleInterface])) {
+            result[key] = changeStyles[key] as any;
+        }
+    }
+
+    return result
 }
 
 /** 处理局部样式更新 */
