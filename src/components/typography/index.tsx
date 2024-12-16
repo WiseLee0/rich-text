@@ -70,6 +70,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
     const [fontSize, setFontSize] = useState(editorStyle.fontSize)
     const [textDecoration, setTextDecoration] = useState(editorStyle.textDecoration)
     const [lineHeight, setLineHeight] = useState(getLineHeight(editor))
+    const [lineHeightPlaceholder, setLineHeightPlaceholder] = useState(getLineHeight(editor))
     const [letterSpacing, setLetterSpacing] = useState(getLetterSpacing(editor))
     const [fontLoading, setFontLoading] = useState(false)
     const [fontVariations, setFontVariations] = useState(editorStyle.fontVariations)
@@ -193,6 +194,15 @@ export const TypographyComp = (props: TypographyCompProps) => {
             return;
         }
         setLineHeight(getLineHeight(editor))
+    }
+
+    const focusLineHeight = () => {
+        if (lineHeight !== 'Auto') {
+            setLineHeightPlaceholder('')
+            return
+        }
+        setLineHeight('')
+        setLineHeightPlaceholder(editor.getAutoLineHeightOfPixels().toString())
     }
 
     const handleLetterSpaceingChange = () => {
@@ -426,7 +436,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
             />
         </div>
         <div className="typography-row" style={{ marginBottom: '8px' }}>
-            <Input onInput={(e: any) => setLineHeight(e.target.value)} onPressEnter={handleLineHeightChange} onBlur={handleLineHeightChange} value={lineHeight} style={{ width: 110 }} prefix={<svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="currentColor" fillRule="evenodd" d="M5.5 5a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1h-13Zm0 13a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1h-13Z" clipRule="evenodd"></path><path fill="currentColor" d="M9.58 16H8.564l2.938-8h1l2.938 8h-1.016l-2.39-6.734h-.063L9.58 16Zm.375-3.125h4.094v.86H9.955v-.86Z"></path></svg>} />
+            <Input onInput={(e: any) => setLineHeight(e.target.value)} placeholder={lineHeightPlaceholder} onFocus={focusLineHeight} onPressEnter={handleLineHeightChange} onBlur={handleLineHeightChange} value={lineHeight} style={{ width: 110 }} prefix={<svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="currentColor" fillRule="evenodd" d="M5.5 5a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1h-13Zm0 13a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1h-13Z" clipRule="evenodd"></path><path fill="currentColor" d="M9.58 16H8.564l2.938-8h1l2.938 8h-1.016l-2.39-6.734h-.063L9.58 16Zm.375-3.125h4.094v.86H9.955v-.86Z"></path></svg>} />
             <Input onInput={(e: any) => setLetterSpacing(e.target.value)} onPressEnter={handleLetterSpaceingChange} onBlur={handleLetterSpaceingChange} value={letterSpacing} style={{ width: 110 }} prefix={<svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="currentColor" fillRule="evenodd" d="M4.5 6a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-1 0v-11a.5.5 0 0 1 .5-.5Zm15 0a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-1 0v-11a.5.5 0 0 1 .5-.5ZM8.564 16H9.58l.804-2.266h3.236L14.424 16h1.016l-2.938-8h-1l-2.938 8Zm4.75-3.125-1.28-3.61h-.063l-1.282 3.61h2.626Z" clipRule="evenodd"></path></svg>} />
         </div>
         {showVariationAxes()}
@@ -451,7 +461,6 @@ export const TypographyComp = (props: TypographyCompProps) => {
                     <Radio.Button value="RIGHT" style={{ height: 24, padding: 0 }}>
                         <span className="typography-icon">
                             <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="currentColor" fillRule="evenodd" d="M19 7.5a.5.5 0 0 0-.5-.5h-13a.5.5 0 0 0 0 1h13a.5.5 0 0 0 .5-.5Zm0 4a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0 0 1h7a.5.5 0 0 0 .5-.5Zm-.5 3.5a.5.5 0 0 1 0 1h-9a.5.5 0 0 1 0-1h9Z" clipRule="evenodd"></path></svg>
-
                         </span>
                     </Radio.Button>
                 </Tooltip>
