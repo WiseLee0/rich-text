@@ -74,6 +74,8 @@ export const TypographyComp = (props: TypographyCompProps) => {
     const [letterSpacing, setLetterSpacing] = useState(getLetterSpacing(editor))
     const [fontLoading, setFontLoading] = useState(false)
     const [fontVariations, setFontVariations] = useState(editorStyle.fontVariations)
+    const [textCase, setTextCase] = useState(editorStyle.textCase)
+
 
     useEffect(() => {
         setFontLoading(true)
@@ -316,6 +318,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
     }
 
     const handleTextCaseChange = (e: RadioChangeEvent) => {
+        setTextCase(e.target.value)
         editor?.setStyle({
             textCase: e.target.value
         })
@@ -397,6 +400,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
             if (style?.lineHeight) setLineHeight(getLineHeight(editor))
             if (style?.letterSpacing) setLetterSpacing(getLetterSpacing(editor))
             if (style?.fontVariations) setFontVariations(style.fontVariations)
+            if (style?.textCase) setTextCase(style.textCase)
         }
         editorRef.current!.addEventListener('selection', watchSelection)
         editorRef.current!.addEventListener('layout', watchSelection)
@@ -527,7 +531,7 @@ export const TypographyComp = (props: TypographyCompProps) => {
         </div>
         <div className="typography-row">
             <span>大小写</span>
-            <Radio.Group buttonStyle="solid" value={editor?.style.textCase ?? "NONE"} onChange={handleTextCaseChange}>
+            <Radio.Group buttonStyle="solid" value={textCase ?? "NONE"} onChange={handleTextCaseChange}>
                 <Tooltip placement="bottom" title={"无"} mouseEnterDelay={1}>
                     <Radio.Button value="NONE" style={{ height: 24, padding: 0 }} >
                         <span className="typography-icon">

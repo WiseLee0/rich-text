@@ -215,7 +215,9 @@ export default function App() {
         return;
       }
       const { shiftKey, metaKey, altKey } = e;
-      if (metaKey || shiftKey || altKey) {
+      
+      // 阻止原生快捷键
+      if (metaKey || altKey) {
         e.preventDefault();
         e.stopPropagation();
       }

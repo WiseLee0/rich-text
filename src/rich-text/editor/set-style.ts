@@ -75,16 +75,7 @@ const getChangeStyles = (editor: Editor, styles: Partial<StyleInterface>, isAllS
         if (!isAllSelectModify) delete styles['textCase']
     }
 
-    // 如果和整体样式一致，则移除
-    const result: Partial<StyleInterface> = {}
-    for (const _key in changeStyles) {
-        const key = _key as keyof StyleInterface
-        if (!deepEqual(changeStyles[key as keyof StyleInterface], editor.style[key as keyof StyleInterface])) {
-            result[key] = changeStyles[key] as any;
-        }
-    }
-
-    return result
+    return changeStyles
 }
 
 /** 处理局部样式更新 */
@@ -186,6 +177,18 @@ export const mergeStyleOverride = (editor: Editor, characterStyleIDs: number[], 
             const { styleID, ...rest } = styleOverrideTable[i];
             newStyleOverrideTableMap.set(styleID, rest)
         }
+    }
+
+    // 如果样式和主样式一致，则删除
+    for (let [styleId, override] of newStyleOverrideTableMap) {
+        const newOverride: Partial<StyleInterface> = {}
+        for (const _key in override) {
+            const key = _key as keyof StyleInterface
+            if (!deepEqual(override[key as keyof StyleInterface], editor.style[key as keyof StyleInterface])) {
+                newOverride[key] = override[key]
+            }
+        }
+        newStyleOverrideTableMap.set(styleId, newOverride);
     }
 
     // 检查临近样式是否能合并 比如：[0,0,1,1,2,3,0,0,4,5]，检查[1,1,2,3]、[4,5]是否能合并ID
