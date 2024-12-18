@@ -18,6 +18,7 @@ import { KeyBoardComp } from './components/keyboard';
 export default function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const zoomRef = useRef(100)
   const [spinning, setSpinning] = useState(true)
   const [, updateRender] = useReducer(i => i + 1, 0)
   const isCompositionRef = useRef(false)
@@ -38,6 +39,7 @@ export default function App() {
       canvas.save()
       canvas.scale(devicePixelRatio, devicePixelRatio)
       canvas.translate(CANVAS_MARING, CANVAS_MARING)
+      canvas.scale(zoomRef.current / 100, zoomRef.current / 100)
       renderText(Skia, canvas, editorRef)
       renderBorder(Skia, canvas, editorRef)
       renderBaseLine(Skia, canvas, editorRef)
@@ -115,7 +117,7 @@ export default function App() {
     }
     const handleCanvasMouseDown = (e: MouseEvent) => {
       const { shiftKey } = e;
-      const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
+      const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING].map(i => i * (100 / zoomRef.current));
       mouseRef.current.isDown = true
       if (Date.now() - mouseRef.current.time > 300) {
         mouseRef.current.count = 1
@@ -139,7 +141,7 @@ export default function App() {
     }
     const handleCanvasMouseMove = (e: MouseEvent) => {
       const { shiftKey } = e;
-      const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
+      const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING].map(i => i * (100 / zoomRef.current));
       setCanvasStyleCursor(x, y)
       const editor = editorRef.current!
       if (mouseRef.current.isDown && editor.hasSelection()) editor.selectForXY(x, y, { shift: shiftKey, move: true })
@@ -155,9 +157,18 @@ export default function App() {
       }
     }
     const handleCanvasMouseUp = (e: MouseEvent) => {
-      const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING]
+      const [x, y] = [e.offsetX - CANVAS_MARING, e.offsetY - CANVAS_MARING].map(i => i * (100 / zoomRef.current));
       mouseRef.current.isDown = false
       setCursor(x, y)
+    }
+    const handleCanvasWheel = (e: WheelEvent) => {
+      if (!e.ctrlKey) return
+      e.preventDefault()
+      if (zoomRef.current - e.deltaY <= 5 || zoomRef.current - e.deltaY >= 12800) {
+        return
+      }
+      zoomRef.current -= e.deltaY
+      updateRender()
     }
 
     /**
@@ -215,7 +226,7 @@ export default function App() {
         return;
       }
       const { shiftKey, metaKey, altKey } = e;
-      
+
       // 阻止原生快捷键
       if (metaKey || altKey) {
         e.preventDefault();
@@ -453,6 +464,7 @@ export default function App() {
     canvasRef.current?.addEventListener('mousedown', handleCanvasMouseDown)
     canvasRef.current?.addEventListener('mousemove', handleCanvasMouseMove)
     canvasRef.current?.addEventListener('mouseup', handleCanvasMouseUp)
+    canvasRef.current?.addEventListener('wheel', handleCanvasWheel)
     inputRef.current?.addEventListener('beforeinput', onBeforeInput)
     inputRef.current?.addEventListener('keydown', onKeydown)
     inputRef.current?.addEventListener('compositionstart', onCompositionStart)
@@ -462,6 +474,7 @@ export default function App() {
       canvasRef.current?.removeEventListener('mousedown', handleCanvasMouseDown)
       canvasRef.current?.removeEventListener('mousemove', handleCanvasMouseMove)
       canvasRef.current?.removeEventListener('mouseup', handleCanvasMouseUp)
+      canvasRef.current?.removeEventListener('wheel', handleCanvasWheel)
       inputRef.current?.removeEventListener('beforeinput', onBeforeInput)
       inputRef.current?.removeEventListener('keydown', onKeydown)
       inputRef.current?.removeEventListener('compositionstart', onCompositionStart)
@@ -489,6 +502,9 @@ export default function App() {
         <div className='page-pannel' style={{ maxHeight: CANVAS_H }}>
           {editorRef.current && <KeyBoardComp />}
         </div>
+      </div>
+      <div className='zoom'>
+        <span>zoom: {Math.round(zoomRef.current)}%</span>
       </div>
     </div>
   );
