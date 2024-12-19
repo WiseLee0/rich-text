@@ -87,6 +87,10 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
                 xAdvance = position.xAdvance * unitsPerPx + letterSpacing
                 name = glyph.name
             }
+            // 空格修改名称
+            if (glyph.codePoints.length === 1 && glyph.codePoints[0] === 32) {
+                name = 'space'
+            }
             if (isEmoji) {
                 name = 'isEmoji'
                 path = ''
