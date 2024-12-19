@@ -1,4 +1,4 @@
-import { calcJustifiedBaseLineWidth, Editor, EditorInterface, getLineFirstCharacterList, getLineIndentationLevelPixels, getLineStyleID, MetricesInterface, splitBaseLines, StyleInterface } from "..";
+import { calcJustifiedBaseLineWidth, Editor, EditorInterface, getLineFirstCharacterList, getLineIndentationLevelPixels, getLineStyleID, getParagraphSpacingForCharacterOffset, MetricesInterface, splitBaseLines, StyleInterface } from "..";
 
 export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     if (editor.derivedTextData.baselines) return editor.derivedTextData.baselines
@@ -12,19 +12,20 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     let endCharacter = 0;
     let lineHeightSum = 0
     const defaultLineHeights = lines.map(line => line.reduce((pre, cur) => Math.max(pre, cur.height), 0))
+    const paragraphSpacingSum = textDataLines.slice(0, -1).reduce((pre, cur) => pre + cur.paragraphSpacing, 0);
     const lineHeights = lines.map(line => line.reduce((pre, cur) => Math.max(pre, getLineHeight(editor, cur)), 0))
     let allLineHeight = lineHeights.reduce((pre, cur) => pre + cur, 0)
     const lineWidths = lines.map(line => line.reduce((pre, cur) => pre + cur.xAdvance, 0))
     const lineMaxWidth = Math.max(...lineWidths)
 
-    const { textAlignHorizontal, textAlignVertical, textAutoResize, leadingTrim, paragraphSpacing, paragraphIndent } = editor.style
+    const { textAlignHorizontal, textAlignVertical, textAutoResize, leadingTrim, paragraphIndent } = editor.style
 
     // 如果最后一个字符是换行
     if (editor.textData.characters[editor.textData.characters.length - 1] === '\n') {
         allLineHeight += defaultLineHeights[defaultLineHeights.length - 1] ?? editor.getStyle().fontSize
     }
-    if (paragraphSpacing > 0) {
-        allLineHeight += (textDataLines.length - 1) * paragraphSpacing
+    if (paragraphSpacingSum > 0) {
+        allLineHeight += paragraphSpacingSum
     }
 
     if (textAlignVertical === 'TOP') {
@@ -111,7 +112,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
 
         // 处理段落间距
         if (lineFirstCharacterList.includes(firstCharacter) && lineFirstCharacterList[0] !== firstCharacter) {
-            lineHeightSum += paragraphSpacing
+            lineHeightSum += getParagraphSpacingForCharacterOffset(editor, Math.max(firstCharacter - 1, 0));
         }
 
         // 处理lineY

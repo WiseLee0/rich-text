@@ -53,7 +53,7 @@ export const getSelectionRects: SelectionInterface['getSelectionRects'] = (edito
         if (style.textAlignHorizontal === 'RIGHT') {
             startX = editor.width
         }
-        const minY = lastBaseLine.position.y - lastBaseLine.lineAscent + lastBaseLine.lineHeight + style.paragraphSpacing
+        const minY = lastBaseLine.position.y - lastBaseLine.lineAscent + lastBaseLine.lineHeight;
         result.push([startX, minY, 1, lastBaseLine.lineAscent])
         return result
     }

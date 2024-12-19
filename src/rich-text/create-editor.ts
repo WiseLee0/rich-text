@@ -48,6 +48,8 @@ import {
     addLetterSpacing,
     reduceLetterSpacing,
     getAutoLineHeightOfPixels,
+    setParagraphSpacing,
+    getParagraphSpacing,
 } from "./";
 import detectLangModel from "./detect-lang/pkg/detect_lang";
 import wasmURL from "./detect-lang/pkg/detect_lang_bg.wasm?url";
@@ -81,7 +83,6 @@ export const createEditor = async (): Promise<Editor> => {
                 },
             ],
             paragraphIndent: 0,
-            paragraphSpacing: 0,
             lineHeight: {
                 units: "PERCENT",
                 value: 100,
@@ -121,36 +122,42 @@ export const createEditor = async (): Promise<Editor> => {
                     indentationLevel: 1,
                     isFirstLineOfList: true,
                     listStartOffset: 0,
+                    paragraphSpacing: 0,
                 },
                 {
                     lineType: "ORDERED_LIST",
                     indentationLevel: 1,
                     isFirstLineOfList: false,
                     listStartOffset: 0,
+                    paragraphSpacing: 0,
                 },
                 {
                     lineType: "ORDERED_LIST",
                     indentationLevel: 2,
                     isFirstLineOfList: true,
                     listStartOffset: 0,
+                    paragraphSpacing: 0,
                 },
                 {
                     lineType: "ORDERED_LIST",
                     indentationLevel: 1,
                     isFirstLineOfList: false,
                     listStartOffset: 0,
+                    paragraphSpacing: 0,
                 },
                 {
                     lineType: "ORDERED_LIST",
                     indentationLevel: 1,
                     isFirstLineOfList: false,
                     listStartOffset: 0,
+                    paragraphSpacing: 0,
                 },
                 {
                     lineType: "PLAIN",
                     indentationLevel: 0,
                     isFirstLineOfList: true,
                     listStartOffset: 0,
+                    paragraphSpacing: 0,
                 },
             ],
             characterStyleIDs: [
@@ -294,7 +301,10 @@ export const createEditor = async (): Promise<Editor> => {
         reduceLineHeight: (...args) => reduceLineHeight(editor, ...args),
         addLetterSpacing: (...args) => addLetterSpacing(editor, ...args),
         reduceLetterSpacing: (...args) => reduceLetterSpacing(editor, ...args),
-        getAutoLineHeightOfPixels: (...args) => getAutoLineHeightOfPixels(editor, ...args),
+        getAutoLineHeightOfPixels: (...args) =>
+            getAutoLineHeightOfPixels(editor, ...args),
+        setParagraphSpacing: (...args) => setParagraphSpacing(editor, ...args),
+        getParagraphSpacing: (...args) => getParagraphSpacing(editor, ...args),
 
         // Font
         fontMgrFromURL: (...args) => fontMgrFromURL(editor, ...args),

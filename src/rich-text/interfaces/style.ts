@@ -11,8 +11,6 @@ export interface StyleInterface {
     textCase: "NONE" | "LOWER" | "UPPER" | "TITLE",
     /** 文本修饰 */
     textDecoration: "STRIKETHROUGH" | "UNDERLINE" | "NONE",
-    /** 段落间距 */
-    paragraphSpacing: number,
     /** 段落缩进 */
     paragraphIndent: number,
 

@@ -3,6 +3,7 @@ import { Editor, getFontLineHeight } from "..";
 export const getH = (editor: Editor) => {
     const baselines = editor.getBaselines()
     if (!baselines?.length) return getFontLineHeight(editor);
+    const { lines } = editor.textData;
 
     const firstBaseLine = baselines[0]
     const lastBaseLine = baselines[baselines.length - 1]
@@ -10,7 +11,7 @@ export const getH = (editor: Editor) => {
     const characters = editor.getText()
     let wrapHeight = 0
     if (characters.length > 1 && characters[characters.length - 1] === '\n') {
-        wrapHeight = lastBaseLine.lineHeight + editor.style.paragraphSpacing
+        wrapHeight = lastBaseLine.lineHeight
     }
 
     let leadingH = 0
@@ -19,12 +20,19 @@ export const getH = (editor: Editor) => {
         leadingH -= (lastBaseLine.lineHeight - lastBaseLine.lineAscent)
     }
 
+    let paragraphSpacingH = 0
+    if (lines) {
+        for (let i = 0; i < lines.length - 1; i++) {
+            paragraphSpacingH += lines[i].paragraphSpacing;
+        }
+    }
+
     // 省略文本
     if (editor.style.textTruncation === 'ENABLE' && editor.style.truncatedHeight > -1) {
         return editor.style.truncatedHeight + leadingH
     }
 
-    let height = wrapHeight + leadingH
+    let height = wrapHeight + leadingH + paragraphSpacingH
     for (let i = 0; i < baselines.length; i++) {
         height += baselines[i].lineHeight;
     }

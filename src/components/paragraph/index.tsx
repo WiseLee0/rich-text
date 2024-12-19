@@ -1,4 +1,4 @@
-import { InputNumber, Radio, RadioChangeEvent } from "antd"
+import { Input, InputNumber, Radio, RadioChangeEvent } from "antd"
 import { Editor, StyleInterface } from "../../rich-text"
 import './index.css'
 import { useEffect, useState } from "react"
@@ -14,7 +14,7 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
     const [textTruncation, setTextTruncation] = useState(editor.style.textTruncation)
     const [leadingTrim, setLeadingTrim] = useState(editor.style.leadingTrim)
     const [listType, setTextListType] = useState(editor.getTextListTypeForSelection())
-    const [paragraphSpacing, setParagraphSpacing] = useState(editor.style.paragraphSpacing)
+    const [paragraphSpacing, setParagraphSpacing] = useState(editor.getParagraphSpacing())
     const [paragraphIndent, setParagraphIndent] = useState(editor.style.paragraphIndent)
     const { textAutoResize } = editor.style
     const disableMaxLine = textAutoResize === 'NONE'
@@ -27,12 +27,12 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
         })
     }
 
-    const handleParagraphSpacingChange = (value: number | null) => {
-        if (value === null) return
-        setParagraphSpacing(value)
-        editor.setStyle({
-            paragraphSpacing: value
-        })
+    const handleParagraphSpacingChange = (e: any) => {
+        const value = Number(e.target.value)
+        if (!isNaN(value)) {
+            setParagraphSpacing(value)
+            editor.setParagraphSpacing(value)
+        }
     }
 
     const handleMaxLineChange = (value: number | null) => {
@@ -65,6 +65,8 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
         const watchSelection = () => {
             const listType = editor.getTextListTypeForSelection()
             if (listType) setTextListType(listType)
+            const paragraphSpacing = editor.getParagraphSpacing()
+            setParagraphSpacing(paragraphSpacing)
         }
         editorRef.current?.addEventListener('selection', watchSelection)
         return () => {
@@ -96,10 +98,9 @@ export const ParagraphComp = (props: ParagraphCompProps) => {
         </div>
         <div className="paragraph-row">
             <span>段落间距</span>
-            <InputNumber
+            <Input
                 style={{ width: 70 }}
-                min={0}
-                onChange={handleParagraphSpacingChange}
+                onInput={handleParagraphSpacingChange}
                 size="small"
                 value={paragraphSpacing}
             />

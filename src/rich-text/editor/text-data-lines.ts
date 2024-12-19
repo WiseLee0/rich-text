@@ -5,7 +5,8 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
         lineType: "PLAIN",
         indentationLevel: 0,
         isFirstLineOfList: true,
-        listStartOffset: 0
+        listStartOffset: 0,
+        paragraphSpacing: 0
     } as TextDataLinesInterface
     const { lines, characterStyleIDs, styleOverrideTable } = editor.textData
     let wrapNum = getWrapNum(content)

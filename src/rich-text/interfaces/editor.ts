@@ -74,6 +74,10 @@ export type Editor = {
     reduceLetterSpacing: OmitFirstArg<EditorInterface['reduceLetterSpacing']>
     /** 获取自动行高的像素值 */
     getAutoLineHeightOfPixels: OmitFirstArg<EditorInterface['getAutoLineHeightOfPixels']>
+    /** 设置段落间距 */
+    setParagraphSpacing: OmitFirstArg<EditorInterface['setParagraphSpacing']>
+    /** 获取段落间距 */
+    getParagraphSpacing: OmitFirstArg<EditorInterface['getParagraphSpacing']>
     /** 光标方向移动 */
     arrowMove: OmitFirstArg<EditorInterface['arrowMove']>
     /** 获取选区文本列表类型 */
@@ -174,6 +178,9 @@ export type EditorInterface = {
     addLetterSpacing: (editor: Editor) => void
     reduceLetterSpacing: (editor: Editor) => void
     getAutoLineHeightOfPixels: (editor: Editor) => number | 'mix'
+    setParagraphSpacing: (editor: Editor, paragraphSpacing: number) => void
+    getParagraphSpacing: (editor: Editor) => number | 'mix'
+    getParagraphSpacingForCharacterOffset: (editor: Editor, firstCharacter: number) => number
 }
 
 export type Rect = [number, number, number, number]

@@ -6,7 +6,8 @@ export const deleteText: EditorInterface['deleteText'] = (editor, options = {}) 
             lineType: 'PLAIN',
             listStartOffset: 0,
             isFirstLineOfList: true,
-            indentationLevel: 0
+            indentationLevel: 0,
+            paragraphSpacing: 0
         }]
         editor.apply();
         return;
