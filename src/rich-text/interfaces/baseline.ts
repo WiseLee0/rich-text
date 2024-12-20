@@ -9,5 +9,6 @@ export interface BaseLineInterface {
     lineHeight: number,             // 样式设置的行高
     lineAscent: number,
     firstCharacter: number,
-    endCharacter: number
+    endCharacter: number,
+    capHeight: number
 }

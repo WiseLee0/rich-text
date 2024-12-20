@@ -165,8 +165,9 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
                 defaultLineHeight: editor.style.fontSize,
                 lineAscent: editor.style.fontSize,
                 firstCharacter: -1,
-                endCharacter: 0
-            }
+                endCharacter: 0,
+                capHeight: 0,
+            } as BaseLineInterface
             addListSymbol(editor, glyphs, 0, endLine)
             lineSymbolVisit[0] = 1
         }
@@ -196,8 +197,9 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
                 defaultLineHeight: endBaseLine.defaultLineHeight,
                 lineAscent: endBaseLine.lineAscent,
                 firstCharacter: lastLen - 1,
-                endCharacter: lastLen
-            }
+                endCharacter: lastLen,
+                capHeight: endBaseLine.capHeight,
+            } as BaseLineInterface
             addListSymbol(editor, glyphs, lineIdx, endLine)
             lineSymbolVisit[lineIdx] = 1
         }

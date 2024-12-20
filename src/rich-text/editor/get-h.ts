@@ -16,7 +16,7 @@ export const getH = (editor: Editor) => {
 
     let leadingH = 0
     if (editor.style.leadingTrim === 'CAP_HEIGHT') {
-        leadingH -= Math.abs(firstBaseLine.lineY);
+        leadingH -= Math.abs(firstBaseLine.lineAscent - firstBaseLine.capHeight);
         leadingH -= (lastBaseLine.lineHeight - lastBaseLine.lineAscent)
     }
 

@@ -1,4 +1,4 @@
-import { calcJustifiedBaseLineWidth, Editor, EditorInterface, getLineFirstCharacterList, getLineIndentationLevelPixels, getLineStyleID, getParagraphSpacingForCharacterOffset, MetricesInterface, splitBaseLines, StyleInterface } from "..";
+import { BaseLineInterface, calcJustifiedBaseLineWidth, Editor, EditorInterface, getLineFirstCharacterList, getLineIndentationLevelPixels, getLineStyleID, getParagraphSpacingForCharacterOffset, MetricesInterface, splitBaseLines, StyleInterface } from "..";
 
 export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     if (editor.derivedTextData.baselines) return editor.derivedTextData.baselines
@@ -139,8 +139,9 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
             endCharacter,
             defaultLineHeight,
             lineHeight,
-            lineAscent
-        })
+            lineAscent,
+            capHeight
+        } as BaseLineInterface)
 
         firstCharacter = endCharacter
         lineHeightSum += lineHeight
