@@ -2,6 +2,9 @@ import { deepClone, EditorInterface, execEvent, getTextArr, handleInsertTextOfTe
 
 export const insertText: EditorInterface['insertText'] = (editor, content) => {
     if (!editor.isEditor) return;
+    if (!editor.hasSelection() && content === '\n') {
+        editor.__selection = { anchor: 0, focus: 0, anchorOffset: 0, focusOffset: 0 }
+    }
     if (!editor.hasSelection() && editor.isEditor) {
         editor.replaceText(content)
         editor.apply()

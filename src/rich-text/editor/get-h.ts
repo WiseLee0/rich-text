@@ -10,7 +10,7 @@ export const getH = (editor: Editor) => {
     // 最后一个字符是换行符，则需要添加一段高度
     const characters = editor.getText()
     let wrapHeight = 0
-    if (characters.length > 1 && characters[characters.length - 1] === '\n') {
+    if (characters.length > 0 && characters[characters.length - 1] === '\n') {
         wrapHeight = lastBaseLine.lineHeight
     }
 

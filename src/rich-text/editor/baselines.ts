@@ -102,7 +102,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         positionX += lineIndentationLevel
 
         // 处理段落缩进
-        if (lineFirstCharacterList.includes(firstCharacter)) {
+        if (line[0].name !== '\n' && lineFirstCharacterList.includes(firstCharacter)) {
             if (paragraphIndent >= lineMaxWidth) {
                 lineHeightSum += lineHeight
             } else {
