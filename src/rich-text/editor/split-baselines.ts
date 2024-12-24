@@ -193,10 +193,6 @@ const splitWordGroup = (editor: Editor) => {
         }
         if (temp.length) words.push(temp)
     }
-    if (mIdx !== metrices.length) {
-        console.warn('数据异常')
-        return;
-    }
     return words
 }
 
