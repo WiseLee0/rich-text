@@ -12,7 +12,9 @@ export const splitBaseLines = (editor: Editor, maxWidth: number) => {
 }
 // 处理空格，空格切回到上一行，没有的话创建新行
 const spaceLine = (metrice: MetricesInterface, lines: MetricesInterface[][]) => {
-    if (lines.length - 1 >= 0) {
+    const words = lines?.[lines.length - 1];
+    const word = words?.[words?.length - 1];
+    if (lines.length - 1 >= 0 && word.name !== '\n') {
         lines[lines.length - 1].push(metrice)
     } else {
         let currentLine: MetricesInterface[] = [];
