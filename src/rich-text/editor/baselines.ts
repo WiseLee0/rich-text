@@ -72,7 +72,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         if (textAlignHorizontal === 'JUSTIFIED') {
             positionX = 0
             const justifiedLineWidth = calcJustifiedBaseLineWidth(editor, lines, i, firstCharacter, endCharacter)
-            if (justifiedLineWidth > -1) lineWidth = justifiedLineWidth
+            if (justifiedLineWidth > -1) lineWidth = justifiedLineWidth - lineIndentationLevel - paragraphIndent
         }
         if (textAutoResize === 'WIDTH_AND_HEIGHT') {
             if (textAlignHorizontal === 'CENTER') {

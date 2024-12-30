@@ -1,4 +1,4 @@
-import { EditorInterface, baselineToMetricesRange, calcJustifiedSpaceWidth, getLineLastSpaceIdx } from "..";
+import { EditorInterface, baselineToMetricesRange, calcJustifiedSpaceWidth, getLineIndentationLevelPixels, getLineLastSpaceIdx } from "..";
 
 // 计算每行字符真实的偏移值
 export const getLogicalCharacterOffset: EditorInterface['getLogicalCharacterOffset'] = (editor) => {
@@ -8,14 +8,16 @@ export const getLogicalCharacterOffset: EditorInterface['getLogicalCharacterOffs
     const glyphs = editor.getGlyphs()
     if (!baselines?.length || !glyphs?.length || !metrices?.length) return [];
     const logicalCharacterOffset: number[] = []
+    const { paragraphIndent } = editor.style;
 
     for (let i = 0; i < baselines.length; i++) {
         const baseline = baselines[i];
         const { firstCharacter, endCharacter, width } = baseline
         let [start, end] = baselineToMetricesRange(editor, firstCharacter, endCharacter)
         const line = metrices.slice(start, end)
+        const lineIndentationLevel = getLineIndentationLevelPixels(editor, line[0].firstCharacter)
         const spaceIdx = start + getLineLastSpaceIdx(editor, firstCharacter, endCharacter)
-        let spaceWidth = i < baselines.length - 1 ? calcJustifiedSpaceWidth(editor, line, firstCharacter, endCharacter) : -1
+        let spaceWidth = i < baselines.length - 1 ? calcJustifiedSpaceWidth(editor, line, firstCharacter, endCharacter) - lineIndentationLevel - paragraphIndent : -1
         let offset = 0
         for (let j = start; j < end; j++) {
             const metrice = metrices[j];
@@ -43,7 +45,7 @@ export const getLogicalCharacterOffset: EditorInterface['getLogicalCharacterOffs
 // 获取当前基线行的宽度列表
 export const getBaseLineCharacterOffset: EditorInterface['getBaseLineCharacterOffset'] = (editor, baselineIdx) => {
     const characterOffset = getLogicalCharacterOffset(editor)
-    
+
     const offset: number[] = []
     let idx = -1
     for (let i = 0; i < characterOffset.length; i++) {

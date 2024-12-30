@@ -29,6 +29,7 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
     }
 
     const lineSymbolVisit = new Array(editor.textData.lines?.length ?? 0).fill(0)
+    const { paragraphIndent } = editor.style;
     for (let i = 0; i < baselines.length; i++) {
         const baseline = baselines[i];
         const { firstCharacter, endCharacter } = baseline
@@ -36,8 +37,9 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
         const line = metrices.slice(start, end)
         let x = baseline.position.x
         let count = 0
+        const lineIndentationLevel = getLineIndentationLevelPixels(editor, line[0].firstCharacter)
         // 空格宽度
-        let spaceWidth = i < baselines.length - 1 ? calcJustifiedSpaceWidth(editor, line, firstCharacter, endCharacter) : -1
+        let spaceWidth = i < baselines.length - 1 ? calcJustifiedSpaceWidth(editor, line, firstCharacter, endCharacter) - lineIndentationLevel - paragraphIndent : -1
         const endStyle = editor.getStyle(baseline.endCharacter - 1)
         let endFont = editor.getFont(endStyle.fontName.family, endStyle.fontName.style)
         if (Object.keys(endStyle.fontVariations)?.length) endFont = endFont?.getVariation(endStyle.fontVariations)
