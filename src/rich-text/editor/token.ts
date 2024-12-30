@@ -48,12 +48,15 @@ const isChineseSymbol = (code: number) => (
     code === 65288   // （
     || code === 65289   // ）
     || code === 65292   // ，
+    || code === 65306   // ：
     || code === 65307   // ；
     || code === 65311   // ？
-    || code === 65339   // ：
-    || code === 8220   // “
-    || code === 8221   // ”
-    || code === 12289  // 、
+    || code === 8220    // “
+    || code === 8221    // ”
+    || code === 8216    // ‘
+    || code === 8217    // ’
+    || code === 8230    // ……
+    || code === 12289   // 、
     || code === 12290   // 。
     || code === 12298   // 《
     || code === 12299   // 》
@@ -62,6 +65,8 @@ const isChineseSymbol = (code: number) => (
     || code === 12301   // 」
     || code === 12304   // 【
     || code === 12305   // 】
+    || code === 8212    // ——
+    || code === 65281   // ！
     // 添加其他需要的中文符号的 Unicode 编码
 );
 const isSymbol = (code: number) => (code >= 33 && code <= 47) || (code >= 58 && code <= 64) || (code >= 91 && code <= 96) || (code >= 123 && code <= 126) || isChineseSymbol(code);
