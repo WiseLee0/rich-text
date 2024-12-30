@@ -43,7 +43,28 @@ export function lineTokenize(input: string) {
  * 3. 剩余连续的、不包含字符和空格类型字符是一个词组，比如「Im」、「constant你好」
  *
  */
-const isSymbol = (code: number) => (code >= 33 && code <= 47) || (code >= 58 && code <= 64) || (code >= 91 && code <= 96) || (code >= 123 && code <= 126);
+// 常见的中文标点符号（这里只列举了一部分，可以根据需要添加更多）
+const isChineseSymbol = (code: number) => (
+    code === 65288   // （
+    || code === 65289   // ）
+    || code === 65292   // ，
+    || code === 65307   // ；
+    || code === 65311   // ？
+    || code === 65339   // ：
+    || code === 8220   // “
+    || code === 8221   // ”
+    || code === 12289  // 、
+    || code === 12290   // 。
+    || code === 12298   // 《
+    || code === 12299   // 》
+    || code === 12299   // 》
+    || code === 12300   // 「
+    || code === 12301   // 」
+    || code === 12304   // 【
+    || code === 12305   // 】
+    // 添加其他需要的中文符号的 Unicode 编码
+);
+const isSymbol = (code: number) => (code >= 33 && code <= 47) || (code >= 58 && code <= 64) || (code >= 91 && code <= 96) || (code >= 123 && code <= 126) || isChineseSymbol(code);
 export function wordTokenize(input: string) {
     const tokens: string[] = [];
     let currentPhrase = '';
