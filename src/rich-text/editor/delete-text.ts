@@ -47,6 +47,10 @@ export const deleteText: EditorInterface['deleteText'] = (editor, options = {}) 
     const textArr = getTextArr(editor)
     let { focus, anchor, focusOffset, anchorOffset } = selection
 
+    if (baselines[anchor] === undefined) {
+        return;
+    }
+
     const anchorCharacterIdx = baselines[anchor].firstCharacter + anchorOffset
     let focusCharacterIdx = 0
     if (focus === baselines.length) {
