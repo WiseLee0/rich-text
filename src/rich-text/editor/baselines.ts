@@ -58,7 +58,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
             firstCharacter = endCharacter
             continue
         }
-
+        let needLetterSpacing = true
         // 处理对齐方式
         if (textAlignHorizontal === 'LEFT') {
             positionX = 0
@@ -71,8 +71,11 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         }
         if (textAlignHorizontal === 'JUSTIFIED') {
             positionX = 0
-            const justifiedLineWidth = calcJustifiedBaseLineWidth(editor, lines, i, firstCharacter, endCharacter)
-            if (justifiedLineWidth > -1) lineWidth = justifiedLineWidth - lineIndentationLevel - paragraphIndent
+            const justifiedLineWidth = calcJustifiedBaseLineWidth(editor, lines, i)
+            if (justifiedLineWidth > -1) {
+                lineWidth = justifiedLineWidth - lineIndentationLevel - paragraphIndent
+                needLetterSpacing = false
+            }
         }
         if (textAutoResize === 'WIDTH_AND_HEIGHT') {
             if (textAlignHorizontal === 'CENTER') {
@@ -122,10 +125,12 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         }
 
         // 处理字间距
-        if (line[line.length - 1].name === '\n') {
-            lineWidth -= line[line.length - 2]?.letterSpacing ?? 0
-        } else {
-            lineWidth -= line[line.length - 1]?.letterSpacing ?? 0
+        if (needLetterSpacing) {
+            if (line[line.length - 1].name === '\n') {
+                lineWidth -= line[line.length - 2]?.letterSpacing ?? 0
+            } else {
+                lineWidth -= line[line.length - 1]?.letterSpacing ?? 0
+            }
         }
 
         baselines.push({

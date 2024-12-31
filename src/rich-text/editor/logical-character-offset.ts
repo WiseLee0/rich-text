@@ -1,4 +1,4 @@
-import { EditorInterface, baselineToMetricesRange, calcJustifiedSpaceWidth, getLineIndentationLevelPixels, getLineLastSpaceIdx } from "..";
+import { EditorInterface, baselineToMetricesRange, calcJustifiedWordWidth, getLineIndentationLevelPixels, getLineLastSpaceIdx, isJustifiedChar } from "..";
 
 // 计算每行字符真实的偏移值
 export const getLogicalCharacterOffset: EditorInterface['getLogicalCharacterOffset'] = (editor) => {
@@ -15,9 +15,8 @@ export const getLogicalCharacterOffset: EditorInterface['getLogicalCharacterOffs
         const { firstCharacter, endCharacter, width } = baseline
         let [start, end] = baselineToMetricesRange(editor, firstCharacter, endCharacter)
         const line = metrices.slice(start, end)
-        const lineIndentationLevel = getLineIndentationLevelPixels(editor, line[0].firstCharacter)
         const spaceIdx = start + getLineLastSpaceIdx(editor, firstCharacter, endCharacter)
-        let spaceWidth = i < baselines.length - 1 ? calcJustifiedSpaceWidth(editor, line, firstCharacter, endCharacter) - lineIndentationLevel - paragraphIndent : -1
+        let wordWidth = i < baselines.length - 1 ? calcJustifiedWordWidth(editor, line, baseline.width) : -1
         let offset = 0
         for (let j = start; j < end; j++) {
             const metrice = metrices[j];
@@ -33,7 +32,7 @@ export const getLogicalCharacterOffset: EditorInterface['getLogicalCharacterOffs
             if (!metrices[j + 1] || metrices[j + 1]?.name === '\n') {
                 letterSpacing = metrice.letterSpacing
             }
-            if (metrice.name === 'space' && j <= spaceIdx && spaceWidth > -1) offset += spaceWidth
+            if (wordWidth > -1 && isJustifiedChar(metrice) && j <= spaceIdx) offset += wordWidth + (metrice.xAdvance - letterSpacing)
             else offset += (metrice.xAdvance - letterSpacing)
         }
         if (width !== 0) logicalCharacterOffset.push(offset)
