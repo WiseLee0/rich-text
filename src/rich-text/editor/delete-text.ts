@@ -22,7 +22,8 @@ export const deleteText: EditorInterface['deleteText'] = (editor, options = {}) 
         if (offset === undefined) return;
         if (options.fn && options.command) {
             let offsetEnd = baselines[selection.anchor].endCharacter - 1;
-            if (selection.anchor === baselines.length - 1) {
+            const textArr = getTextArr(editor)
+            if (textArr[offsetEnd] !== '\n') {
                 offsetEnd++;
             }
             if (offset.anchor === offsetEnd) {
