@@ -9,12 +9,19 @@ export const getFont: EditorInterface['getFont'] = (editor, _family, _style) => 
 
     for (let i = 0; i < fonts?.length; i++) {
         const font = fonts[i];
+        let familyName = font?.familyName;
+        if ((font as any)?._tables?.name?.records?.preferredFamily?.en) {
+            familyName = (font as any)?._tables?.name?.records?.preferredFamily?.en;
+        }
         // 优先搜索可变字体
-        if ((font as any)?.namedVariations?.[style] && family === font?.familyName) {
+        if ((font as any)?.namedVariations?.[style] && family === familyName) {
             return font.getVariation((font as any).namedVariations?.[style])
         }
-
-        if (font.subfamilyName === style) {
+        let subfamilyName = font.subfamilyName;
+        if ((font as any)?._tables?.name?.records?.preferredSubfamily?.en) {
+            subfamilyName = (font as any)?._tables?.name?.records?.preferredSubfamily?.en;
+        }
+        if (subfamilyName === style) {
             return font;
         }
     }
