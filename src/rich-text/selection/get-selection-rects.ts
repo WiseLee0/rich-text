@@ -66,7 +66,7 @@ export const getSelectionRects: SelectionInterface['getSelectionRects'] = (edito
         const width = xArr[focusOffset] - xArr[anchorOffset]
         if (anchorOffset === focusOffset) {
             const minY = baseLine.position.y - baseLine.lineAscent + 2
-            result.push([xArr[anchorOffset], minY, width || 1, baseLine.lineAscent])
+            result.push([xArr[anchorOffset], minY, width || 1, Math.max(baseLine.lineHeight, baseLine.defaultLineHeight) - 4])
         } else {
             result.push([xArr[anchorOffset], baseLine.lineY, width || 1, Math.max(baseLine.lineHeight, baseLine.defaultLineHeight)])
         }
