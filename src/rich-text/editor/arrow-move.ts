@@ -219,10 +219,18 @@ export const arrowMove: EditorInterface['arrowMove'] = (editor, type, options = 
     }
 
     if (type === 'left') {
+        if (!editor.isCollapse()) {
+            editor.selectForCharacterOffset(offset.anchor);
+            return
+        }
         editor.selectForCharacterOffset(offset.anchor - 1);
         return
     }
     if (type === 'right') {
+        if (!editor.isCollapse()) {
+            editor.selectForCharacterOffset(offset.focus);
+            return
+        }
         editor.selectForCharacterOffset(offset.focus + 1);
         return
     }

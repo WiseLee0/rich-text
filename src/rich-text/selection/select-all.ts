@@ -11,5 +11,12 @@ export const selectAll: SelectionInterface['selectAll'] = (editor) => {
             anchorOffset: 0,
             focusOffset: baseline?.endCharacter - baseline.firstCharacter
         })
+    } else {
+        editor.setSelection({
+            anchor: 0,
+            focus: 0,
+            anchorOffset: 0,
+            focusOffset: 0
+        })
     }
 }
