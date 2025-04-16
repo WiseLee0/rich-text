@@ -29,7 +29,6 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
     }
 
     const lineSymbolVisit = new Array(editor.textData.lines?.length ?? 0).fill(0)
-    const { paragraphIndent } = editor.style;
 
     for (let i = 0; i < baselines.length; i++) {
         const baseline = baselines[i];
@@ -65,7 +64,8 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
                         fontSize: metrice.fontSize,
                         firstCharacter: baseline.firstCharacter + count,
                         emojiCodePoints: metrice.codePoints,
-                        emojiRect: [x, y - metrice.fontSize * 0.9, x + metrice.xAdvance, y + metrice.fontSize * 0.1]
+                        emojiRect: [x, y - metrice.fontSize * 0.9, x + metrice.xAdvance, y + metrice.fontSize * 0.1],
+                        xAdvance: metrice.xAdvance
                     })
                 } else {
                     glyphs.push({
@@ -75,7 +75,8 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
                             y
                         },
                         fontSize: metrice.fontSize,
-                        firstCharacter: baseline.firstCharacter + count
+                        firstCharacter: baseline.firstCharacter + count,
+                        xAdvance: metrice.xAdvance
                     })
                 }
                 if (wordWidth > -1 && isJustifiedChar(metrice)) x += wordWidth + metrice.xAdvance;
@@ -169,6 +170,7 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
                 firstCharacter: -1,
                 endCharacter: 0,
                 capHeight: 0,
+                xAdvance: 0
             } as BaseLineInterface
             addListSymbol(editor, glyphs, 0, endLine)
             lineSymbolVisit[0] = 1
@@ -201,6 +203,7 @@ export const getGlyphs: EditorInterface['getGlyphs'] = (editor) => {
                 firstCharacter: lastLen - 1,
                 endCharacter: lastLen,
                 capHeight: endBaseLine.capHeight,
+                xAdvance: 0
             } as BaseLineInterface
             addListSymbol(editor, glyphs, lineIdx, endLine)
             lineSymbolVisit[lineIdx] = 1

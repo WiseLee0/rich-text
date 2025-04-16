@@ -111,6 +111,7 @@ export const createEditor = async (): Promise<Editor> => {
         },
         __select_styles: {},
         __events: {},
+        __need_cache: "none",
         isEditor: false,
         derivedTextData: {},
         textData: {

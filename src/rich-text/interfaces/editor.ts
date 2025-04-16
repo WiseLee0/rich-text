@@ -24,6 +24,7 @@ export type Editor = {
     __selection: Selection
     __select_styles: Partial<{ anchor: number, focus: number, styles: StyleInterface }>
     __metrices?: MetricesInterface[]
+    __need_cache: 'all' | 'metrices' | 'none'
 
     // core
     /** 布局段落中的文本，使其包装到给定的宽度和高度 */
@@ -142,7 +143,7 @@ export type EditorInterface = {
     layout: (editor: Editor, width?: number, height?: number) => void
     layoutW: (editor: Editor, width: number) => void
     layoutH: (editor: Editor, height: number) => void
-    apply: (editor: Editor) => void
+    apply: (editor: Editor, cache?: boolean) => void
     insertText: (editor: Editor, text: string) => void
     deleteText: (editor: Editor, options?: Partial<{ fn: boolean, option: boolean, command: boolean }>) => void
     replaceText: (editor: Editor, text: string) => void
@@ -152,6 +153,7 @@ export type EditorInterface = {
     getGlyphs: (editor: Editor) => GlyphsInterface[] | undefined
     clearCache: (editor: Editor) => void
     clearGetStyleCache: (editor: Editor) => void
+    checkStyleCache: (editor: Editor, style: Partial<StyleInterface>) => void
     getBaseLineCharacterOffset: (editor: Editor, baselineIdx: number) => number[] | undefined
     getLogicalCharacterOffset: (editor: Editor) => number[]
     getTextDecorationRects: (editor: Editor) => Rect[]

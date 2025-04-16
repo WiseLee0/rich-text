@@ -1,7 +1,8 @@
 import { clearCache, EditorInterface, execEvent, getH, getLineIndentationLevelPixels, getLogicalCharacterOffset } from ".."
 
-export const apply: EditorInterface['apply'] = (editor) => {
-    clearCache(editor)
+export const apply: EditorInterface['apply'] = (editor, cache = false) => {
+    if (!cache) clearCache(editor)
+
     if (editor.style.textAutoResize === 'WIDTH_AND_HEIGHT') {
         editor.width = Infinity
     }

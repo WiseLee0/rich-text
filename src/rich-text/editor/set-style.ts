@@ -1,4 +1,4 @@
-import { clearGetStyleCache, deepEqual, Editor, EditorInterface, execEvent, getTextArr, StyleInterface } from "..";
+import { checkStyleCache, clearGetStyleCache, deepEqual, Editor, EditorInterface, execEvent, getTextArr, StyleInterface } from "..";
 
 /**
  * 修改样式
@@ -11,6 +11,7 @@ export const setStyle: EditorInterface['setStyle'] = (editor, styles) => {
         styles.fontVariations = {}
     }
 
+    checkStyleCache(editor, styles)
     handleStyleOverride(editor, styles)
 
     editor.style = {

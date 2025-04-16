@@ -3,13 +3,15 @@ import { EditorInterface, Rect } from "..";
 export const getTextDecorationRects: EditorInterface['getTextDecorationRects'] = (editor) => {
     const baselines = editor?.getBaselines()
     const glyphs = editor?.getGlyphs()
-    const metrices = editor?.getMetrices()
-    if (!baselines?.length || !glyphs?.length || !metrices?.length) return [];
+    if (!baselines?.length || !glyphs?.length) return [];
     const rects: Rect[] = []
+    let character = 0
     for (let i = 0; i < glyphs.length; i++) {
         const glyph = glyphs[i];
-        const metrice = metrices.find(item => item.firstCharacter === glyph.firstCharacter)
-        if (!metrice) {
+        character = glyph?.firstCharacter || character
+        const baseline = baselines.find(item => item.firstCharacter <= character && item.endCharacter > character)
+        const height = baseline?.lineHeight || glyph.fontSize
+        if (glyph?.xAdvance === undefined) {
             rects.push([0, 0, 0, 0])
             continue
         }
@@ -22,10 +24,10 @@ export const getTextDecorationRects: EditorInterface['getTextDecorationRects'] =
 
         if (textDecoration === 'NONE') rects.push([0, 0, 0, 0])
         if (textDecoration === 'UNDERLINE') {
-            rects.push([glyph.position.x, glyph.position.y + glyph.fontSize * 0.1, metrice.xAdvance, metrice.height / 24])
+            rects.push([glyph.position.x, glyph.position.y + glyph.fontSize * 0.1, glyph.xAdvance, height / 24])
         }
         if (textDecoration === 'STRIKETHROUGH') {
-            rects.push([glyph.position.x, glyph.position.y - glyph.fontSize * 0.3, metrice.xAdvance, metrice.height / 24])
+            rects.push([glyph.position.x, glyph.position.y - glyph.fontSize * 0.3, glyph.xAdvance, height / 24])
         }
     }
 
