@@ -474,6 +474,14 @@ export default function App() {
       });
     }
 
+    const onPaste = (e: ClipboardEvent) => {
+      e.preventDefault()
+      const text = e.clipboardData?.getData('text/plain')
+      if (text) {
+        editorRef.current!.insertText(text)
+      }
+    }
+
     canvasRef.current?.addEventListener('mousedown', handleCanvasMouseDown)
     canvasRef.current?.addEventListener('mousemove', handleCanvasMouseMove)
     canvasRef.current?.addEventListener('mouseup', handleCanvasMouseUp)
@@ -483,6 +491,7 @@ export default function App() {
     inputRef.current?.addEventListener('compositionstart', onCompositionStart)
     inputRef.current?.addEventListener('compositionupdate', onCompositionUpdate)
     inputRef.current?.addEventListener('compositionend', onCompositionEnd)
+    document.addEventListener('paste', onPaste)
     return () => {
       canvasRef.current?.removeEventListener('mousedown', handleCanvasMouseDown)
       canvasRef.current?.removeEventListener('mousemove', handleCanvasMouseMove)
@@ -493,6 +502,7 @@ export default function App() {
       inputRef.current?.removeEventListener('compositionstart', onCompositionStart)
       inputRef.current?.removeEventListener('compositionupdate', onCompositionUpdate)
       inputRef.current?.removeEventListener('compositionend', onCompositionEnd)
+      document.removeEventListener('paste', onPaste)
     }
   }, [])
 

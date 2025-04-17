@@ -152,7 +152,7 @@ export function fontTokenize(textData: Record<string, any>, characters: string) 
         if (characterStyleIDs && modifySet.has(characterStyleIDs[characterOffset])) {
             if (str.length) token.push(str)
             str = char
-            while (charArr[i + 1] && characterStyleIDs[characterOffset + 1] === characterStyleIDs[characterOffset] && charArr[i + 1] !== '\n') {
+            while (charArr[i + 1] && charArr[i + 1] !== '\n' && !detectEmoji(charArr[i + 1]) && characterStyleIDs[characterOffset + 1] === characterStyleIDs[characterOffset] && charArr[i + 1] !== '\n') {
                 str += charArr[i + 1]
                 characterOffset += codePoints[i + 1].length
                 i++

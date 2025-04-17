@@ -111,8 +111,10 @@ export const handleDeleteTextOfTextDataLine = (editor: Editor) => {
     const lineList = getLineFirstCharacterList(editor)
     const startBaseline = baselines[range.anchor]
     const endBaseline = baselines[range.focus]
-    const anchorLineIdx = lineList.findIndex(item => item > startBaseline.firstCharacter) - 1;
-    const focusLineIdx = lineList.findIndex(item => item > endBaseline.firstCharacter) - 1;
+    let anchorLineIdx = lineList.findIndex(item => item > startBaseline.firstCharacter) - 1;
+    let focusLineIdx = lineList.findIndex(item => item > endBaseline.firstCharacter) - 1;
+    anchorLineIdx = anchorLineIdx < 0 ? lineList.length - 1 : anchorLineIdx
+    focusLineIdx = focusLineIdx < 0 ? lineList.length - 1 : focusLineIdx
     const deleteCount = focusLineIdx - anchorLineIdx
 
     // 在一行内删除
