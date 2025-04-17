@@ -44,6 +44,7 @@ export const insertText: EditorInterface['insertText'] = (editor, content) => {
     const characterOffset = editor.getSelectCharacterOffset()
     if (characterOffset !== undefined && editor.isCollapse() && Object.keys(editor.__select_styles.styles || {}).length) {
         const styles = deepClone(editor.__select_styles.styles)!
+        editor.apply()
         editor.selectForCharacterOffset(characterOffset.anchor, characterOffset.anchor + contentLen)
         editor.setStyle(styles)
         editor.deselection()

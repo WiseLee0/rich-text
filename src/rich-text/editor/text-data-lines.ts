@@ -105,10 +105,14 @@ export const handleInsertTextOfTextDataLine = (editor: Editor, content: string) 
 export const handleDeleteTextOfTextDataLine = (editor: Editor) => {
     const selectCharacterOffset = editor.getSelectCharacterOffset()
     const range = editor.getSelection()
+    const baselines = editor.getBaselines()
     const { lines } = editor.textData
-    if (!selectCharacterOffset || !lines) return false;
-    const anchorLineIdx = getLineIndexForCharacterOffset(editor, selectCharacterOffset.anchor)
-    const focusLineIdx = getLineIndexForCharacterOffset(editor, selectCharacterOffset.focus)
+    if (!selectCharacterOffset || !lines || !baselines) return false;
+    const lineList = getLineFirstCharacterList(editor)
+    const startBaseline = baselines[range.anchor]
+    const endBaseline = baselines[range.focus]
+    const anchorLineIdx = lineList.findIndex(item => item > startBaseline.firstCharacter) - 1;
+    const focusLineIdx = lineList.findIndex(item => item > endBaseline.firstCharacter) - 1;
     const deleteCount = focusLineIdx - anchorLineIdx
 
     // 在一行内删除

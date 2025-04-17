@@ -229,8 +229,21 @@ export default function App() {
 
       // 阻止原生快捷键
       if (metaKey || altKey) {
-        e.preventDefault();
-        e.stopPropagation();
+        const execPrevent = (e: KeyboardEvent) => {
+          switch (e.code) {
+            case "KeyC":
+              if (metaKey) return;
+              break;
+            case "KeyV":
+              if (metaKey) return;
+              break;
+            default:
+              break;
+          }
+          e.preventDefault();
+          e.stopPropagation();
+        };
+        execPrevent(e);
       }
 
       const editor = editorRef.current!;
