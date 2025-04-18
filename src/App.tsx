@@ -474,6 +474,10 @@ export default function App() {
       });
     }
 
+    const onCopy = (e: ClipboardEvent) => {
+      e.preventDefault()
+    }
+
     const onPaste = (e: ClipboardEvent) => {
       e.preventDefault()
       const text = e.clipboardData?.getData('text/plain')
@@ -491,6 +495,7 @@ export default function App() {
     inputRef.current?.addEventListener('compositionstart', onCompositionStart)
     inputRef.current?.addEventListener('compositionupdate', onCompositionUpdate)
     inputRef.current?.addEventListener('compositionend', onCompositionEnd)
+    document.addEventListener('copy', onCopy)
     document.addEventListener('paste', onPaste)
     return () => {
       canvasRef.current?.removeEventListener('mousedown', handleCanvasMouseDown)
@@ -502,6 +507,7 @@ export default function App() {
       inputRef.current?.removeEventListener('compositionstart', onCompositionStart)
       inputRef.current?.removeEventListener('compositionupdate', onCompositionUpdate)
       inputRef.current?.removeEventListener('compositionend', onCompositionEnd)
+      document.removeEventListener('copy', onCopy)
       document.removeEventListener('paste', onPaste)
     }
   }, [])
