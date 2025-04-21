@@ -109,8 +109,8 @@ export const handleDeleteTextOfTextDataLine = (editor: Editor) => {
     const { lines } = editor.textData
     if (!selectCharacterOffset || !lines || !baselines) return false;
     const lineList = getLineFirstCharacterList(editor)
-    const startBaseline = baselines[range.anchor]
-    const endBaseline = baselines[range.focus]
+    const startBaseline = baselines[range.anchor] ?? baselines[baselines.length - 1]
+    const endBaseline = baselines[range.focus] ?? baselines[baselines.length - 1]
     let anchorLineIdx = lineList.findIndex(item => item > startBaseline.firstCharacter) - 1;
     let focusLineIdx = lineList.findIndex(item => item > endBaseline.firstCharacter) - 1;
     anchorLineIdx = anchorLineIdx < 0 ? lineList.length - 1 : anchorLineIdx
