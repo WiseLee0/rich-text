@@ -1,4 +1,4 @@
-import { Editor, EditorInterface } from "..";
+import { Editor, EditorInterface, getTextArr } from "..";
 
 export const getAutoLineHeightOfPixels: EditorInterface['getAutoLineHeightOfPixels'] = (editor) => {
     const metrices = editor.getMetrices()
@@ -7,7 +7,10 @@ export const getAutoLineHeightOfPixels: EditorInterface['getAutoLineHeightOfPixe
         return getEditorLineHeight(editor)
     }
 
-    const offset = editor.getSelectCharacterOffset()
+    const offset = editor.getSelectCharacterOffset() || {
+        anchor: 0,
+        focus: getTextArr(editor).length
+    }
     if (!offset) return 0;
     let sliceIds: number[] = []
     if (offset.anchor === offset.focus) {
@@ -23,6 +26,9 @@ export const getAutoLineHeightOfPixels: EditorInterface['getAutoLineHeightOfPixe
     if (idSet.has(0)) {
         pixels = getEditorLineHeight(editor)
         idSet.delete(0)
+    }
+    if (!idSet.size) {
+        pixels = getEditorLineHeight(editor)
     }
 
     for (let i = 0; i < styleOverrideTable.length; i++) {
