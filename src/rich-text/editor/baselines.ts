@@ -17,6 +17,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     let allLineHeight = lineHeights.reduce((pre, cur) => pre + cur, 0)
     const lineWidths = lines.map(line => line.reduce((pre, cur) => pre + cur.xAdvance, 0))
     const lineMaxWidth = Math.max(...lineWidths)
+    const lineMaxWidthIdx = lineWidths.indexOf(lineMaxWidth)
 
     const { textAlignHorizontal, textAlignVertical, textAutoResize, leadingTrim, paragraphIndent } = editor.style
 
@@ -41,6 +42,8 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         lineHeightSum = 0
     }
     const lineFirstCharacterList = getLineFirstCharacterList(editor)
+    const lineIndentationLevelList = lines.map(line => getLineIndentationLevelPixels(editor, line[0].firstCharacter))
+    const rightLineIndentationLevel = lineIndentationLevelList[lineMaxWidthIdx] ?? 0
 
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
@@ -53,7 +56,8 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         const lineAscent = line.reduce((pre, cur) => Math.max(pre, cur.ascent), 0)
         const capHeight = line.reduce((pre, cur) => Math.max(pre, cur.capHeight), 0)
         let positionX = 0
-        const lineIndentationLevel = getLineIndentationLevelPixels(editor, line[0].firstCharacter)
+        const lineIndentationLevel = lineIndentationLevelList[i]
+
         if (line.length !== 1 && lineWidth === 0 && line[0].name === '\n') {
             firstCharacter = endCharacter
             continue
@@ -82,7 +86,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
                 positionX = (lineMaxWidth - lineWidth) / 2
             }
             if (textAlignHorizontal === 'RIGHT') {
-                positionX = lineMaxWidth - lineWidth
+                positionX = lineMaxWidth - lineWidth - lineIndentationLevel + rightLineIndentationLevel
             }
         }
 
