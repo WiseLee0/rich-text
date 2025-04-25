@@ -83,7 +83,7 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         }
         if (textAutoResize === 'WIDTH_AND_HEIGHT') {
             if (textAlignHorizontal === 'CENTER') {
-                positionX = (lineMaxWidth - lineWidth) / 2
+                positionX = (lineMaxWidth - lineWidth - lineIndentationLevel + rightLineIndentationLevel) / 2
             }
             if (textAlignHorizontal === 'RIGHT') {
                 positionX = lineMaxWidth - lineWidth - lineIndentationLevel + rightLineIndentationLevel
