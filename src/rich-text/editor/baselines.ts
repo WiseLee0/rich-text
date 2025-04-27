@@ -15,7 +15,16 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
     const paragraphSpacingSum = textDataLines.slice(0, -1).reduce((pre, cur) => pre + cur.paragraphSpacing, 0);
     const lineHeights = lines.map(line => line.reduce((pre, cur) => Math.max(pre, getLineHeight(editor, cur)), 0))
     let allLineHeight = lineHeights.reduce((pre, cur) => pre + cur, 0)
-    const lineWidths = lines.map(line => line.reduce((pre, cur) => pre + cur.xAdvance, 0))
+    const lineWidths = lines.map(line => {
+        // 处理字间距
+        let lineWidth = line.reduce((pre, cur) => pre + cur.xAdvance, 0)
+        if (line[line.length - 1].name === '\n') {
+            lineWidth -= line[line.length - 2]?.letterSpacing ?? 0
+        } else {
+            lineWidth -= line[line.length - 1]?.letterSpacing ?? 0
+        }
+        return lineWidth
+    })
     const lineMaxWidth = Math.max(...lineWidths)
     const lineMaxWidthIdx = lineWidths.indexOf(lineMaxWidth)
 
@@ -62,7 +71,6 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
             firstCharacter = endCharacter
             continue
         }
-        let needLetterSpacing = true
         // 处理对齐方式
         if (textAlignHorizontal === 'LEFT') {
             positionX = 0
@@ -78,7 +86,11 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
             const justifiedLineWidth = calcJustifiedBaseLineWidth(editor, lines, i)
             if (justifiedLineWidth > -1) {
                 lineWidth = justifiedLineWidth - lineIndentationLevel - paragraphIndent
-                needLetterSpacing = false
+                if (line[line.length - 1].name === '\n') {
+                    lineWidth += line[line.length - 2]?.letterSpacing ?? 0
+                } else {
+                    lineWidth += line[line.length - 1]?.letterSpacing ?? 0
+                }
             }
         }
         if (textAutoResize === 'WIDTH_AND_HEIGHT') {
@@ -126,15 +138,6 @@ export const getBaselines: EditorInterface['getBaselines'] = (editor) => {
         let lineY = lineHeightSum
         if (lineHeightY < 0) {
             lineY += lineHeightY
-        }
-
-        // 处理字间距
-        if (needLetterSpacing) {
-            if (line[line.length - 1].name === '\n') {
-                lineWidth -= line[line.length - 2]?.letterSpacing ?? 0
-            } else {
-                lineWidth -= line[line.length - 1]?.letterSpacing ?? 0
-            }
         }
 
         baselines.push({
