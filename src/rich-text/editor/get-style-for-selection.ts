@@ -6,7 +6,7 @@ export const getStyleForSelection: EditorInterface['getStyleForSelection'] = (ed
     let anchor = characterOffset?.anchor ?? 0
     let focus = characterOffset?.focus ?? getTextArr(editor).length;
     const { __select_styles } = editor
-    if (__select_styles?.focus === focus && __select_styles?.anchor === anchor) return deepClone(__select_styles.styles!)
+    if (__select_styles?.focus === focus && __select_styles?.anchor === anchor && editor.isEditor) return deepClone(__select_styles.styles!)
     __select_styles.focus = focus
     __select_styles.anchor = anchor
     const { characterStyleIDs, styleOverrideTable } = editor.textData
