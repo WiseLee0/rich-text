@@ -16,7 +16,11 @@ export const apply: EditorInterface['apply'] = (editor, cache = false) => {
         if (editor.textData.characters[editor.textData.characters.length - 1] === '\n') {
             lastW = getLineIndentationLevelPixels(editor, baselines[baselines.length - 1].endCharacter)
         }
-        editor.width = Math.max(...baselines.map(item => item.position.x + item.width), lastW)
+        if (!baselines.length) {
+            editor.width = getLineIndentationLevelPixels(editor, 0)
+        } else {
+            editor.width = Math.max(...baselines.map(item => item.position.x + item.width), lastW)
+        }
         editor.height = getH(editor)
     }
 
