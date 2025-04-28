@@ -1,6 +1,5 @@
 import { checkFontSupport, EditorInterface, getLangFont, fontTokenize, getStyleForStyleID, setFontFeatures, StyleInterface, loadLangFont, detectEmoji, getCodePoints, loadFontMetaURL } from "..";
 
-const allLackURLSet = new Set<string>()
 export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
     if (editor.__metrices) return editor.__metrices
 
@@ -123,10 +122,7 @@ export const getMetrices: EditorInterface['getMetrices'] = (editor) => {
     // 加载缺失字体
     if (lackFontURLSet.size) {
         for (const url of lackFontURLSet) {
-            if (!allLackURLSet.has(url)) {
-                allLackURLSet.add(url)
-                loadLangFont(editor, url)
-            }
+            loadLangFont(editor, url)
         }
     }
 
