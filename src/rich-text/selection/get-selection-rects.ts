@@ -108,7 +108,7 @@ export const getSelectionRects: SelectionInterface['getSelectionRects'] = (edito
                 startX = 0
             }
             if (baseline) {
-                result.push([startX, baseline.lineY, editor.width - startX, baseline.lineHeight])
+                result.push([startX, baseline.lineY, editor.width - startX,  Math.max(baseline.lineHeight, baseline.defaultLineHeight)])
             }
         }
     }
