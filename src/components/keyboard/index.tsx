@@ -79,6 +79,22 @@ export const KeyBoardComp = () => {
             name: '两端对齐',
             key: '⌘ ⌥ J'
         },
+        {
+            name: '文本加粗',
+            key: '⌘ B'
+        },
+        {
+            name: '文本斜体',
+            key: '⌘ I'
+        },
+        {
+            name: '文本下划线',
+            key: '⌘ U'
+        },
+        {
+            name: '文本删除线',
+            key: '⌘ ⇧ X'
+        },
     ]
     const selecionData = [
         {

@@ -1,5 +1,5 @@
 import * as fontkit from 'fontkit'
-import { OmitFirstArg, SelectionInterface, StyleInterface, Selection, DerivedTextDataInterface, TextDataInterface, Font, MetricesInterface, BaseLineInterface, GlyphsInterface, FillPaintType, EventType, EventListenerType, TextDataLinesInterface, FontMetaDataInterface } from "."
+import { OmitFirstArg, SelectionInterface, StyleInterface, Selection, DerivedTextDataInterface, TextDataInterface, Font, MetricesInterface, BaseLineInterface, GlyphsInterface, FillPaintType, EventType, EventListenerType, TextDataLinesInterface, FontMetaDataInterface, FontItem } from "."
 
 export type Editor = {
     /** 文本宽度 */
@@ -99,6 +99,10 @@ export type Editor = {
     addEventListener: OmitFirstArg<EditorInterface['addEventListener']>
     /** 移除事件监听 */
     removeEventListener: OmitFirstArg<EditorInterface['removeEventListener']>
+    /** 文本加粗 */
+    boldFont: OmitFirstArg<EditorInterface['boldFont']>
+    /** 文本斜体 */
+    italicFont: OmitFirstArg<EditorInterface['italicFont']>
 
     // font
     /** 设置字体数据 */
@@ -183,6 +187,8 @@ export type EditorInterface = {
     setParagraphSpacing: (editor: Editor, paragraphSpacing: number) => void
     getParagraphSpacing: (editor: Editor) => number | 'mix'
     getParagraphSpacingForCharacterOffset: (editor: Editor, firstCharacter: number) => number
+    boldFont: (editor: Editor, fontMap: Map<string, FontItem[]>) => FontItem[]
+    italicFont: (editor: Editor, fontMap: Map<string, FontItem[]>) => FontItem[]
 }
 
 export type Rect = [number, number, number, number]

@@ -17,3 +17,28 @@ export function findClosestIndex(nums: number[], target: number) {
 
     return closestIndex;
 }
+
+
+/**
+ * 找出数组中连续相同元素的区间
+ * @param arr 输入数组（元素类型可以是任意可比较的类型）
+ * @returns 返回连续相同元素的区间数组，每个区间用 [startIndex, endIndex] 表示
+ */
+export function findConsecutiveRanges<T>(arr: T[]): number[][] {
+    if (arr.length === 0) return [];
+
+    const ranges: number[][] = [];
+    let start = 0;
+
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] !== arr[start]) {
+            ranges.push([start, i - 1]);
+            start = i;
+        }
+    }
+
+    // 处理最后一个区间
+    ranges.push([start, arr.length - 1]);
+
+    return ranges;
+}

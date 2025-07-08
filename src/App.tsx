@@ -3,7 +3,7 @@ import './App.css'
 import { CANVAS_W, CANVAS_H, loadSkia, CANVAS_MARING } from './utils';
 import { Canvas } from 'canvaskit-wasm';
 import { Spin } from 'antd';
-import { createEditor, Editor } from './rich-text';
+import { createEditor, Editor, FontItem } from './rich-text';
 import { AutoResizeComp } from './components/autoResize/index';
 import { renderBaseLine, renderBorder, renderCursor, renderText } from './render';
 import { TypographyComp } from './components/typography';
@@ -220,7 +220,7 @@ export default function App() {
       }
     }
 
-    const onKeydown = (e: KeyboardEvent) => {
+    const onKeydown = async (e: KeyboardEvent) => {
       // 处于输入法时交由浏览器处理
       if (isCompositionRef.current) {
         return;
@@ -253,6 +253,40 @@ export default function App() {
           // 全选
           if (metaKey) {
             editor.selectAll();
+          }
+          break;
+        case 'KeyB':
+          // 文本加粗
+          if (metaKey) {
+            const fontMap = new Map<string, FontItem[]>()
+            const loadMetaFontItems = editor.boldFont(fontMap);
+            if (loadMetaFontItems?.length) {
+              for (const fontItem of loadMetaFontItems) {
+                await editor.fontMgrFromURL({
+                  family: fontItem.familyName,
+                  style: fontItem.subfamilyName,
+                  postscript: fontItem.postscriptName,
+                }, fontItem.assetUrl);
+              }
+              editor.boldFont(fontMap)
+            }
+          }
+          break;
+        case 'KeyI':
+          // 文本斜体
+          if (metaKey) {
+            const fontMap = new Map<string, FontItem[]>()
+            const loadMetaFontItems = editor.italicFont(fontMap);
+            if (loadMetaFontItems?.length) {
+              for (const fontItem of loadMetaFontItems) {
+                await editor.fontMgrFromURL({
+                  family: fontItem.familyName,
+                  style: fontItem.subfamilyName,
+                  postscript: fontItem.postscriptName,
+                }, fontItem.assetUrl);
+              }
+              editor.italicFont(fontMap)
+            }
           }
           break;
         case 'KeyJ':

@@ -50,6 +50,8 @@ import {
     getAutoLineHeightOfPixels,
     setParagraphSpacing,
     getParagraphSpacing,
+    boldFont,
+    italicFont,
 } from "./";
 import detectLangModel from "./detect-lang/pkg/detect_lang";
 import wasmURL from "./detect-lang/pkg/detect_lang_bg.wasm?url";
@@ -306,6 +308,8 @@ export const createEditor = async (): Promise<Editor> => {
             getAutoLineHeightOfPixels(editor, ...args),
         setParagraphSpacing: (...args) => setParagraphSpacing(editor, ...args),
         getParagraphSpacing: (...args) => getParagraphSpacing(editor, ...args),
+        boldFont: (...args) => boldFont(editor, ...args),
+        italicFont: (...args) => italicFont(editor, ...args),
 
         // Font
         fontMgrFromURL: (...args) => fontMgrFromURL(editor, ...args),
