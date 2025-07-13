@@ -76,4 +76,5 @@ export const deleteText: EditorInterface['deleteText'] = (editor, options = {}) 
     }
     editor.selectForCharacterOffset(anchorCharacterIdx)
     editor.apply()
+    editor.selectForCharacterOffset(anchorCharacterIdx)
 }
