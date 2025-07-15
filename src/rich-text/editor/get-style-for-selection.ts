@@ -1,10 +1,13 @@
 import { deepClone, deepEqual, EditorInterface, getTextArr } from "..";
 
-export const getStyleForSelection: EditorInterface['getStyleForSelection'] = (editor) => {
+export const getStyleForSelection: EditorInterface['getStyleForSelection'] = (editor, clearCache = false) => {
     if (!editor.textData.characterStyleIDs?.length || !editor.textData.styleOverrideTable?.length) return deepClone(editor.style)
     let characterOffset = editor.getSelectCharacterOffset()
     let anchor = characterOffset?.anchor ?? 0
     let focus = characterOffset?.focus ?? getTextArr(editor).length;
+    if (clearCache) {
+        editor.__select_styles = {}
+    }
     const { __select_styles } = editor
     if (__select_styles?.focus === focus && __select_styles?.anchor === anchor && editor.isEditor) return deepClone(__select_styles.styles!)
     __select_styles.focus = focus

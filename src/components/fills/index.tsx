@@ -51,7 +51,7 @@ export const FillsComp = (props: FillsCompProps) => {
     }
 
     const watchSelection = () => {
-        const style = editorRef.current?.getStyleForSelection() as any
+        const style = editorRef.current?.getStyleForSelection(true) as any
 
         if (style?.fillPaints) {
             if (style.fillPaints === 'mix') {
