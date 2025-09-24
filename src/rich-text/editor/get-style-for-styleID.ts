@@ -1,6 +1,6 @@
 import { deepClone, EditorInterface, StyleInterface } from "..";
 
-export const getStyleForStyleID: EditorInterface['getStyleForStyleID'] = (editor, styleID, needClone = true) => {
+export const getStyleForStyleID: EditorInterface['getStyleForStyleID'] = (editor, styleID, needClone = false) => {
     if (!styleID) {
         return needClone ? deepClone(editor.style) : editor.style
     }

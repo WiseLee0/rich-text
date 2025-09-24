@@ -30,8 +30,13 @@ export const getText: EditorInterface['getText'] = (editor) => {
     return text
 }
 
+let textKey = ''
+let textValue: string[] = []
 export const getTextArr = (editor: Editor, disableTextCaseText = true) => {
-    return disableTextCaseText ? Array.from(editor.textData.characters) : Array.from(getText(editor))
+    if (textKey === editor.textData.characters) return textValue
+    textKey = editor.textData.characters
+    textValue = disableTextCaseText ? Array.from(editor.textData.characters) : Array.from(getText(editor))
+    return textValue
 }
 
 const transformTextCase = (_text: string, textCase: StyleInterface['textCase'], startIdx?: number, endIdx?: number) => {

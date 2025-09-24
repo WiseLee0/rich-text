@@ -1,10 +1,15 @@
 import { EditorInterface, getTextArr } from "..";
 
+let textWrapKey = ''
+let textWrapValue: number[] = []
 export const getLineIndexForCharacterOffset: EditorInterface['getLineIndexForCharacterOffset'] = (editor, firstCharacter) => {
-    const text = getTextArr(editor)
-    let lineIdx = 0
-    for (let i = 0; i < firstCharacter; i++) {
-        if (text[i] === '\n') lineIdx++
+    if (textWrapKey === editor.textData.characters) return textWrapValue[firstCharacter] ?? 0
+    textWrapKey = editor.textData.characters;
+    textWrapValue = []
+    const textArr = getTextArr(editor)
+    for (let i = 0; i < textArr.length; i++) {
+        if (textArr[i] === '\n') textWrapValue[i] = (textWrapValue[i - 1] ?? 0) + 1;
+        else textWrapValue[i] = textWrapValue[i - 1] ?? 0
     }
-    return lineIdx;
+    return textWrapValue[firstCharacter] ?? 0
 }
